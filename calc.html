@@ -7,6 +7,10 @@
   <link rel="manifest" href="manifest.json">
   <meta name="theme-color" content="#000000">
   <style>
+    * {
+      box-sizing: border-box;
+    }
+
     body {
       background-color: #000;
       color: #fff;
@@ -21,47 +25,60 @@
     }
 
     button {
-    all: unset;
-    width: 250px; /* Tamanho fixo para todos os botões */
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    gap: 8px;
-    padding: 12px 24px;
-    font-size: 16px;
-    font-weight: 500;
-    cursor: pointer;
-    border-radius: 999px; /* Formato oval */
-    background-color: transparent;
-    color: white;
-    border: 1px solid #ffffff;
-    transition: background-color 0.3s, border-color 0.3s;
-    white-space: nowrap;
-    box-sizing: border-box;
-  }
+      all: unset;
+      width: 90%;
+      max-width: 300px;
+      margin: 10px auto;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 8px;
+      padding: 12px 20px;
+      font-size: 4vw;
+      max-font-size: 18px;
+      font-weight: 500;
+      cursor: pointer;
+      border-radius: 999px;
+      background-color: transparent;
+      color: white;
+      border: 1px solid #ffffff;
+      transition: background-color 0.3s, border-color 0.3s;
+      white-space: nowrap;
+    }
+
+    button:hover {
+      background-color: #1a1a1a;
+      border-color: #888;
+    }
 
     .input-area {
       display: flex;
+      flex-direction: column;
       gap: 20px;
       margin-bottom: 20px;
+      align-items: center;
     }
 
     .inputs-esquerda {
+      width: 100%;
+      max-width: 400px;
       display: flex;
       flex-direction: column;
       gap: 10px;
     }
 
     .inputs-esquerda input {
-      padding: 8px;
+      padding: 10px;
       font-size: 1em;
       font-family: 'Courier New', monospace;
+      width: 100%;
     }
 
     .resumo-box {
       border: 2px dashed white;
       padding: 10px;
       width: 100%;
+      max-width: 600px;
     }
 
     .recibo {
@@ -70,11 +87,18 @@
       font-size: 0.95em;
       border: 2px dashed white;
       white-space: pre-line;
+      overflow-x: auto;
+    }
+
+    @media (min-width: 768px) {
+      button {
+        font-size: 16px;
+      }
     }
   </style>
 </head>
 <body>
-  <button onclick="window.location.href='index.html'">INICIO</button>
+  <button onclick="window.location.href='index.html'">INÍCIO</button>
 
   <div class="header">
     <h1>CANHOTO DE LANÇAMENTO</h1>
@@ -86,10 +110,9 @@
       <input type="number" step="0.01" id="custo" placeholder="Custo (R$)" />
       <button onclick="adicionarServico()">Adicionar lançamento</button>
     </div>
+
     <div class="resumo-box">
-      
       <strong>RESUMO</strong>
-      <div style=" align-items: center;"></div>
       <div class="recibo" id="resultado"></div>
     </div>
   </div>
