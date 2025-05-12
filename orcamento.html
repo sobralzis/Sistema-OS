@@ -108,8 +108,7 @@
   </style>
 </head>
 <body>
-<button onclick="window.location.href='index.html'">INICIO</button>
-
+  <button onclick="window.location.href='index.html'">INICIO</button>
 
   <h1>ORÇAMENTO</h1>
   <div class="tema-container">
@@ -133,6 +132,7 @@
 
     <button class="botao-circular" onclick="adicionarCampo()">+</button>
     <button class="botao-circular" onclick="gerarOrcamento()">=</button>
+    <button onclick="copiarResultado()">COPIAR</button>
   </div>
 
   <div class="area" id="resultado"></div>
@@ -167,18 +167,29 @@
       const peca = temPeca ? parseFloat(document.getElementById('peca').value) || 0 : 0;
       const maoObra = parseFloat(document.getElementById('maoObra').value) || 0;
 
+      if (peca < 0 || maoObra < 0) {
+        alert("Os valores não podem ser negativos.");
+        return;
+      }
+
       const nomes = document.querySelectorAll('.nome-servico');
       const valores = document.querySelectorAll('.valor-servico');
 
       let extrasText = '';
       let totalExtras = 0;
 
-      nomes.forEach((nomeEl, i) => {
-        const nome = nomeEl.value.trim() || `Serviço ${i + 1}`;
+      for (let i = 0; i < nomes.length; i++) {
+        const nome = nomes[i].value.trim() || `Serviço ${i + 1}`;
         const valor = parseFloat(valores[i].value) || 0;
-        extrasText += `${nome}: R$ ${valor.toFixed(2)}\n`;
+
+        if (valor < 0) {
+          alert(`O valor do "${nome}" não pode ser negativo.`);
+          return;
+        }
+
+        extrasText += `${nome}: ${valor.toLocaleString('pt-BR', { style: 'currency', currency: 'BRL' })}\n`;
         totalExtras += valor;
-      });
+      }
 
       const total = peca + maoObra + totalExtras;
       const totalCartao = total * 1.11;
@@ -186,16 +197,27 @@
       let resultado = `Resumo do Orçamento\n\n`;
 
       if (temPeca) {
-        resultado += `Peça: R$ ${peca.toFixed(2)}\n`;
+        resultado += `Peça: ${peca.toLocaleString('pt-BR', { style: 'currency', currency: 'BRL' })}\n`;
       }
 
       resultado +=
-        `Mão de Obra: R$ ${maoObra.toFixed(2)}\n` +
+        `Mão de Obra: ${maoObra.toLocaleString('pt-BR', { style: 'currency', currency: 'BRL' })}\n` +
         `${extrasText}` +
-        `\nTOTAL À VISTA: R$ ${total.toFixed(2)}\n` +
-        `TOTAL CARTÃO (até 5x): R$ ${totalCartao.toFixed(2)}`;
+        `\nTOTAL À VISTA: ${total.toLocaleString('pt-BR', { style: 'currency', currency: 'BRL' })}\n` +
+        `TOTAL CARTÃO (até 5x): ${totalCartao.toLocaleString('pt-BR', { style: 'currency', currency: 'BRL' })}`;
 
       document.getElementById('resultado').textContent = resultado;
+    }
+
+    function copiarResultado() {
+      const texto = document.getElementById('resultado').textContent;
+      if (!texto) {
+        alert('Nenhum orçamento gerado para copiar.');
+        return;
+      }
+      navigator.clipboard.writeText(texto)
+        .then(() => alert('Orçamento copiado!'))
+        .catch(() => alert('Erro ao copiar o orçamento.'));
     }
   </script>
 
