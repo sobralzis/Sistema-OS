@@ -1,0 +1,271 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8">
+  <title>Ordem de Serviço</title>
+  <style>
+    body {
+      background-color: #000;
+      color: #fff;
+      font-family: Arial, sans-serif;
+      padding: 20px;
+    }
+
+    .linha {
+      display: flex;
+      flex-wrap: wrap;
+      margin-bottom: 8px;
+      gap: 15px;
+    }
+
+    .col {
+      flex: 1;
+      min-width: 200px;
+    }
+
+    label {
+      display: block;
+      margin-bottom: 3px;
+      font-weight: bold;
+    }
+
+    input[type="text"], textarea {
+      width: 100%;
+      padding: 5px;
+      background-color: #111;
+      color: #fff;
+      border: 1px solid #555;
+    }
+
+    textarea {
+      resize: vertical;
+      min-height: 50px;
+    }
+
+    .checkbox-inline {
+      margin-right: 15px;
+    }
+
+    .checkbox-label {
+      display: inline-flex;
+      align-items: center;
+      margin-right: 15px;
+      font-weight: normal;
+    }
+
+    .checkbox-label input {
+      margin-left: 5px;
+      margin-right: 5px;
+    }
+
+    .print-btn {
+      margin-top: 20px;
+      background-color: #333;
+      color: #fff;
+      padding: 10px 20px;
+      border: none;
+      cursor: pointer;
+    }
+
+    hr {
+      margin: 25px 0;
+      border-color: #444;
+    }
+
+    /* Ajustes para a impressão */
+    @media print {
+      body {
+        background: #fff;
+        color: #000;
+      }
+
+      .print-btn {
+        display: none;
+      }
+
+      .linha {
+        page-break-inside: avoid; /* Impede quebras de página dentro da linha */
+      }
+
+      .col {
+        break-inside: avoid-column;
+      }
+
+      input, textarea {
+        border: none;
+        background: transparent;
+        color: #000;
+      }
+
+      /* Controlando a quebra de página para os termos */
+      .termos-condicoes {
+        page-break-before: always; /* Força quebra de página antes dos termos */
+      }
+    }
+
+    .titulo {
+      text-align: center;
+      margin-bottom: 20px;
+    }
+
+    .contato {
+      text-align: center;
+      font-size: 18px;
+      margin-top: 5px;
+    }
+
+  </style>
+</head>
+<button onclick="window.location.href='SISTEMA CNT.HTML'">INICIO</button>
+
+<body onload="preencherDataEIncrementarOS()">
+
+  <div class="titulo">
+    <h1>CNT ASSISTÊNCIA TÉCNICA</h1>
+    <div class="contato">Contato: 84 99809-6865</div>
+  </div>
+
+  <h2 style="text-align: center;">ORDEM DE SERVIÇO</h2>
+
+  <div class="linha">
+    <div class="col">
+      <label>OS Nº</label>
+      <span id="osNumber"></span>
+    </div>
+  </div>
+
+  <div class="linha">
+    <div class="col">
+      <label>NOME</label>
+      <input type="text">
+    </div>
+    <div class="col">
+      <label>TELEFONE</label>
+      <input type="text">
+    </div>
+    <div class="col">
+      <label>WHATSAPP</label>
+      <label class="checkbox-label">SIM<input type="checkbox"></label>
+      <label class="checkbox-label">NÃO<input type="checkbox"></label>
+    </div>
+  </div>
+
+  <div class="linha">
+    <div class="col">
+      <label>TÉCNICO RESPONSÁVEL</label>
+      <label class="checkbox-label">JOÃO PAULO AVELINO<input type="checkbox"></label>
+      <label class="checkbox-label">BRUNO SANTOS<input type="checkbox"></label>
+    </div>
+  </div>
+
+  <div class="linha">
+    <div class="col">
+      <label>MARCA / MODELO</label>
+      <input type="text">
+    </div>
+  </div>
+
+  <div class="linha">
+    <div class="col">
+      <label>ACESSÓRIO</label>
+      <label class="checkbox-label">SIM<input type="checkbox"></label>
+      <label class="checkbox-label">NÃO<input type="checkbox"></label>
+    </div>
+    <div class="col">
+      <label>QUAL</label>
+      <input type="text">
+    </div>
+  </div>
+
+  <div class="linha">
+    <div class="col">
+      <label>LIGA</label>
+      <label class="checkbox-label">SIM<input type="checkbox"></label>
+      <label class="checkbox-label">NÃO<input type="checkbox"></label>
+    </div>
+    <div class="col">
+      <label>DEFEITO FÍSICO</label>
+      <label class="checkbox-label">SIM<input type="checkbox"></label>
+      <label class="checkbox-label">NÃO<input type="checkbox"></label>
+    </div>
+    <div class="col">
+      <label>QUAL</label>
+      <input type="text">
+    </div>
+  </div>
+
+  <div class="linha">
+    <div class="col" style="flex: 100%;">
+      <label>DEFEITO RELATADO PELO CLIENTE</label>
+      <textarea rows="4"></textarea>
+    </div>
+  </div>
+
+  <div class="linha">
+    <div class="col">
+      <label>ENTRADA EM</label>
+      <span id="dataEntrada"></span>
+    </div>
+    <div class="col">
+      <label>SAÍDA EM</label>
+      <input type="text" placeholder="__/__/____">
+    </div>
+  </div>
+
+  <div class="linha">
+    <div class="col">
+      <label>ASSINATURA DO CLIENTE</label>
+      <input type="text">
+    </div>
+    <div class="col">
+      <label>ASSINATURA DO TÉCNICO</label>
+      <input type="text">
+    </div>
+  </div>
+
+  <div class="linha">
+    <div class="col">
+      <label>SENHA</label>
+      <input type="text">
+    </div>
+  </div>
+
+  <hr>
+
+  <!-- Seção de Termos e Condições -->
+  <div class="linha termos-condicoes">
+    <div class="col" style="flex: 100%;">
+      <h3>Termos e Condições de Serviço</h3>
+      <p><strong>Recebimento do Equipamento:</strong> O equipamento entregue será avaliado, registrando estado físico, avarias e acessórios recebidos. Não nos responsabilizamos por itens não declarados.</p>
+      <p><strong>Diagnóstico e Orçamento:</strong> O diagnóstico será realizado em até 3 dias úteis. O serviço só será iniciado após aprovação do orçamento pelo cliente.</p>
+      <p><strong>Garantia:</strong> Garantia de ______ dias para o serviço realizado, limitada ao reparo efetuado. Não cobre mau uso, quedas, líquidos ou intervenções de terceiros.</p>
+      <p><strong>Equipamentos Não Retirados:</strong> Após 30 dias da conclusão, será cobrada taxa de armazenamento de R$ 1,00/dia. Após 90 dias, o equipamento será considerado abandonado, conforme o Código Civil Art. 1.275, III.</p>
+      <p><strong>Perda de Dados:</strong> Não nos responsabilizamos por perda de dados. Recomenda-se backup antes da entrega. Backup solicitado será cobrado à parte.</p>
+      <p><strong>Peças Substituídas:</strong> Garantia de 90 dias para peças substituídas contra defeitos de fabricação. Peças originais mediante solicitação e disponibilidade.</p>
+      <p>Assinatura do Cliente: ____________________________________</p>
+    </div>
+  </div>
+
+  <button class="print-btn" onclick="window.print()">Imprimir / Salvar como PDF</button>
+
+  <script>
+    function preencherDataEIncrementarOS() {
+      const hoje = new Date();
+      const dia = String(hoje.getDate()).padStart(2, '0');
+      const mes = String(hoje.getMonth() + 1).padStart(2, '0');
+      const ano = hoje.getFullYear();
+      document.getElementById('dataEntrada').textContent = `${dia}/${mes}/${ano}`;
+
+      let osAtual = localStorage.getItem('osAtual');
+      if (!osAtual) {
+        osAtual = 1;
+      } else {
+        osAtual = parseInt(osAtual) + 1;
+      }
+      localStorage.setItem('osAtual', osAtual);
+      document.getElementById('osNumber').textContent = osAtual;
+    }
+  </script>
+
+</body>
+</html>

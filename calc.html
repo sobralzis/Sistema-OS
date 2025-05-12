@@ -1,0 +1,141 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>CANHOTO DE LANÇAMENTO</title>
+  <link rel="manifest" href="manifest.json">
+  <meta name="theme-color" content="#000000">
+  <style>
+    body {
+      background-color: #000;
+      color: #fff;
+      font-family: 'Courier New', monospace;
+      margin: 0;
+      padding: 20px;
+    }
+
+    .header {
+      text-align: center;
+      margin-bottom: 20px;
+    }
+
+    button {
+    all: unset;
+    width: 250px; /* Tamanho fixo para todos os botões */
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 8px;
+    padding: 12px 24px;
+    font-size: 16px;
+    font-weight: 500;
+    cursor: pointer;
+    border-radius: 999px; /* Formato oval */
+    background-color: transparent;
+    color: white;
+    border: 1px solid #ffffff;
+    transition: background-color 0.3s, border-color 0.3s;
+    white-space: nowrap;
+    box-sizing: border-box;
+  }
+
+    .input-area {
+      display: flex;
+      gap: 20px;
+      margin-bottom: 20px;
+    }
+
+    .inputs-esquerda {
+      display: flex;
+      flex-direction: column;
+      gap: 10px;
+    }
+
+    .inputs-esquerda input {
+      padding: 8px;
+      font-size: 1em;
+      font-family: 'Courier New', monospace;
+    }
+
+    .resumo-box {
+      border: 2px dashed white;
+      padding: 10px;
+      width: 100%;
+    }
+
+    .recibo {
+      background-color: #000;
+      padding: 15px;
+      font-size: 0.95em;
+      border: 2px dashed white;
+      white-space: pre-line;
+    }
+  </style>
+</head>
+<body>
+  <button onclick="window.location.href='SISTEMA CNT.HTML'">INICIO</button>
+
+  <div class="header">
+    <h1>CANHOTO DE LANÇAMENTO</h1>
+  </div>
+
+  <div class="input-area">
+    <div class="inputs-esquerda">
+      <input type="number" step="0.01" id="valor" placeholder="Valor recebido (R$)" />
+      <input type="number" step="0.01" id="custo" placeholder="Custo (R$)" />
+      <button onclick="adicionarServico()">Adicionar lançamento</button>
+    </div>
+    <div class="resumo-box">
+      
+      <strong>RESUMO</strong>
+      <div style=" align-items: center;"></div>
+      <div class="recibo" id="resultado"></div>
+    </div>
+  </div>
+
+  <script>
+    const servicos = [];
+
+    function adicionarServico() {
+      const valor = parseFloat(document.getElementById('valor').value);
+      let custo = parseFloat(document.getElementById('custo').value);
+
+      if (isNaN(valor)) return alert('Informe ao menos o valor recebido.');
+      if (isNaN(custo)) custo = 0;
+
+      const lucro = valor - custo;
+      const tecnico = lucro * 0.7;
+      const loja = lucro * 0.3;
+
+      servicos.push({ valor, custo, lucro, tecnico, loja });
+      atualizarRecibo();
+
+      document.getElementById('valor').value = '';
+      document.getElementById('custo').value = '';
+    }
+
+    function atualizarRecibo() {
+      let html = '';
+      let totalValor = 0, totalCusto = 0, totalLucro = 0, totalTecnico = 0, totalLoja = 0;
+
+      servicos.forEach((s, i) => {
+        const num = (i + 1).toString().padStart(2, '0');
+        html += `${num} - Valor: R$ ${s.valor.toFixed(2)}, Custo: R$ ${s.custo.toFixed(2)}, Lucro: R$ ${s.lucro.toFixed(2)}, Técnico: R$ ${s.tecnico.toFixed(2)}, Assistência: R$ ${s.loja.toFixed(2)}\n`;
+
+        totalValor += s.valor;
+        totalCusto += s.custo;
+        totalLucro += s.lucro;
+        totalTecnico += s.tecnico;
+        totalLoja += s.loja;
+      });
+
+      if (servicos.length > 1) {
+        html += `\nTotal - Valor: R$ ${totalValor.toFixed(2)}, Custo: R$ ${totalCusto.toFixed(2)}, Lucro: R$ ${totalLucro.toFixed(2)}, Técnico: R$ ${totalTecnico.toFixed(2)}, Assistência: R$ ${totalLoja.toFixed(2)}`;
+      }
+
+      document.getElementById('resultado').textContent = html;
+    }
+  </script>
+</body>
+</html>
