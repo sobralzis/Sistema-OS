@@ -7,20 +7,26 @@
     body {
       background-color: #000;
       color: #fff;
-      font-family: Arial, sans-serif;
+      font-family: 'Times New Roman', Times, serif;
       padding: 20px;
     }
 
     .linha {
       display: flex;
       flex-wrap: wrap;
-      margin-bottom: 8px;
       gap: 15px;
+      margin-bottom: 8px;
+      align-items: center;
     }
 
     .col {
       flex: 1;
-      min-width: 200px;
+      min-width: 150px;
+    }
+
+    .col-nome {
+      flex: 2;
+      min-width: 300px;
     }
 
     label {
@@ -29,12 +35,13 @@
       font-weight: bold;
     }
 
-    input[type="text"], textarea {
+    input[type="text"], textarea, select {
       width: 100%;
       padding: 5px;
       background-color: #111;
       color: #fff;
       border: 1px solid #555;
+      font-family: inherit;
     }
 
     textarea {
@@ -43,19 +50,9 @@
     }
 
     .checkbox-inline {
-      margin-right: 15px;
-    }
-
-    .checkbox-label {
       display: inline-flex;
       align-items: center;
-      margin-right: 15px;
-      font-weight: normal;
-    }
-
-    .checkbox-label input {
-      margin-left: 5px;
-      margin-right: 5px;
+      margin-right: 10px;
     }
 
     .print-btn {
@@ -72,34 +69,24 @@
       border-color: #444;
     }
 
-    /* Ajustes para a impressão */
     @media print {
       body {
         background: #fff;
         color: #000;
       }
-
-      .print-btn {
+      .print-btn, button {
         display: none;
       }
-
       .linha {
-        page-break-inside: avoid; /* Impede quebras de página dentro da linha */
+        page-break-inside: avoid;
       }
-
-      .col {
-        break-inside: avoid-column;
-      }
-
-      input, textarea {
+      input, textarea, select {
         border: none;
         background: transparent;
         color: #000;
       }
-
-      /* Controlando a quebra de página para os termos */
       .termos-condicoes {
-        page-break-before: always; /* Força quebra de página antes dos termos */
+        page-break-before: always;
       }
     }
 
@@ -114,11 +101,14 @@
       margin-top: 5px;
     }
 
+    .hidden {
+      display: none;
+    }
   </style>
 </head>
-<button onclick="window.location.href='index.html'">INICIO</button>
-
 <body onload="preencherDataEIncrementarOS()">
+
+  <button onclick="window.location.href='index.html'">INICIO</button>
 
   <div class="titulo">
     <h1>CNT ASSISTÊNCIA TÉCNICA</h1>
@@ -135,26 +125,29 @@
   </div>
 
   <div class="linha">
-    <div class="col">
+    <div class="col col-nome">
       <label>NOME</label>
       <input type="text">
-    </div>
-    <div class="col">
-      <label>TELEFONE</label>
-      <input type="text">
-    </div>
-    <div class="col">
-      <label>WHATSAPP</label>
-      <label class="checkbox-label">SIM<input type="checkbox"></label>
-      <label class="checkbox-label">NÃO<input type="checkbox"></label>
     </div>
   </div>
 
   <div class="linha">
+    <div class="col" style="flex: 0.5;">
+      <label>TELEFONE</label>
+      <input type="text">
+    </div>
+    <div class="col" style="flex: 0.3;">
+      <label class="checkbox-inline">
+        <input type="checkbox"> WHATSAPP
+      </label>
+    </div>
     <div class="col">
       <label>TÉCNICO RESPONSÁVEL</label>
-      <label class="checkbox-label">JOÃO PAULO AVELINO<input type="checkbox"></label>
-      <label class="checkbox-label">BRUNO SANTOS<input type="checkbox"></label>
+      <select>
+        <option value="">Selecione</option>
+        <option>JOÃO PAULO AVELINO</option>
+        <option>BRUNO SANTOS</option>
+      </select>
     </div>
   </div>
 
@@ -168,28 +161,33 @@
   <div class="linha">
     <div class="col">
       <label>ACESSÓRIO</label>
-      <label class="checkbox-label">SIM<input type="checkbox"></label>
-      <label class="checkbox-label">NÃO<input type="checkbox"></label>
+      <label class="checkbox-inline"><input type="checkbox" id="acessorioSim"> SIM</label>
+      <label class="checkbox-inline"><input type="checkbox" id="acessorioNao"> NÃO</label>
     </div>
+
     <div class="col">
-      <label>QUAL</label>
+      <label>LIGA</label>
+      <label class="checkbox-inline"><input type="checkbox"> SIM</label>
+      <label class="checkbox-inline"><input type="checkbox"> NÃO</label>
+    </div>
+
+    <div class="col">
+      <label>DEFEITO FÍSICO</label>
+      <label class="checkbox-inline"><input type="checkbox" id="defeitoSim"> SIM</label>
+      <label class="checkbox-inline"><input type="checkbox" id="defeitoNao"> NÃO</label>
+    </div>
+  </div>
+
+  <div class="linha hidden" id="qualAcessorioLinha">
+    <div class="col">
+      <label>QUAL ACESSÓRIO</label>
       <input type="text">
     </div>
   </div>
 
-  <div class="linha">
+  <div class="linha hidden" id="qualDefeitoLinha">
     <div class="col">
-      <label>LIGA</label>
-      <label class="checkbox-label">SIM<input type="checkbox"></label>
-      <label class="checkbox-label">NÃO<input type="checkbox"></label>
-    </div>
-    <div class="col">
-      <label>DEFEITO FÍSICO</label>
-      <label class="checkbox-label">SIM<input type="checkbox"></label>
-      <label class="checkbox-label">NÃO<input type="checkbox"></label>
-    </div>
-    <div class="col">
-      <label>QUAL</label>
+      <label>QUAL DEFEITO</label>
       <input type="text">
     </div>
   </div>
@@ -232,7 +230,6 @@
 
   <hr>
 
-  <!-- Seção de Termos e Condições -->
   <div class="linha termos-condicoes">
     <div class="col" style="flex: 100%;">
       <h3>Termos e Condições de Serviço</h3>
@@ -257,14 +254,42 @@
       document.getElementById('dataEntrada').textContent = `${dia}/${mes}/${ano}`;
 
       let osAtual = localStorage.getItem('osAtual');
-      if (!osAtual) {
-        osAtual = 1;
-      } else {
-        osAtual = parseInt(osAtual) + 1;
-      }
+      osAtual = osAtual ? parseInt(osAtual) + 1 : 1;
       localStorage.setItem('osAtual', osAtual);
       document.getElementById('osNumber').textContent = osAtual;
     }
+
+    // Mostrar/ocultar "QUAL ACESSÓRIO"
+    document.addEventListener('DOMContentLoaded', () => {
+      const acessorioSim = document.getElementById('acessorioSim');
+      const acessorioNao = document.getElementById('acessorioNao');
+      const defeitoSim = document.getElementById('defeitoSim');
+      const defeitoNao = document.getElementById('defeitoNao');
+
+      acessorioSim.addEventListener('change', () => {
+        document.getElementById('qualAcessorioLinha').classList.toggle('hidden', !acessorioSim.checked);
+        if (acessorioSim.checked) acessorioNao.checked = false;
+      });
+
+      acessorioNao.addEventListener('change', () => {
+        if (acessorioNao.checked) {
+          acessorioSim.checked = false;
+          document.getElementById('qualAcessorioLinha').classList.add('hidden');
+        }
+      });
+
+      defeitoSim.addEventListener('change', () => {
+        document.getElementById('qualDefeitoLinha').classList.toggle('hidden', !defeitoSim.checked);
+        if (defeitoSim.checked) defeitoNao.checked = false;
+      });
+
+      defeitoNao.addEventListener('change', () => {
+        if (defeitoNao.checked) {
+          defeitoSim.checked = false;
+          document.getElementById('qualDefeitoLinha').classList.add('hidden');
+        }
+      });
+    });
   </script>
 
 </body>
