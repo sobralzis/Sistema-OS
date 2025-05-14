@@ -74,16 +74,16 @@
         background: #fff;
         color: #000;
       }
-      .print-btn, button {
+      .print-btn, button, #historicoBtn, #historicoPopup {
         display: none;
-      }
-      .linha {
-        page-break-inside: avoid;
       }
       input, textarea, select {
         border: none;
         background: transparent;
         color: #000;
+      }
+      .linha {
+        page-break-inside: avoid;
       }
       .termos-condicoes {
         page-break-before: always;
@@ -104,11 +104,44 @@
     .hidden {
       display: none;
     }
+
+    #historicoPopup {
+      display: none;
+      position: fixed;
+      top: 10%;
+      left: 50%;
+      transform: translateX(-50%);
+      background: #222;
+      color: #fff;
+      padding: 20px;
+      border: 2px solid #444;
+      max-height: 70%;
+      overflow-y: auto;
+      z-index: 1000;
+    }
+
+    #historicoBtn {
+      position: absolute;
+      top: 20px;
+      right: 20px;
+      background: #333;
+      color: #fff;
+      border: none;
+      padding: 10px;
+      cursor: pointer;
+    }
   </style>
 </head>
 <body onload="preencherDataEIncrementarOS()">
 
   <button onclick="window.location.href='index.html'">INICIO</button>
+  <button id="historicoBtn" onclick="abrirHistorico()">Histórico de OS</button>
+
+  <div id="historicoPopup">
+    <h3>Histórico de OS (últimos 30 dias)</h3>
+    <div id="listaHistorico"></div>
+    <button onclick="fecharHistorico()">Fechar</button>
+  </div>
 
   <div class="titulo">
     <h1>CNT ASSISTÊNCIA TÉCNICA</h1>
@@ -127,7 +160,7 @@
   <div class="linha">
     <div class="col col-nome">
       <label>NOME</label>
-      <input type="text">
+      <input type="text" id="nomeCliente">
     </div>
   </div>
 
@@ -251,15 +284,46 @@
       const dia = String(hoje.getDate()).padStart(2, '0');
       const mes = String(hoje.getMonth() + 1).padStart(2, '0');
       const ano = hoje.getFullYear();
-      document.getElementById('dataEntrada').textContent = `${dia}/${mes}/${ano}`;
+      const data = `${dia}/${mes}/${ano}`;
+      document.getElementById('dataEntrada').textContent = data;
 
       let osAtual = localStorage.getItem('osAtual');
       osAtual = osAtual ? parseInt(osAtual) + 1 : 1;
       localStorage.setItem('osAtual', osAtual);
       document.getElementById('osNumber').textContent = osAtual;
+
+      salvarHistorico(osAtual, data);
     }
 
-    // Mostrar/ocultar "QUAL ACESSÓRIO"
+    function salvarHistorico(numero, data) {
+      const nome = document.getElementById('nomeCliente').value || 'Cliente não informado';
+      const historico = JSON.parse(localStorage.getItem('historicoOS') || '[]');
+      historico.push({ numero, nome, data });
+      const trintaDiasAtras = Date.now() - 30 * 24 * 60 * 60 * 1000;
+      const historicoFiltrado = historico.filter(item => {
+        const partes = item.data.split('/');
+        const dataItem = new Date(`${partes[2]}-${partes[1]}-${partes[0]}`).getTime();
+        return dataItem >= trintaDiasAtras;
+      });
+      localStorage.setItem('historicoOS', JSON.stringify(historicoFiltrado));
+    }
+
+    function abrirHistorico() {
+      const historico = JSON.parse(localStorage.getItem('historicoOS') || '[]');
+      const lista = document.getElementById('listaHistorico');
+      lista.innerHTML = '';
+      historico.reverse().forEach(item => {
+        const div = document.createElement('div');
+        div.textContent = `OS Nº ${item.numero} - ${item.nome} - ${item.data}`;
+        lista.appendChild(div);
+      });
+      document.getElementById('historicoPopup').style.display = 'block';
+    }
+
+    function fecharHistorico() {
+      document.getElementById('historicoPopup').style.display = 'none';
+    }
+
     document.addEventListener('DOMContentLoaded', () => {
       const acessorioSim = document.getElementById('acessorioSim');
       const acessorioNao = document.getElementById('acessorioNao');
@@ -289,6 +353,81 @@
           document.getElementById('qualDefeitoLinha').classList.add('hidden');
         }
       });
+    });
+  </script>
+
+</body>
+</html>
+2, '0');
+      const ano = hoje.getFullYear();
+      const dataFormatada = `${dia}/${mes}/${ano}`;
+      document.getElementById('dataEntrada').textContent = dataFormatada;
+
+      const osAtual = obterNumeroOSAtual(hoje);
+      document.getElementById('osNumber').textContent = osAtual;
+
+      salvarHistorico(osAtual, dataFormatada);
+    }
+
+    function obterNumeroOSAtual(data) {
+      const chave = `os_${data.getFullYear()}_${data.getMonth() + 1}_${data.getDate()}`;
+      let numero = localStorage.getItem(chave);
+      if (!numero) {
+        numero = 1;
+      } else {
+        numero = parseInt(numero) + 1;
+      }
+      localStorage.setItem(chave, numero);
+      return `${data.getDate().toString().padStart(2, '0')}${(data.getMonth() + 1).toString().padStart(2, '0')}${data.getFullYear().toString().slice(2)}-${numero.toString().padStart(3, '0')}`;
+    }
+
+    function salvarHistorico(numeroOS, data) {
+      let historico = JSON.parse(localStorage.getItem('historicoOS')) || [];
+      historico.push({ numeroOS, data });
+      historico = historico.filter(item => {
+        const [dia, mes, ano] = item.data.split('/');
+        const dataItem = new Date(ano, mes - 1, dia);
+        const hoje = new Date();
+        const diffDias = (hoje - dataItem) / (1000 * 60 * 60 * 24);
+        return diffDias <= 30;
+      });
+      localStorage.setItem('historicoOS', JSON.stringify(historico));
+    }
+
+    function abrirHistorico() {
+      const historico = JSON.parse(localStorage.getItem('historicoOS')) || [];
+      const container = document.getElementById('listaHistorico');
+      container.innerHTML = '';
+      if (historico.length === 0) {
+        container.innerHTML = '<p>Nenhum registro encontrado nos últimos 30 dias.</p>';
+      } else {
+        historico.reverse().forEach(item => {
+          const div = document.createElement('div');
+          div.textContent = `OS ${item.numeroOS} - Data: ${item.data}`;
+          container.appendChild(div);
+        });
+      }
+      document.getElementById('historicoPopup').style.display = 'block';
+    }
+
+    function fecharHistorico() {
+      document.getElementById('historicoPopup').style.display = 'none';
+    }
+
+    document.getElementById('acessorioSim').addEventListener('change', function() {
+      document.getElementById('qualAcessorioLinha').classList.toggle('hidden', !this.checked);
+    });
+
+    document.getElementById('acessorioNao').addEventListener('change', function() {
+      if (this.checked) document.getElementById('qualAcessorioLinha').classList.add('hidden');
+    });
+
+    document.getElementById('defeitoSim').addEventListener('change', function() {
+      document.getElementById('qualDefeitoLinha').classList.toggle('hidden', !this.checked);
+    });
+
+    document.getElementById('defeitoNao').addEventListener('change', function() {
+      if (this.checked) document.getElementById('qualDefeitoLinha').classList.add('hidden');
     });
   </script>
 
