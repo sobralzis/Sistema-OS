@@ -57,26 +57,36 @@
       margin-right: 10px;
     }
 
-    /* Botões com visual atualizado */
-    button,
-    .print-btn {
-      background-color: #1a73e8;
+    /* Botões estilo similar à imagem */
+    button, .btn {
+      background-color: #0a3d62; /* azul escuro */
       color: #fff;
       border: none;
-      padding: 10px 20px;
-      margin: 5px 10px 15px 0;
-      border-radius: 5px;
+      border-radius: 6px;
+      padding: 10px 18px;
+      font-size: 14px;
       cursor: pointer;
-      font-weight: 600;
-      font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+      box-shadow: 0 3px 6px rgba(0,0,0,0.3);
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
       transition: background-color 0.3s ease;
-      box-shadow: 0 2px 6px rgba(26, 115, 232, 0.6);
+      user-select: none;
+    }
+    button:hover, .btn:hover {
+      background-color: #06527a;
+    }
+    button:active, .btn:active {
+      background-color: #033e57;
+    }
+    button svg, .btn svg {
+      width: 16px;
+      height: 16px;
+      fill: #fff;
     }
 
-    button:hover,
-    .print-btn:hover {
-      background-color: #155ab6;
-      box-shadow: 0 4px 12px rgba(21, 90, 182, 0.8);
+    .print-btn {
+      margin-top: 20px;
     }
 
     hr {
@@ -84,25 +94,15 @@
       border-color: #444;
     }
 
-    /* Termos ocultos na tela */
-    .termos-condicoes {
-      display: none;
-    }
-
     @media print {
       body {
         background: #fff;
         color: #000;
       }
-      button,
-      .print-btn,
-      #historicoBtn,
-      #historicoPopup {
-        display: none !important;
+      .print-btn, button, #historicoBtn, #historicoPopup {
+        display: none;
       }
-      input,
-      textarea,
-      select {
+      input, textarea, select {
         border: none;
         background: transparent;
         color: #000;
@@ -110,7 +110,6 @@
       .linha {
         page-break-inside: avoid;
       }
-      /* Termos aparecem na impressão */
       .termos-condicoes {
         display: block !important;
         page-break-before: always;
@@ -145,7 +144,7 @@
       max-height: 70%;
       overflow-y: auto;
       z-index: 1000;
-      width: 350px;
+      width: 400px;
       border-radius: 8px;
     }
 
@@ -153,32 +152,39 @@
       position: absolute;
       top: 20px;
       right: 20px;
-      background: #1a73e8;
-      color: #fff;
-      border: none;
-      padding: 10px 15px;
-      border-radius: 5px;
-      cursor: pointer;
-      font-weight: 600;
-      box-shadow: 0 2px 6px rgba(26, 115, 232, 0.6);
-      transition: background-color 0.3s ease;
     }
 
-    #historicoBtn:hover {
-      background-color: #155ab6;
-      box-shadow: 0 4px 12px rgba(21, 90, 182, 0.8);
+    /* Lista do histórico */
+    #listaHistorico div {
+      padding: 8px 10px;
+      border-bottom: 1px solid #444;
+      cursor: pointer;
+      border-radius: 4px;
+    }
+    #listaHistorico div:hover {
+      background-color: #06527a;
     }
   </style>
 </head>
 <body onload="preencherDataEIncrementarOS()">
 
-  <button onclick="window.location.href='index.html'">INICIO</button>
-  <button id="historicoBtn" onclick="abrirHistorico()">Histórico de OS</button>
+  <button class="btn" onclick="window.location.href='index.html'">
+    <svg viewBox="0 0 24 24"><path d="M10 6 L8.59 7.41 13.17 12 8.59 16.59 10 18 16 12z"/></svg>
+    INICIO
+  </button>
+
+  <button class="btn" id="historicoBtn" onclick="abrirHistorico()">
+    <svg viewBox="0 0 24 24"><path d="M12 8v5l4 2"/></svg>
+    Histórico de OS
+  </button>
 
   <div id="historicoPopup">
     <h3>Histórico de OS (últimos 90 dias)</h3>
     <div id="listaHistorico"></div>
-    <button onclick="fecharHistorico()">Fechar</button>
+    <button class="btn" onclick="fecharHistorico()">
+      <svg viewBox="0 0 24 24"><path d="M6 6l12 12M6 18L18 6"/></svg>
+      Fechar
+    </button>
   </div>
 
   <div class="titulo">
@@ -205,16 +211,16 @@
   <div class="linha">
     <div class="col" style="flex: 0.5;">
       <label>TELEFONE</label>
-      <input type="text" />
+      <input type="text" id="telefone" />
     </div>
     <div class="col" style="flex: 0.3;">
       <label class="checkbox-inline">
-        <input type="checkbox" /> WHATSAPP
+        <input type="checkbox" id="whatsapp" /> WHATSAPP
       </label>
     </div>
     <div class="col">
       <label>TÉCNICO RESPONSÁVEL</label>
-      <select>
+      <select id="tecnico">
         <option value="">Selecione</option>
         <option>JOÃO PAULO AVELINO</option>
         <option>BRUNO SANTOS</option>
@@ -225,7 +231,7 @@
   <div class="linha">
     <div class="col">
       <label>MARCA / MODELO</label>
-      <input type="text" />
+      <input type="text" id="marcaModelo" />
     </div>
   </div>
 
@@ -238,8 +244,8 @@
 
     <div class="col">
       <label>LIGA</label>
-      <label class="checkbox-inline"><input type="checkbox" /> SIM</label>
-      <label class="checkbox-inline"><input type="checkbox" /> NÃO</label>
+      <label class="checkbox-inline"><input type="checkbox" id="ligaSim" /> SIM</label>
+      <label class="checkbox-inline"><input type="checkbox" id="ligaNao" /> NÃO</label>
     </div>
 
     <div class="col">
@@ -252,21 +258,21 @@
   <div class="linha hidden" id="qualAcessorioLinha">
     <div class="col">
       <label>QUAL ACESSÓRIO</label>
-      <input type="text" />
+      <input type="text" id="qualAcessorio" />
     </div>
   </div>
 
   <div class="linha hidden" id="qualDefeitoLinha">
     <div class="col">
       <label>QUAL DEFEITO</label>
-      <input type="text" />
+      <input type="text" id="qualDefeito" />
     </div>
   </div>
 
   <div class="linha">
     <div class="col" style="flex: 100%;">
       <label>DEFEITO RELATADO PELO CLIENTE</label>
-      <textarea rows="4"></textarea>
+      <textarea rows="4" id="defeitoCliente"></textarea>
     </div>
   </div>
 
@@ -277,159 +283,249 @@
     </div>
     <div class="col">
       <label>SAÍDA EM</label>
-      <input type="text" placeholder="__/__/____" />
+      <input type="text" id="dataSaida" placeholder="__/__/____" />
     </div>
   </div>
 
   <div class="linha">
     <div class="col">
       <label>ASSINATURA DO CLIENTE</label>
-      <input type="text" />
+      <input type="text" id="assinaturaCliente" />
     </div>
     <div class="col">
       <label>ASSINATURA DO TÉCNICO</label>
-      <input type="text" />
+      <input type="text" id="assinaturaTecnico" />
     </div>
   </div>
 
   <div class="linha">
     <div class="col">
       <label>SENHA</label>
-      <input type="text" />
+      <input type="text" id="senha" />
     </div>
   </div>
 
   <hr />
 
-  <div class="linha termos-condicoes">
+  <div class="linha termos-condicoes" style="display:none;">
     <div class="col" style="flex: 100%;">
       <h3>Termos e Condições de Serviço</h3>
       <p>
-        <strong>Recebimento do Equipamento:</strong> O equipamento entregue será
-        avaliado, registrando estado físico, avarias e acessórios recebidos. Não
-        nos responsabilizamos por itens não declarados.
+        <strong>Recebimento do Equipamento:</strong> O equipamento entregue será avaliado, registrando estado físico, avarias e acessórios recebidos.
+        Não nos responsabilizamos por itens não declarados.
       </p>
       <p>
-        <strong>Diagnóstico e Orçamento:</strong> O diagnóstico será realizado em
-        até 3 dias úteis. O serviço só será iniciado após aprovação do orçamento
-        pelo cliente.
+        <strong>Diagnóstico e Orçamento:</strong> O diagnóstico será realizado em até 3 dias úteis. O serviço só será iniciado após aprovação do orçamento pelo cliente.
       </p>
       <p>
-        <strong>Garantia:</strong> Garantia de ______ dias para o serviço
-        realizado, limitada ao reparo efetuado. Não cobre mau uso, quedas,
-        líquidos ou intervenções de terceiros.
+        <strong>Garantia:</strong> Garantia de 90 dias para o serviço realizado, limitada ao reparo efetuado.
+        Não cobre mau uso, quedas, líquidos ou intervenções de terceiros.
       </p>
       <p>
-        <strong>Equipamentos Não Retirados:</strong> Após 30 dias da conclusão,
-        será cobrada taxa de armazenamento de R$ 1,00/dia. Após 90 dias, o
-        equipamento será considerado abandonado, conforme o Código Civil Art.
-        1.275, III.
+        <strong>Prazo e Retirada:</strong> O cliente deve retirar o equipamento em até 30 dias após a conclusão do serviço.
+        Após esse período, poderemos cobrar taxa de armazenamento.
       </p>
-      <p>
-        <strong>Perda de Dados:</strong> Não nos responsabilizamos por perda de
-        dados. Recomenda-se backup antes da entrega. Backup solicitado será
-        cobrado à parte.
-      </p>
-      <p>
-        <strong>Peças Substituídas:</strong> Garantia de 90 dias para peças
-        substituídas contra defeitos de fabricação. Peças originais mediante
-        solicitação e disponibilidade.
-      </p>
-      <p>Assinatura do Cliente: ____________________________________</p>
     </div>
   </div>
 
-  <button class="print-btn" onclick="window.print()">
-    Imprimir / Salvar como PDF
+  <button class="btn print-btn" onclick="window.print()">
+    <svg viewBox="0 0 24 24"><path d="M6 9H18V15H6zM6 5H18V7H6zM6 17H18V19H6z"/></svg>
+    IMPRIMIR ORDEM
   </button>
 
   <script>
+    // Função para gerar e preencher OS e data ao carregar
     function preencherDataEIncrementarOS() {
       const hoje = new Date();
-      const dia = String(hoje.getDate()).padStart(2, '0');
-      const mes = String(hoje.getMonth() + 1).padStart(2, '0');
-      const ano = hoje.getFullYear();
-      const dataFormatada = `${dia}/${mes}/${ano}`;
+      const dataFormatada = hoje.toLocaleDateString('pt-BR');
+
       document.getElementById('dataEntrada').textContent = dataFormatada;
 
-      const osAtual = obterNumeroOSAtual(hoje);
+      // Recuperar último número OS do localStorage ou inicializar
+      let osAtual = parseInt(localStorage.getItem('osAtual') || '0', 10);
+      osAtual++;
+      localStorage.setItem('osAtual', osAtual);
       document.getElementById('osNumber').textContent = osAtual;
 
-      salvarHistorico(osAtual, dataFormatada);
+      // Limpar formulário para nova OS
+      limparFormulario();
     }
 
-    function obterNumeroOSAtual(data) {
-      const chave = `os_${data.getFullYear()}_${data.getMonth() + 1}_${data.getDate()}`;
-      let numero = localStorage.getItem(chave);
-      if (!numero) {
-        numero = 1;
-      } else {
-        numero = parseInt(numero) + 1;
+    function limparFormulario() {
+      document.getElementById('nomeCliente').value = '';
+      document.getElementById('telefone').value = '';
+      document.getElementById('whatsapp').checked = false;
+      document.getElementById('tecnico').value = '';
+      document.getElementById('marcaModelo').value = '';
+      document.getElementById('acessorioSim').checked = false;
+      document.getElementById('acessorioNao').checked = false;
+      document.getElementById('ligaSim').checked = false;
+      document.getElementById('ligaNao').checked = false;
+      document.getElementById('defeitoSim').checked = false;
+      document.getElementById('defeitoNao').checked = false;
+      document.getElementById('qualAcessorio').value = '';
+      document.getElementById('qualDefeito').value = '';
+      document.getElementById('qualAcessorioLinha').style.display = 'none';
+      document.getElementById('qualDefeitoLinha').style.display = 'none';
+      document.getElementById('defeitoCliente').value = '';
+      document.getElementById('dataSaida').value = '';
+      document.getElementById('assinaturaCliente').value = '';
+      document.getElementById('assinaturaTecnico').value = '';
+      document.getElementById('senha').value = '';
+    }
+
+    // Mostrar campos qual acessório e qual defeito conforme checkbox
+    document.getElementById('acessorioSim').addEventListener('change', () => {
+      document.getElementById('qualAcessorioLinha').style.display = document.getElementById('acessorioSim').checked ? 'block' : 'none';
+      if (!document.getElementById('acessorioSim').checked) document.getElementById('qualAcessorio').value = '';
+      if (document.getElementById('acessorioSim').checked) document.getElementById('acessorioNao').checked = false;
+    });
+    document.getElementById('acessorioNao').addEventListener('change', () => {
+      if (document.getElementById('acessorioNao').checked) {
+        document.getElementById('acessorioSim').checked = false;
+        document.getElementById('qualAcessorioLinha').style.display = 'none';
+        document.getElementById('qualAcessorio').value = '';
       }
-      localStorage.setItem(chave, numero);
-      return `${data.getDate().toString().padStart(2, '0')}${(data.getMonth() + 1)
-        .toString()
-        .padStart(2, '0')}${data.getFullYear().toString().slice(2)}-${numero
-        .toString()
-        .padStart(3, '0')}`;
-    }
+    });
 
-    function salvarHistorico(numeroOS, data) {
-      let historico = JSON.parse(localStorage.getItem('historicoOS')) || [];
-      historico.push({ numeroOS, data });
-      // Filtra para últimos 90 dias (antes era 30)
-      historico = historico.filter((item) => {
-        const [dia, mes, ano] = item.data.split('/');
-        const dataItem = new Date(ano, mes - 1, dia);
-        const hoje = new Date();
-        const diffDias = (hoje - dataItem) / (1000 * 60 * 60 * 24);
-        return diffDias <= 90;
-      });
+    document.getElementById('defeitoSim').addEventListener('change', () => {
+      document.getElementById('qualDefeitoLinha').style.display = document.getElementById('defeitoSim').checked ? 'block' : 'none';
+      if (!document.getElementById('defeitoSim').checked) document.getElementById('qualDefeito').value = '';
+      if (document.getElementById('defeitoSim').checked) document.getElementById('defeitoNao').checked = false;
+    });
+    document.getElementById('defeitoNao').addEventListener('change', () => {
+      if (document.getElementById('defeitoNao').checked) {
+        document.getElementById('defeitoSim').checked = false;
+        document.getElementById('qualDefeitoLinha').style.display = 'none';
+        document.getElementById('qualDefeito').value = '';
+      }
+    });
+
+    // Liga checkbox exclusividade similar
+    document.getElementById('ligaSim').addEventListener('change', () => {
+      if (document.getElementById('ligaSim').checked) {
+        document.getElementById('ligaNao').checked = false;
+      }
+    });
+    document.getElementById('ligaNao').addEventListener('change', () => {
+      if (document.getElementById('ligaNao').checked) {
+        document.getElementById('ligaSim').checked = false;
+      }
+    });
+
+    // Ao imprimir, salva a OS no histórico
+    window.onbeforeprint = function() {
+      salvarOSNoHistorico();
+    };
+
+    // Salvar a OS completa no histórico localStorage
+    function salvarOSNoHistorico() {
+      const osNumber = document.getElementById('osNumber').textContent;
+      const dataEntrada = document.getElementById('dataEntrada').textContent;
+
+      const osDados = {
+        osNumber,
+        dataEntrada,
+        nomeCliente: document.getElementById('nomeCliente').value,
+        telefone: document.getElementById('telefone').value,
+        whatsapp: document.getElementById('whatsapp').checked,
+        tecnico: document.getElementById('tecnico').value,
+        marcaModelo: document.getElementById('marcaModelo').value,
+        acessorioSim: document.getElementById('acessorioSim').checked,
+        acessorioNao: document.getElementById('acessorioNao').checked,
+        ligaSim: document.getElementById('ligaSim').checked,
+        ligaNao: document.getElementById('ligaNao').checked,
+        defeitoSim: document.getElementById('defeitoSim').checked,
+        defeitoNao: document.getElementById('defeitoNao').checked,
+        qualAcessorio: document.getElementById('qualAcessorio').value,
+        qualDefeito: document.getElementById('qualDefeito').value,
+        defeitoCliente: document.getElementById('defeitoCliente').value,
+        dataSaida: document.getElementById('dataSaida').value,
+        assinaturaCliente: document.getElementById('assinaturaCliente').value,
+        assinaturaTecnico: document.getElementById('assinaturaTecnico').value,
+        senha: document.getElementById('senha').value,
+        timestamp: new Date().getTime()
+      };
+
+      let historico = JSON.parse(localStorage.getItem('historicoOS') || '[]');
+
+      // Remove OS antiga do mesmo número para evitar duplicidade
+      historico = historico.filter(item => item.osNumber !== osNumber);
+
+      // Adiciona nova
+      historico.push(osDados);
+
+      // Mantém só 90 dias (timestamp)
+      const limite = new Date();
+      limite.setDate(limite.getDate() - 90);
+      historico = historico.filter(item => item.timestamp >= limite.getTime());
+
       localStorage.setItem('historicoOS', JSON.stringify(historico));
     }
 
+    // Abrir popup histórico
     function abrirHistorico() {
-      const historico = JSON.parse(localStorage.getItem('historicoOS')) || [];
-      const container = document.getElementById('listaHistorico');
-      container.innerHTML = '';
+      const popup = document.getElementById('historicoPopup');
+      const lista = document.getElementById('listaHistorico');
+      lista.innerHTML = '';
+
+      let historico = JSON.parse(localStorage.getItem('historicoOS') || '[]');
+
+      // Ordena decrescente pela OS (mais recente primeiro)
+      historico.sort((a, b) => b.osNumber - a.osNumber);
+
       if (historico.length === 0) {
-        container.innerHTML = '<p>Nenhum registro encontrado nos últimos 90 dias.</p>';
+        lista.innerHTML = '<p>Nenhuma OS encontrada no histórico.</p>';
       } else {
-        historico.reverse().forEach((item) => {
+        historico.forEach(item => {
           const div = document.createElement('div');
-          div.textContent = `OS ${item.numeroOS} - Data: ${item.data}`;
-          container.appendChild(div);
+          div.textContent = `OS Nº ${item.osNumber} - ${item.dataEntrada} - ${item.nomeCliente}`;
+          div.title = "Clique para carregar esta OS";
+          div.style.userSelect = "none";
+          div.addEventListener('click', () => {
+            carregarOS(item);
+            fecharHistorico();
+          });
+          lista.appendChild(div);
         });
       }
-      document.getElementById('historicoPopup').style.display = 'block';
+      popup.style.display = 'block';
     }
 
     function fecharHistorico() {
       document.getElementById('historicoPopup').style.display = 'none';
     }
 
-    // Mostrar/ocultar campos "Qual acessório" e "Qual defeito"
-    document.getElementById('acessorioSim').addEventListener('change', function () {
-      document.getElementById('qualAcessorioLinha').style.display = this.checked ? 'flex' : 'none';
-      if (this.checked) document.getElementById('acessorioNao').checked = false;
-    });
-    document.getElementById('acessorioNao').addEventListener('change', function () {
-      if (this.checked) {
-        document.getElementById('qualAcessorioLinha').style.display = 'none';
-        document.getElementById('acessorioSim').checked = false;
-      }
-    });
+    // Carregar OS no formulário para edição
+    function carregarOS(osDados) {
+      document.getElementById('osNumber').textContent = osDados.osNumber;
+      document.getElementById('dataEntrada').textContent = osDados.dataEntrada;
 
-    document.getElementById('defeitoSim').addEventListener('change', function () {
-      document.getElementById('qualDefeitoLinha').style.display = this.checked ? 'flex' : 'none';
-      if (this.checked) document.getElementById('defeitoNao').checked = false;
-    });
-    document.getElementById('defeitoNao').addEventListener('change', function () {
-      if (this.checked) {
-        document.getElementById('qualDefeitoLinha').style.display = 'none';
-        document.getElementById('defeitoSim').checked = false;
-      }
-    });
+      document.getElementById('nomeCliente').value = osDados.nomeCliente || '';
+      document.getElementById('telefone').value = osDados.telefone || '';
+      document.getElementById('whatsapp').checked = !!osDados.whatsapp;
+      document.getElementById('tecnico').value = osDados.tecnico || '';
+      document.getElementById('marcaModelo').value = osDados.marcaModelo || '';
+      document.getElementById('acessorioSim').checked = !!osDados.acessorioSim;
+      document.getElementById('acessorioNao').checked = !!osDados.acessorioNao;
+      document.getElementById('ligaSim').checked = !!osDados.ligaSim;
+      document.getElementById('ligaNao').checked = !!osDados.ligaNao;
+      document.getElementById('defeitoSim').checked = !!osDados.defeitoSim;
+      document.getElementById('defeitoNao').checked = !!osDados.defeitoNao;
+
+      document.getElementById('qualAcessorioLinha').style.display = osDados.acessorioSim ? 'block' : 'none';
+      document.getElementById('qualAcessorio').value = osDados.qualAcessorio || '';
+
+      document.getElementById('qualDefeitoLinha').style.display = osDados.defeitoSim ? 'block' : 'none';
+      document.getElementById('qualDefeito').value = osDados.qualDefeito || '';
+
+      document.getElementById('defeitoCliente').value = osDados.defeitoCliente || '';
+      document.getElementById('dataSaida').value = osDados.dataSaida || '';
+      document.getElementById('assinaturaCliente').value = osDados.assinaturaCliente || '';
+      document.getElementById('assinaturaTecnico').value = osDados.assinaturaTecnico || '';
+      document.getElementById('senha').value = osDados.senha || '';
+    }
   </script>
+
 </body>
 </html>
