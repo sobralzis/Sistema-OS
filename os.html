@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html lang="pt-BR">
 <head>
-  <meta charset="UTF-8">
+  <meta charset="UTF-8" />
   <title>Ordem de Serviço</title>
   <style>
     body {
@@ -10,6 +10,7 @@
       font-family: 'Times New Roman', Times, serif;
       padding: 20px;
     }
+
     .linha {
       display: flex;
       flex-wrap: wrap;
@@ -17,20 +18,26 @@
       margin-bottom: 8px;
       align-items: center;
     }
+
     .col {
       flex: 1;
       min-width: 150px;
     }
+
     .col-nome {
       flex: 2;
       min-width: 300px;
     }
+
     label {
       display: block;
       margin-bottom: 3px;
       font-weight: bold;
     }
-    input[type="text"], textarea, select {
+
+    input[type="text"],
+    textarea,
+    select {
       width: 100%;
       padding: 5px;
       background-color: #111;
@@ -38,37 +45,64 @@
       border: 1px solid #555;
       font-family: inherit;
     }
+
     textarea {
       resize: vertical;
       min-height: 50px;
     }
+
     .checkbox-inline {
       display: inline-flex;
       align-items: center;
       margin-right: 10px;
     }
-    .print-btn, .download-btn {
-      margin-top: 20px;
-      background-color: #333;
+
+    /* Botões com visual atualizado */
+    button,
+    .print-btn {
+      background-color: #1a73e8;
       color: #fff;
-      padding: 10px 20px;
       border: none;
+      padding: 10px 20px;
+      margin: 5px 10px 15px 0;
+      border-radius: 5px;
       cursor: pointer;
-      margin-right: 10px;
+      font-weight: 600;
+      font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+      transition: background-color 0.3s ease;
+      box-shadow: 0 2px 6px rgba(26, 115, 232, 0.6);
     }
+
+    button:hover,
+    .print-btn:hover {
+      background-color: #155ab6;
+      box-shadow: 0 4px 12px rgba(21, 90, 182, 0.8);
+    }
+
     hr {
       margin: 25px 0;
       border-color: #444;
     }
+
+    /* Termos ocultos na tela */
+    .termos-condicoes {
+      display: none;
+    }
+
     @media print {
       body {
         background: #fff;
         color: #000;
       }
-      .print-btn, .download-btn, button, #historicoBtn, #historicoPopup {
-        display: none;
+      button,
+      .print-btn,
+      #historicoBtn,
+      #historicoPopup {
+        display: none !important;
       }
-      input, textarea, select {
+      input,
+      textarea,
+      select {
         border: none;
         background: transparent;
         color: #000;
@@ -76,22 +110,28 @@
       .linha {
         page-break-inside: avoid;
       }
+      /* Termos aparecem na impressão */
       .termos-condicoes {
+        display: block !important;
         page-break-before: always;
       }
     }
+
     .titulo {
       text-align: center;
       margin-bottom: 20px;
     }
+
     .contato {
       text-align: center;
       font-size: 18px;
       margin-top: 5px;
     }
+
     .hidden {
       display: none;
     }
+
     #historicoPopup {
       display: none;
       position: fixed;
@@ -105,16 +145,28 @@
       max-height: 70%;
       overflow-y: auto;
       z-index: 1000;
+      width: 350px;
+      border-radius: 8px;
     }
+
     #historicoBtn {
       position: absolute;
       top: 20px;
       right: 20px;
-      background: #333;
+      background: #1a73e8;
       color: #fff;
       border: none;
-      padding: 10px;
+      padding: 10px 15px;
+      border-radius: 5px;
       cursor: pointer;
+      font-weight: 600;
+      box-shadow: 0 2px 6px rgba(26, 115, 232, 0.6);
+      transition: background-color 0.3s ease;
+    }
+
+    #historicoBtn:hover {
+      background-color: #155ab6;
+      box-shadow: 0 4px 12px rgba(21, 90, 182, 0.8);
     }
   </style>
 </head>
@@ -146,23 +198,23 @@
   <div class="linha">
     <div class="col col-nome">
       <label>NOME</label>
-      <input type="text" id="nomeCliente">
+      <input type="text" id="nomeCliente" />
     </div>
   </div>
 
   <div class="linha">
     <div class="col" style="flex: 0.5;">
       <label>TELEFONE</label>
-      <input type="text" id="telefoneCliente">
+      <input type="text" />
     </div>
     <div class="col" style="flex: 0.3;">
       <label class="checkbox-inline">
-        <input type="checkbox" id="whatsapp"> WHATSAPP
+        <input type="checkbox" /> WHATSAPP
       </label>
     </div>
     <div class="col">
       <label>TÉCNICO RESPONSÁVEL</label>
-      <select id="tecnicoResponsavel">
+      <select>
         <option value="">Selecione</option>
         <option>JOÃO PAULO AVELINO</option>
         <option>BRUNO SANTOS</option>
@@ -173,48 +225,48 @@
   <div class="linha">
     <div class="col">
       <label>MARCA / MODELO</label>
-      <input type="text" id="marcaModelo">
+      <input type="text" />
     </div>
   </div>
 
   <div class="linha">
     <div class="col">
       <label>ACESSÓRIO</label>
-      <label class="checkbox-inline"><input type="checkbox" id="acessorioSim"> SIM</label>
-      <label class="checkbox-inline"><input type="checkbox" id="acessorioNao"> NÃO</label>
+      <label class="checkbox-inline"><input type="checkbox" id="acessorioSim" /> SIM</label>
+      <label class="checkbox-inline"><input type="checkbox" id="acessorioNao" /> NÃO</label>
     </div>
 
     <div class="col">
       <label>LIGA</label>
-      <label class="checkbox-inline"><input type="checkbox" id="ligaSim"> SIM</label>
-      <label class="checkbox-inline"><input type="checkbox" id="ligaNao"> NÃO</label>
+      <label class="checkbox-inline"><input type="checkbox" /> SIM</label>
+      <label class="checkbox-inline"><input type="checkbox" /> NÃO</label>
     </div>
 
     <div class="col">
       <label>DEFEITO FÍSICO</label>
-      <label class="checkbox-inline"><input type="checkbox" id="defeitoSim"> SIM</label>
-      <label class="checkbox-inline"><input type="checkbox" id="defeitoNao"> NÃO</label>
+      <label class="checkbox-inline"><input type="checkbox" id="defeitoSim" /> SIM</label>
+      <label class="checkbox-inline"><input type="checkbox" id="defeitoNao" /> NÃO</label>
     </div>
   </div>
 
   <div class="linha hidden" id="qualAcessorioLinha">
     <div class="col">
       <label>QUAL ACESSÓRIO</label>
-      <input type="text" id="qualAcessorio">
+      <input type="text" />
     </div>
   </div>
 
   <div class="linha hidden" id="qualDefeitoLinha">
     <div class="col">
       <label>QUAL DEFEITO</label>
-      <input type="text" id="qualDefeito">
+      <input type="text" />
     </div>
   </div>
 
   <div class="linha">
     <div class="col" style="flex: 100%;">
       <label>DEFEITO RELATADO PELO CLIENTE</label>
-      <textarea rows="4" id="defeitoRelatado"></textarea>
+      <textarea rows="4"></textarea>
     </div>
   </div>
 
@@ -225,43 +277,159 @@
     </div>
     <div class="col">
       <label>SAÍDA EM</label>
-      <input type="text" placeholder="__/__/____" id="dataSaida">
+      <input type="text" placeholder="__/__/____" />
     </div>
   </div>
 
   <div class="linha">
     <div class="col">
       <label>ASSINATURA DO CLIENTE</label>
-      <input type="text" id="assinaturaCliente">
+      <input type="text" />
     </div>
     <div class="col">
       <label>ASSINATURA DO TÉCNICO</label>
-      <input type="text" id="assinaturaTecnico">
+      <input type="text" />
     </div>
   </div>
 
   <div class="linha">
     <div class="col">
       <label>SENHA</label>
-      <input type="text" id="senha">
+      <input type="text" />
     </div>
   </div>
 
-  <hr>
+  <hr />
 
   <div class="linha termos-condicoes">
     <div class="col" style="flex: 100%;">
       <h3>Termos e Condições de Serviço</h3>
-      <p><strong>Recebimento do Equipamento:</strong> O equipamento entregue será avaliado, registrando estado físico, avarias e acessórios recebidos. Não nos responsabilizamos por itens não declarados.</p>
-      <p><strong>Diagnóstico e Orçamento:</strong> O diagnóstico será realizado em até 3 dias úteis. O serviço só será iniciado após aprovação do orçamento pelo cliente.</p>
-      <p><strong>Garantia:</strong> Garantia de ______ dias para o serviço realizado, limitada ao reparo efetuado. Não cobre mau uso, quedas, líquidos ou intervenções de terceiros.</p>
-      <p><strong>Equipamentos Não Retirados:</strong> Após 30 dias da conclusão, será cobrada taxa de armazenamento de R$ 1,00/dia. Após 90 dias, o equipamento será considerado abandonado, conforme o Código Civil Art. 1.275, III.</p>
-      <p><strong>Perda de Dados:</strong> Não nos responsabilizamos por perda de dados. Recomenda-se backup antes da entrega. Backup solicitado será cobrado à parte.</p>
-      <p><strong>Peças Substituídas:</strong> Garantia de 90 dias para peças substituídas contra defeitos de fabricação. Peças originais mediante solicitação e disponibilidade.</p>
+      <p>
+        <strong>Recebimento do Equipamento:</strong> O equipamento entregue será
+        avaliado, registrando estado físico, avarias e acessórios recebidos. Não
+        nos responsabilizamos por itens não declarados.
+      </p>
+      <p>
+        <strong>Diagnóstico e Orçamento:</strong> O diagnóstico será realizado em
+        até 3 dias úteis. O serviço só será iniciado após aprovação do orçamento
+        pelo cliente.
+      </p>
+      <p>
+        <strong>Garantia:</strong> Garantia de ______ dias para o serviço
+        realizado, limitada ao reparo efetuado. Não cobre mau uso, quedas,
+        líquidos ou intervenções de terceiros.
+      </p>
+      <p>
+        <strong>Equipamentos Não Retirados:</strong> Após 30 dias da conclusão,
+        será cobrada taxa de armazenamento de R$ 1,00/dia. Após 90 dias, o
+        equipamento será considerado abandonado, conforme o Código Civil Art.
+        1.275, III.
+      </p>
+      <p>
+        <strong>Perda de Dados:</strong> Não nos responsabilizamos por perda de
+        dados. Recomenda-se backup antes da entrega. Backup solicitado será
+        cobrado à parte.
+      </p>
+      <p>
+        <strong>Peças Substituídas:</strong> Garantia de 90 dias para peças
+        substituídas contra defeitos de fabricação. Peças originais mediante
+        solicitação e disponibilidade.
+      </p>
       <p>Assinatura do Cliente: ____________________________________</p>
     </div>
   </div>
 
-  <button class="print-btn" onclick="window.print()">Imprimir / Salvar como PDF</
-::contentReference[oaicite:11]{index=11}
- 
+  <button class="print-btn" onclick="window.print()">
+    Imprimir / Salvar como PDF
+  </button>
+
+  <script>
+    function preencherDataEIncrementarOS() {
+      const hoje = new Date();
+      const dia = String(hoje.getDate()).padStart(2, '0');
+      const mes = String(hoje.getMonth() + 1).padStart(2, '0');
+      const ano = hoje.getFullYear();
+      const dataFormatada = `${dia}/${mes}/${ano}`;
+      document.getElementById('dataEntrada').textContent = dataFormatada;
+
+      const osAtual = obterNumeroOSAtual(hoje);
+      document.getElementById('osNumber').textContent = osAtual;
+
+      salvarHistorico(osAtual, dataFormatada);
+    }
+
+    function obterNumeroOSAtual(data) {
+      const chave = `os_${data.getFullYear()}_${data.getMonth() + 1}_${data.getDate()}`;
+      let numero = localStorage.getItem(chave);
+      if (!numero) {
+        numero = 1;
+      } else {
+        numero = parseInt(numero) + 1;
+      }
+      localStorage.setItem(chave, numero);
+      return `${data.getDate().toString().padStart(2, '0')}${(data.getMonth() + 1)
+        .toString()
+        .padStart(2, '0')}${data.getFullYear().toString().slice(2)}-${numero
+        .toString()
+        .padStart(3, '0')}`;
+    }
+
+    function salvarHistorico(numeroOS, data) {
+      let historico = JSON.parse(localStorage.getItem('historicoOS')) || [];
+      historico.push({ numeroOS, data });
+      // Filtra para últimos 90 dias (antes era 30)
+      historico = historico.filter((item) => {
+        const [dia, mes, ano] = item.data.split('/');
+        const dataItem = new Date(ano, mes - 1, dia);
+        const hoje = new Date();
+        const diffDias = (hoje - dataItem) / (1000 * 60 * 60 * 24);
+        return diffDias <= 90;
+      });
+      localStorage.setItem('historicoOS', JSON.stringify(historico));
+    }
+
+    function abrirHistorico() {
+      const historico = JSON.parse(localStorage.getItem('historicoOS')) || [];
+      const container = document.getElementById('listaHistorico');
+      container.innerHTML = '';
+      if (historico.length === 0) {
+        container.innerHTML = '<p>Nenhum registro encontrado nos últimos 90 dias.</p>';
+      } else {
+        historico.reverse().forEach((item) => {
+          const div = document.createElement('div');
+          div.textContent = `OS ${item.numeroOS} - Data: ${item.data}`;
+          container.appendChild(div);
+        });
+      }
+      document.getElementById('historicoPopup').style.display = 'block';
+    }
+
+    function fecharHistorico() {
+      document.getElementById('historicoPopup').style.display = 'none';
+    }
+
+    // Mostrar/ocultar campos "Qual acessório" e "Qual defeito"
+    document.getElementById('acessorioSim').addEventListener('change', function () {
+      document.getElementById('qualAcessorioLinha').style.display = this.checked ? 'flex' : 'none';
+      if (this.checked) document.getElementById('acessorioNao').checked = false;
+    });
+    document.getElementById('acessorioNao').addEventListener('change', function () {
+      if (this.checked) {
+        document.getElementById('qualAcessorioLinha').style.display = 'none';
+        document.getElementById('acessorioSim').checked = false;
+      }
+    });
+
+    document.getElementById('defeitoSim').addEventListener('change', function () {
+      document.getElementById('qualDefeitoLinha').style.display = this.checked ? 'flex' : 'none';
+      if (this.checked) document.getElementById('defeitoNao').checked = false;
+    });
+    document.getElementById('defeitoNao').addEventListener('change', function () {
+      if (this.checked) {
+        document.getElementById('qualDefeitoLinha').style.display = 'none';
+        document.getElementById('defeitoSim').checked = false;
+      }
+    });
+  </script>
+</body>
+</html>
