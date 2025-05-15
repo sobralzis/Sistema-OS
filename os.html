@@ -5,79 +5,117 @@
   <meta name="viewport" content="width=device-width, initial-scale=1" />
   <title>Ordem de Serviço</title>
   <style>
+    /* Tema escuro */
     body {
+      background-color: #121212;
+      color: #eee;
       font-family: Arial, sans-serif;
       margin: 1em;
-      background: #f9f9f9;
-      color: #222;
     }
+
     h1 {
-      color: #004080;
+      color: #fff;
     }
+
     label {
       display: block;
       margin-top: 0.5em;
+      color: #ccc;
     }
+
     input[type=text], input[type=date], textarea {
       width: 100%;
-      padding: 0.3em;
+      padding: 0.4em;
       margin-top: 0.2em;
       box-sizing: border-box;
+      border-radius: 5px;
+      border: 1px solid #444;
+      background-color: #222;
+      color: #eee;
     }
+
+    textarea {
+      resize: vertical;
+    }
+
+    /* Botões pretos arredondados com letras brancas */
     .btn {
-      margin-top: 1em;
-      background-color: #004080;
-      color: white;
+      background-color: #000;
+      color: #fff;
       border: none;
       padding: 0.6em 1.2em;
       font-size: 1em;
       cursor: pointer;
-      border-radius: 0.3em;
+      border-radius: 12px;
       display: inline-flex;
       align-items: center;
       gap: 0.4em;
-    }
-    .btn svg {
-      fill: white;
-      width: 1em;
-      height: 1em;
+      user-select: none;
+      transition: background-color 0.3s ease;
     }
     .btn:hover {
-      background-color: #0060c0;
+      background-color: #222;
     }
+
+    .btn svg {
+      fill: #fff;
+      width: 1.2em;
+      height: 1.2em;
+    }
+
+    /* Container do formulário */
+    .form-section {
+      background: #1e1e1e;
+      padding: 1em;
+      margin-bottom: 1em;
+      border-radius: 12px;
+      box-shadow: 0 0 10px #000;
+    }
+
+    /* Histórico popup */
     #historicoPopup {
       display: none;
       position: fixed;
       top: 10%;
       left: 50%;
       transform: translateX(-50%);
-      background: white;
-      border: 2px solid #004080;
+      background: #1e1e1e;
+      border: 2px solid #333;
       padding: 1em;
-      width: 300px;
-      max-height: 400px;
+      width: 350px;
+      max-height: 450px;
       overflow-y: auto;
-      box-shadow: 0 0 10px rgba(0,0,0,0.2);
-      z-index: 999;
+      box-shadow: 0 0 15px #000;
+      z-index: 9999;
+      border-radius: 12px;
     }
+
     #historicoPopup h2 {
       margin-top: 0;
-      color: #004080;
+      color: #fff;
+      border-bottom: 1px solid #333;
+      padding-bottom: 0.5em;
     }
+
     #listaHistorico div {
-      padding: 0.3em;
-      border-bottom: 1px solid #ccc;
+      padding: 0.5em;
+      border-bottom: 1px solid #333;
       cursor: pointer;
+      color: #ccc;
+      user-select: none;
+      font-size: 0.95em;
+      border-radius: 8px;
+      transition: background-color 0.2s ease;
     }
+
     #listaHistorico div:hover {
-      background-color: #eef6ff;
+      background-color: #333;
+      color: #fff;
     }
-    .form-section {
-      background: white;
-      padding: 1em;
-      margin-bottom: 1em;
-      border-radius: 0.3em;
-      box-shadow: 0 0 3px rgba(0,0,0,0.1);
+
+    /* Labels checkbox inline */
+    label > input[type=checkbox] {
+      margin-right: 0.4em;
     }
   </style>
 </head>
@@ -90,20 +128,18 @@
     <p><strong>Nº da OS:</strong> <span id="osNumber"></span></p>
 
     <label for="nomeCliente">Nome do Cliente</label>
-    <input type="text" id="nomeCliente" />
+    <input type="text" id="nomeCliente" autocomplete="off" />
 
     <label for="telefone">Telefone</label>
-    <input type="text" id="telefone" />
+    <input type="text" id="telefone" autocomplete="off" />
 
-    <label>
-      <input type="checkbox" id="whatsapp" /> WhatsApp
-    </label>
+    <label><input type="checkbox" id="whatsapp" /> WhatsApp</label>
 
     <label for="tecnico">Técnico Responsável</label>
-    <input type="text" id="tecnico" />
+    <input type="text" id="tecnico" autocomplete="off" />
 
     <label for="marcaModelo">Marca e Modelo do Equipamento</label>
-    <input type="text" id="marcaModelo" />
+    <input type="text" id="marcaModelo" autocomplete="off" />
 
     <label>Acessórios:</label>
     <label><input type="checkbox" id="acessorioSim" /> Sim</label>
@@ -132,13 +168,13 @@
     <input type="date" id="dataSaida" />
 
     <label for="assinaturaCliente">Assinatura do cliente</label>
-    <input type="text" id="assinaturaCliente" />
+    <input type="text" id="assinaturaCliente" autocomplete="off" />
 
     <label for="assinaturaTecnico">Assinatura do técnico</label>
-    <input type="text" id="assinaturaTecnico" />
+    <input type="text" id="assinaturaTecnico" autocomplete="off" />
 
     <label for="senha">Senha (se houver)</label>
-    <input type="text" id="senha" />
+    <input type="text" id="senha" autocomplete="off" />
   </div>
 
   <button class="btn" onclick="window.print()">
@@ -146,7 +182,7 @@
     IMPRIMIR ORDEM
   </button>
 
-  <button class="btn" style="margin-left:1em;" onclick="abrirHistorico()">
+  <button class="btn" style="margin-left: 1em;" onclick="abrirHistorico()">
     <svg viewBox="0 0 24 24"><path d="M3 6h18M3 12h18M3 18h18"/></svg>
     HISTÓRICO
   </button>
@@ -154,7 +190,7 @@
   <div id="historicoPopup">
     <h2>Histórico de OS</h2>
     <div id="listaHistorico"></div>
-    <button class="btn" style="margin-top:1em; background:#888;" onclick="fecharHistorico()">Fechar</button>
+    <button class="btn" style="margin-top: 1em; background-color: #444;" onclick="fecharHistorico()">Fechar</button>
   </div>
 
   <script>
@@ -194,11 +230,12 @@
       document.getElementById('senha').value = '';
     }
 
+    // Controle dos checkboxes para acessório e defeito (exclusivos)
     document.getElementById('acessorioSim').addEventListener('change', () => {
-      const acessorioSim = document.getElementById('acessorioSim').checked;
-      document.getElementById('qualAcessorioLinha').style.display = acessorioSim ? 'block' : 'none';
-      if (!acessorioSim) document.getElementById('qualAcessorio').value = '';
-      if (acessorioSim) document.getElementById('acessorioNao').checked = false;
+      const checked = document.getElementById('acessorioSim').checked;
+      document.getElementById('qualAcessorioLinha').style.display = checked ? 'block' : 'none';
+      if (!checked) document.getElementById('qualAcessorio').value = '';
+      if (checked) document.getElementById('acessorioNao').checked = false;
     });
     document.getElementById('acessorioNao').addEventListener('change', () => {
       if (document.getElementById('acessorioNao').checked) {
@@ -209,10 +246,10 @@
     });
 
     document.getElementById('defeitoSim').addEventListener('change', () => {
-      const defeitoSim = document.getElementById('defeitoSim').checked;
-      document.getElementById('qualDefeitoLinha').style.display = defeitoSim ? 'block' : 'none';
-      if (!defeitoSim) document.getElementById('qualDefeito').value = '';
-      if (defeitoSim) document.getElementById('defeitoNao').checked = false;
+      const checked = document.getElementById('defeitoSim').checked;
+      document.getElementById('qualDefeitoLinha').style.display = checked ? 'block' : 'none';
+      if (!checked) document.getElementById('qualDefeito').value = '';
+      if (checked) document.getElementById('defeitoNao').checked = false;
     });
     document.getElementById('defeitoNao').addEventListener('change', () => {
       if (document.getElementById('defeitoNao').checked) {
@@ -233,6 +270,7 @@
       }
     });
 
+    // Salvar no histórico ao imprimir
     window.onbeforeprint = function() {
       salvarOSNoHistorico();
     };
@@ -272,72 +310,70 @@
 
       historico.push(osDados);
 
-      const limite = new Date();
-      limite.setDate(limite.getDate() - 90);
-      historico = historico.filter(item => item.timestamp >= limite.getTime());
+      // Mantém todas as OSs salvas (sem limite)
 
       localStorage.setItem('historicoOS', JSON.stringify(historico));
     }
 
     function abrirHistorico() {
-      const popup = document.getElementById('historicoPopup');
+      const historico = JSON.parse(localStorage.getItem('historicoOS') || '[]');
+
       const lista = document.getElementById('listaHistorico');
       lista.innerHTML = '';
 
-      let historico = JSON.parse(localStorage.getItem('historicoOS') || '[]');
-
-      historico.sort((a, b) => b.osNumber - a.osNumber);
+      // Ordena do mais recente para o mais antigo
+      historico.sort((a, b) => b.timestamp - a.timestamp);
 
       if (historico.length === 0) {
-        lista.innerHTML = '<p>Nenhuma OS encontrada no histórico.</p>';
+        lista.innerHTML = '<p style="color:#888;">Nenhuma ordem de serviço salva.</p>';
       } else {
-        historico.forEach(item => {
+        historico.forEach(os => {
           const div = document.createElement('div');
-          // Exibe no formato DATA - Nº da OS - Nome do Cliente
-          div.textContent = `${item.dataEntrada} - Nº ${item.osNumber} - ${item.nomeCliente}`;
-          div.title = "Clique para carregar esta OS";
-          div.style.userSelect = "none";
-          div.addEventListener('click', () => {
-            carregarOS(item);
+          div.textContent = `${os.dataEntrada} - OS Nº ${os.osNumber} - ${os.nomeCliente || 'Cliente não informado'}`;
+          div.title = 'Clique para editar esta OS';
+          div.onclick = () => {
             fecharHistorico();
-          });
+            carregarOSNoFormulario(os);
+          };
           lista.appendChild(div);
         });
       }
-      popup.style.display = 'block';
+
+      document.getElementById('historicoPopup').style.display = 'block';
     }
 
     function fecharHistorico() {
       document.getElementById('historicoPopup').style.display = 'none';
     }
 
-    function carregarOS(osDados) {
-      document.getElementById('osNumber').textContent = osDados.osNumber;
-      document.getElementById('dataEntrada').textContent = osDados.dataEntrada;
+    function carregarOSNoFormulario(os) {
+      document.getElementById('dataEntrada').textContent = os.dataEntrada;
+      document.getElementById('osNumber').textContent = os.osNumber;
 
-      document.getElementById('nomeCliente').value = osDados.nomeCliente || '';
-      document.getElementById('telefone').value = osDados.telefone || '';
-      document.getElementById('whatsapp').checked = !!osDados.whatsapp;
-      document.getElementById('tecnico').value = osDados.tecnico || '';
-      document.getElementById('marcaModelo').value = osDados.marcaModelo || '';
-      document.getElementById('acessorioSim').checked = !!osDados.acessorioSim;
-      document.getElementById('acessorioNao').checked = !!osDados.acessorioNao;
-      document.getElementById('ligaSim').checked = !!osDados.ligaSim;
-      document.getElementById('ligaNao').checked = !!osDados.ligaNao;
-      document.getElementById('defeitoSim').checked = !!osDados.defeitoSim;
-      document.getElementById('defeitoNao').checked = !!osDados.defeitoNao;
+      document.getElementById('nomeCliente').value = os.nomeCliente;
+      document.getElementById('telefone').value = os.telefone;
+      document.getElementById('whatsapp').checked = os.whatsapp;
+      document.getElementById('tecnico').value = os.tecnico;
+      document.getElementById('marcaModelo').value = os.marcaModelo;
 
-      document.getElementById('qualAcessorioLinha').style.display = osDados.acessorioSim ? 'block' : 'none';
-      document.getElementById('qualAcessorio').value = osDados.qualAcessorio || '';
+      document.getElementById('acessorioSim').checked = os.acessorioSim;
+      document.getElementById('acessorioNao').checked = os.acessorioNao;
+      document.getElementById('qualAcessorioLinha').style.display = os.acessorioSim ? 'block' : 'none';
+      document.getElementById('qualAcessorio').value = os.qualAcessorio || '';
 
-      document.getElementById('qualDefeitoLinha').style.display = osDados.defeitoSim ? 'block' : 'none';
-      document.getElementById('qualDefeito').value = osDados.qualDefeito || '';
+      document.getElementById('ligaSim').checked = os.ligaSim;
+      document.getElementById('ligaNao').checked = os.ligaNao;
 
-      document.getElementById('defeitoCliente').value = osDados.defeitoCliente || '';
-      document.getElementById('dataSaida').value = osDados.dataSaida || '';
-      document.getElementById('assinaturaCliente').value = osDados.assinaturaCliente || '';
-      document.getElementById('assinaturaTecnico').value = osDados.assinaturaTecnico || '';
-      document.getElementById('senha').value = osDados.senha || '';
+      document.getElementById('defeitoSim').checked = os.defeitoSim;
+      document.getElementById('defeitoNao').checked = os.defeitoNao;
+      document.getElementById('qualDefeitoLinha').style.display = os.defeitoSim ? 'block' : 'none';
+      document.getElementById('qualDefeito').value = os.qualDefeito || '';
+
+      document.getElementById('defeitoCliente').value = os.defeitoCliente || '';
+      document.getElementById('dataSaida').value = os.dataSaida || '';
+      document.getElementById('assinaturaCliente').value = os.assinaturaCliente || '';
+      document.getElementById('assinaturaTecnico').value = os.assinaturaTecnico || '';
+      document.getElementById('senha').value = os.senha || '';
     }
   </script>
 
