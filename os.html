@@ -2,500 +2,156 @@
 <html lang="pt-BR">
 <head>
   <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>Ordem de Serviço</title>
   <style>
+    * {
+      box-sizing: border-box;
+    }
+
     body {
-      background-color: #000;
-      color: #fff;
-      font-family: 'Times New Roman', Times, serif;
-      padding: 20px;
+      font-family: Arial, sans-serif;
+      color: black;
+      margin: 0;
+      padding: 10px;
+    }
+
+    .pagina {
+      display: flex;
+      flex-direction: column;
+    }
+
+    .container {
+      border: 1px solid black;
+      padding: 10px;
+      margin-bottom: 10mm;
+      page-break-inside: avoid;
     }
 
     .linha {
       display: flex;
-      flex-wrap: wrap;
-      gap: 15px;
-      margin-bottom: 8px;
-      align-items: center;
+      margin-bottom: 5px;
+      font-size: 14px;
     }
 
-    .col {
-      flex: 1;
-      min-width: 150px;
-    }
-
-    .col-nome {
-      flex: 2;
-      min-width: 300px;
-    }
-
-    label {
-      display: block;
-      margin-bottom: 3px;
+    .linha label {
+      width: 180px;
       font-weight: bold;
+      color: black;
     }
 
-    input[type="text"], textarea, select {
-      width: 100%;
-      padding: 5px;
-      background-color: #111;
-      color: #fff;
-      border: 1px solid #555;
-      font-family: inherit;
-    }
-
-    textarea {
-      resize: vertical;
-      min-height: 50px;
-    }
-
-    .checkbox-inline {
-      display: inline-flex;
-      align-items: center;
-      margin-right: 10px;
-    }
-
-    .print-btn {
-      margin-top: 20px;
-      background-color: #333;
-      color: #fff;
-      padding: 10px 20px;
+    .linha input, .linha textarea, .linha select {
+      flex: 1;
+      padding: 3px;
       border: none;
-      cursor: pointer;
+      border-bottom: 1px solid black;
+      color: black;
+      font-size: 14px;
+      background: transparent;
     }
 
-    hr {
-      margin: 25px 0;
-      border-color: #444;
+    .linha textarea {
+      resize: vertical;
+    }
+
+    .termos {
+      margin-top: 10px;
+      font-size: 12px;
+      line-height: 1.4;
+      border-top: 1px solid black;
+      padding-top: 5px;
+    }
+
+    .assinatura {
+      margin-top: 15px;
+      display: flex;
+      justify-content: space-between;
+      font-size: 14px;
+    }
+
+    .assinatura div {
+      width: 48%;
+      text-align: center;
+      border-top: 1px solid black;
+      padding-top: 3px;
     }
 
     @media print {
       body {
-        background: #fff;
-        color: #000;
+        margin: 0;
+        padding: 0;
       }
-      .print-btn, button, #historicoBtn, #historicoPopup {
+
+      .no-print {
         display: none;
       }
-      input, textarea, select {
-        border: none;
-        background: transparent;
-        color: #000;
+
+      @page {
+        size: A4 portrait;
+        margin: 10mm;
       }
-      .linha {
-        page-break-inside: avoid;
-      }
-      .termos-condicoes {
-        page-break-before: always;
-      }
-    }
-
-    .titulo {
-      text-align: center;
-      margin-bottom: 20px;
-    }
-
-    .contato {
-      text-align: center;
-      font-size: 18px;
-      margin-top: 5px;
-    }
-
-    .hidden {
-      display: none;
-    }
-
-    #historicoPopup {
-      display: none;
-      position: fixed;
-      top: 10%;
-      left: 50%;
-      transform: translateX(-50%);
-      background: #222;
-      color: #fff;
-      padding: 20px;
-      border: 2px solid #444;
-      max-height: 70%;
-      overflow-y: auto;
-      z-index: 1000;
-      width: 400px;
-      border-radius: 8px;
-      box-shadow: 0 0 15px #444;
-    }
-
-    #historicoBtn {
-      position: absolute;
-      top: 20px;
-      right: 20px;
-      background: #111;  /* igual ao botão da imagem */
-      color: #fff;
-      border: 1px solid #555;
-      padding: 10px 18px;
-      cursor: pointer;
-      font-weight: 600;
-      border-radius: 5px;
-      transition: background-color 0.3s ease;
-      user-select: none;
-    }
-    #historicoBtn:hover {
-      background: #333;
-    }
-
-    #listaHistorico div {
-      padding: 8px;
-      border-bottom: 1px solid #444;
-      cursor: pointer;
-    }
-    #listaHistorico div:hover {
-      background-color: #444;
     }
   </style>
 </head>
-<body onload="inicializarOS()">
+<body>
 
-  <button onclick="window.location.href='index.html'">INICIO</button>
-  <button id="historicoBtn" onclick="abrirHistorico()">Histórico de OS</button>
+  <div class="pagina">
+    <!-- VIA 1 -->
+    <div class="container">
+      <h2 style="text-align:center;">ORDEM DE SERVIÇO</h2>
 
-  <div id="historicoPopup">
-    <h3>Histórico de OS (últimos 90 dias)</h3>
-    <div id="listaHistorico"></div>
-    <button onclick="fecharHistorico()">Fechar</button>
-  </div>
+      <div class="linha"><label>Cliente:</label><input type="text" /></div>
+      <div class="linha"><label>Telefone:</label><input type="text" /></div>
+      <div class="linha"><label>Data de Entrada:</label><input type="text" /></div>
+      <div class="linha"><label>Equipamento:</label><input type="text" /></div>
+      <div class="linha"><label>Marca/Modelo:</label><input type="text" /></div>
+      <div class="linha"><label>Defeito Informado:</label><textarea rows="2"></textarea></div>
+      <div class="linha"><label>Observações:</label><textarea rows="2"></textarea></div>
 
-  <div class="titulo">
-    <h1>CNT ASSISTÊNCIA TÉCNICA</h1>
-    <div class="contato">Contato: 84 99809-6865</div>
-  </div>
+      <div class="termos">
+        <strong>Termos de Responsabilidade:</strong><br>
+        1. O prazo para retirada do equipamento é de até 90 dias.<br>
+        2. Após este período, a empresa não se responsabiliza pelo equipamento.<br>
+        3. A garantia cobre apenas o serviço realizado e não cobre mau uso ou outros defeitos.<br>
+        4. O cliente está ciente de que a análise técnica pode gerar custos.<br>
+      </div>
 
-  <h2 style="text-align: center;">ORDEM DE SERVIÇO</h2>
+      <div class="assinatura">
+        <div>Assinatura do cliente</div>
+        <div>Assinatura na retirada</div>
+      </div>
+    </div>
 
-  <div class="linha">
-    <div class="col">
-      <label>OS Nº</label>
-      <span id="osNumber"></span>
+    <!-- VIA 2 -->
+    <div class="container">
+      <h2 style="text-align:center;">ORDEM DE SERVIÇO</h2>
+
+      <div class="linha"><label>Cliente:</label><input type="text" /></div>
+      <div class="linha"><label>Telefone:</label><input type="text" /></div>
+      <div class="linha"><label>Data de Entrada:</label><input type="text" /></div>
+      <div class="linha"><label>Equipamento:</label><input type="text" /></div>
+      <div class="linha"><label>Marca/Modelo:</label><input type="text" /></div>
+      <div class="linha"><label>Defeito Informado:</label><textarea rows="2"></textarea></div>
+      <div class="linha"><label>Observações:</label><textarea rows="2"></textarea></div>
+
+      <div class="termos">
+        <strong>Termos de Responsabilidade:</strong><br>
+        1. O prazo para retirada do equipamento é de até 90 dias.<br>
+        2. Após este período, a empresa não se responsabiliza pelo equipamento.<br>
+        3. A garantia cobre apenas o serviço realizado e não cobre mau uso ou outros defeitos.<br>
+        4. O cliente está ciente de que a análise técnica pode gerar custos.<br>
+      </div>
+
+      <div class="assinatura">
+        <div>Assinatura do cliente</div>
+        <div>Assinatura na retirada</div>
+      </div>
     </div>
   </div>
 
-  <div class="linha">
-    <div class="col col-nome">
-      <label>NOME</label>
-      <input type="text" id="nomeCliente" />
-    </div>
+  <div class="no-print" style="text-align:center; margin-top: 10px;">
+    <button onclick="window.print()">Imprimir OS</button>
   </div>
-
-  <div class="linha">
-    <div class="col" style="flex: 0.5;">
-      <label>TELEFONE</label>
-      <input type="text" id="telefoneCliente" />
-    </div>
-    <div class="col" style="flex: 0.3;">
-      <label class="checkbox-inline">
-        <input type="checkbox" id="whatsappCheck" /> WHATSAPP
-      </label>
-    </div>
-    <div class="col">
-      <label>TÉCNICO RESPONSÁVEL</label>
-      <select id="tecnicoResponsavel">
-        <option value="">Selecione</option>
-        <option>JOÃO PAULO AVELINO</option>
-        <option>BRUNO SANTOS</option>
-      </select>
-    </div>
-  </div>
-
-  <div class="linha">
-    <div class="col">
-      <label>MARCA / MODELO</label>
-      <input type="text" id="marcaModelo" />
-    </div>
-  </div>
-
-  <div class="linha">
-    <div class="col">
-      <label>ACESSÓRIO</label>
-      <label class="checkbox-inline"><input type="checkbox" id="acessorioSim" /> SIM</label>
-      <label class="checkbox-inline"><input type="checkbox" id="acessorioNao" /> NÃO</label>
-    </div>
-
-    <div class="col">
-      <label>LIGA</label>
-      <label class="checkbox-inline"><input type="checkbox" id="ligaSim" /> SIM</label>
-      <label class="checkbox-inline"><input type="checkbox" id="ligaNao" /> NÃO</label>
-    </div>
-
-    <div class="col">
-      <label>DEFEITO FÍSICO</label>
-      <label class="checkbox-inline"><input type="checkbox" id="defeitoSim" /> SIM</label>
-      <label class="checkbox-inline"><input type="checkbox" id="defeitoNao" /> NÃO</label>
-    </div>
-  </div>
-
-  <div class="linha hidden" id="qualAcessorioLinha">
-    <div class="col">
-      <label>QUAL ACESSÓRIO</label>
-      <input type="text" id="qualAcessorio" />
-    </div>
-  </div>
-
-  <div class="linha hidden" id="qualDefeitoLinha">
-    <div class="col">
-      <label>QUAL DEFEITO</label>
-      <input type="text" id="qualDefeito" />
-    </div>
-  </div>
-
-  <div class="linha">
-    <div class="col" style="flex: 100%;">
-      <label>DEFEITO RELATADO PELO CLIENTE</label>
-      <textarea rows="4" id="defeitoCliente"></textarea>
-    </div>
-  </div>
-
-  <div class="linha">
-    <div class="col">
-      <label>ENTRADA EM</label>
-      <span id="dataEntrada"></span>
-    </div>
-    <div class="col">
-      <label>SAÍDA EM</label>
-      <input type="text" id="dataSaida" placeholder="__/__/____" />
-    </div>
-  </div>
-
-  <div class="linha">
-    <div class="col">
-      <label>ASSINATURA DO CLIENTE</label>
-      <input type="text" id="assinaturaCliente" />
-    </div>
-    <div class="col">
-      <label>ASSINATURA DO TÉCNICO</label>
-      <input type="text" id="assinaturaTecnico" />
-    </div>
-  </div>
-
-  <div class="linha">
-    <div class="col">
-      <label>SENHA</label>
-      <input type="text" id="senha" />
-    </div>
-  </div>
-
-  <button class="print-btn" onclick="salvarOS()">Salvar OS</button>
-  <button class="print-btn" onclick="window.print()">Imprimir / Salvar como PDF</button>
-
-  <hr />
-
-  <div class="linha termos-condicoes">
-    <div class="col" style="flex: 100%;">
-      <h3>Termos e Condições de Serviço</h3>
-      <p><strong>Recebimento do Equipamento:</strong> O equipamento entregue será avaliado, registrando estado físico, avarias e acessórios recebidos. Não nos responsabilizamos por itens não declarados.</p>
-      <p><strong>Diagnóstico e Orçamento:</strong> O diagnóstico será realizado em até 3 dias úteis. O serviço só será iniciado após aprovação do orçamento pelo cliente.</p>
-      <p><strong>Garantia:</strong> Garantia de ______ dias para o serviço realizado, limitada ao reparo efetuado. Não cobre mau uso, quedas, líquidos ou intervenções de terceiros.</p>
-      <p><strong>Equipamentos Não Retirados:</strong> Após 90 dias da conclusão, será cobrada taxa de armazenamento de R$ 1,00/dia. Após 180 dias, o equipamento será considerado abandonado, conforme o Código Civil Art. 1.275, III.</p>
-      <p><strong>Perda de Dados:</strong> Não nos responsabilizamos por perda de dados. Recomenda-se backup antes da entrega. Backup solicitado será cobrado à parte.</p>
-      <p><strong>Peças Substituídas:</strong> Garantia de 90 dias para peças substituídas contra defeitos de fabricação. Peças originais mediante solicitação e disponibilidade.</p>
-      <p>Assinatura do Cliente: ____________________________________</p>
-    </div>
-  </div>
-
-  <script>
-    // Função para formatar data para dd/mm/yyyy
-    function formatarData(data) {
-      const dia = String(data.getDate()).padStart(2, '0');
-      const mes = String(data.getMonth() + 1).padStart(2, '0');
-      const ano = data.getFullYear();
-      return `${dia}/${mes}/${ano}`;
-    }
-
-    // Função para gerar número de OS com formato DDMMYY-### (incrementando diariamente)
-    function gerarNumeroOS() {
-      const hoje = new Date();
-      const chave = `os_${hoje.getFullYear()}_${hoje.getMonth() + 1}_${hoje.getDate()}`;
-      let numero = localStorage.getItem(chave);
-      if (!numero) {
-        numero = 1;
-      } else {
-        numero = parseInt(numero) + 1;
-      }
-      localStorage.setItem(chave, numero);
-      const dia = String(hoje.getDate()).padStart(2, '0');
-      const mes = String(hoje.getMonth() + 1).padStart(2, '0');
-      const ano = String(hoje.getFullYear()).slice(2);
-      return `${dia}${mes}${ano}-${String(numero).padStart(3, '0')}`;
-    }
-
-    // Função para preencher dados da OS ao iniciar ou ao abrir histórico
-    function preencherOS(os) {
-      document.getElementById('osNumber').textContent = os.numeroOS || gerarNumeroOS();
-      document.getElementById('nomeCliente').value = os.nomeCliente || '';
-      document.getElementById('telefoneCliente').value = os.telefoneCliente || '';
-      document.getElementById('whatsappCheck').checked = os.whatsappCheck || false;
-      document.getElementById('tecnicoResponsavel').value = os.tecnicoResponsavel || '';
-      document.getElementById('marcaModelo').value = os.marcaModelo || '';
-      document.getElementById('acessorioSim').checked = os.acessorioSim || false;
-      document.getElementById('acessorioNao').checked = os.acessorioNao || false;
-      document.getElementById('ligaSim').checked = os.ligaSim || false;
-      document.getElementById('ligaNao').checked = os.ligaNao || false;
-      document.getElementById('defeitoSim').checked = os.defeitoSim || false;
-      document.getElementById('defeitoNao').checked = os.defeitoNao || false;
-      document.getElementById('qualAcessorio').value = os.qualAcessorio || '';
-      document.getElementById('qualDefeito').value = os.qualDefeito || '';
-      document.getElementById('defeitoCliente').value = os.defeitoCliente || '';
-      document.getElementById('dataEntrada').textContent = os.dataEntrada || formatarData(new Date());
-      document.getElementById('dataSaida').value = os.dataSaida || '';
-      document.getElementById('assinaturaCliente').value = os.assinaturaCliente || '';
-      document.getElementById('assinaturaTecnico').value = os.assinaturaTecnico || '';
-      document.getElementById('senha').value = os.senha || '';
-
-      // Mostrar ou esconder campos adicionais
-      mostrarCamposAdicionais();
-    }
-
-    function mostrarCamposAdicionais() {
-      const acessorioSim = document.getElementById('acessorioSim').checked;
-      const defeitoSim = document.getElementById('defeitoSim').checked;
-
-      document.getElementById('qualAcessorioLinha').classList.toggle('hidden', !acessorioSim);
-      document.getElementById('qualDefeitoLinha').classList.toggle('hidden', !defeitoSim);
-    }
-
-    // Inicializar OS ao carregar a página
-    function inicializarOS() {
-      preencherOS({});
-      atualizarHistorico(); // Atualiza a lista ao iniciar
-    }
-
-    // Eventos para checkbox mostrar/esconder campos
-    document.getElementById('acessorioSim').addEventListener('change', () => {
-      if (document.getElementById('acessorioSim').checked) {
-        document.getElementById('acessorioNao').checked = false;
-      }
-      mostrarCamposAdicionais();
-    });
-    document.getElementById('acessorioNao').addEventListener('change', () => {
-      if (document.getElementById('acessorioNao').checked) {
-        document.getElementById('acessorioSim').checked = false;
-      }
-      mostrarCamposAdicionais();
-    });
-    document.getElementById('defeitoSim').addEventListener('change', () => {
-      if (document.getElementById('defeitoSim').checked) {
-        document.getElementById('defeitoNao').checked = false;
-      }
-      mostrarCamposAdicionais();
-    });
-    document.getElementById('defeitoNao').addEventListener('change', () => {
-      if (document.getElementById('defeitoNao').checked) {
-        document.getElementById('defeitoSim').checked = false;
-      }
-      mostrarCamposAdicionais();
-    });
-
-    document.getElementById('ligaSim').addEventListener('change', () => {
-      if (document.getElementById('ligaSim').checked) {
-        document.getElementById('ligaNao').checked = false;
-      }
-    });
-    document.getElementById('ligaNao').addEventListener('change', () => {
-      if (document.getElementById('ligaNao').checked) {
-        document.getElementById('ligaSim').checked = false;
-      }
-    });
-
-    // Função para salvar OS no localStorage
-    function salvarOS() {
-      const osAtual = {
-        numeroOS: document.getElementById('osNumber').textContent,
-        nomeCliente: document.getElementById('nomeCliente').value,
-        telefoneCliente: document.getElementById('telefoneCliente').value,
-        whatsappCheck: document.getElementById('whatsappCheck').checked,
-        tecnicoResponsavel: document.getElementById('tecnicoResponsavel').value,
-        marcaModelo: document.getElementById('marcaModelo').value,
-        acessorioSim: document.getElementById('acessorioSim').checked,
-        acessorioNao: document.getElementById('acessorioNao').checked,
-        ligaSim: document.getElementById('ligaSim').checked,
-        ligaNao: document.getElementById('ligaNao').checked,
-        defeitoSim: document.getElementById('defeitoSim').checked,
-        defeitoNao: document.getElementById('defeitoNao').checked,
-        qualAcessorio: document.getElementById('qualAcessorio').value,
-        qualDefeito: document.getElementById('qualDefeito').value,
-        defeitoCliente: document.getElementById('defeitoCliente').value,
-        dataEntrada: document.getElementById('dataEntrada').textContent,
-        dataSaida: document.getElementById('dataSaida').value,
-        assinaturaCliente: document.getElementById('assinaturaCliente').value,
-        assinaturaTecnico: document.getElementById('assinaturaTecnico').value,
-        senha: document.getElementById('senha').value,
-        timestamp: new Date().getTime()
-      };
-
-      let historicoOS = JSON.parse(localStorage.getItem('historicoOS') || '[]');
-
-      // Atualizar se já existe (mesmo numeroOS), ou adicionar novo
-      const idxExistente = historicoOS.findIndex(os => os.numeroOS === osAtual.numeroOS);
-      if (idxExistente > -1) {
-        historicoOS[idxExistente] = osAtual;
-      } else {
-        historicoOS.push(osAtual);
-      }
-
-      // Manter só OS dos últimos 90 dias
-      const agora = new Date().getTime();
-      historicoOS = historicoOS.filter(os => (agora - os.timestamp) <= (90 * 24 * 60 * 60 * 1000));
-
-      localStorage.setItem('historicoOS', JSON.stringify(historicoOS));
-      alert('Ordem de Serviço salva!');
-      atualizarHistorico();
-    }
-
-    // Função para abrir popup do histórico
-    function abrirHistorico() {
-      const popup = document.getElementById('historicoPopup');
-      popup.style.display = 'block';
-      atualizarHistorico();
-    }
-
-    function fecharHistorico() {
-      const popup = document.getElementById('historicoPopup');
-      popup.style.display = 'none';
-    }
-
-    // Atualiza lista do histórico no popup
-    function atualizarHistorico() {
-      const lista = document.getElementById('listaHistorico');
-      lista.innerHTML = '';
-
-      let historicoOS = JSON.parse(localStorage.getItem('historicoOS') || '[]');
-
-      // Ordenar do mais recente para o mais antigo
-      historicoOS.sort((a, b) => b.timestamp - a.timestamp);
-
-      // Só OS dos últimos 90 dias
-      const agora = new Date().getTime();
-      historicoOS = historicoOS.filter(os => (agora - os.timestamp) <= (90 * 24 * 60 * 60 * 1000));
-
-      if (historicoOS.length === 0) {
-        lista.innerHTML = '<p>Nenhuma OS recente.</p>';
-        return;
-      }
-
-      historicoOS.forEach(os => {
-        // Data formatada
-        const dt = new Date(os.timestamp);
-        const dataFormatada = formatarData(dt);
-        const texto = `${dataFormatada} - ${os.numeroOS} - ${os.nomeCliente}`;
-
-        const div = document.createElement('div');
-        div.textContent = texto;
-        div.title = "Clique para abrir essa OS";
-        div.addEventListener('click', () => {
-          preencherOS(os);
-          fecharHistorico();
-          alert(`OS ${os.numeroOS} carregada para edição.`);
-        });
-        lista.appendChild(div);
-      });
-    }
-  </script>
 
 </body>
 </html>
