@@ -1,157 +1,117 @@
-<!DOCTYPE html>
-<html lang="pt-BR">
-<head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Ordem de Serviço</title>
-  <style>
-    * {
-      box-sizing: border-box;
-    }
+<script>
+  function gerarNumeroOS() {
+    const hoje = new Date();
+    const dia = String(hoje.getDate()).padStart(2, '0');
+    const mes = String(hoje.getMonth() + 1).padStart(2, '0');
+    const ano = String(hoje.getFullYear()).slice(2);
+    const prefixo = `${dia}${mes}${ano}`;
+    let contador = parseInt(localStorage.getItem(`contador_${prefixo}`)) || 1;
+    const numeroOS = `${prefixo}-${String(contador).padStart(3, '0')}`;
+    localStorage.setItem(`contador_${prefixo}`, contador + 1);
+    return numeroOS;
+  }
 
-    body {
-      font-family: Arial, sans-serif;
-      color: black;
-      margin: 0;
-      padding: 10px;
-    }
+  function inicializarOS() {
+    const numeroOS = gerarNumeroOS();
+    document.getElementById('osNumber').innerText = numeroOS;
+    document.getElementById('dataEntrada').innerText = formatarData(new Date());
 
-    .pagina {
-      display: flex;
-      flex-direction: column;
-    }
+    document.getElementById('acessorioSim').addEventListener('change', () => {
+      document.getElementById('qualAcessorioLinha').classList.toggle('hidden', !acessorioSim.checked);
+    });
+    document.getElementById('acessorioNao').addEventListener('change', () => {
+      if (acessorioNao.checked) document.getElementById('qualAcessorioLinha').classList.add('hidden');
+    });
 
-    .container {
-      border: 1px solid black;
-      padding: 10px;
-      margin-bottom: 10mm;
-      page-break-inside: avoid;
-    }
+    document.getElementById('defeitoSim').addEventListener('change', () => {
+      document.getElementById('qualDefeitoLinha').classList.toggle('hidden', !defeitoSim.checked);
+    });
+    document.getElementById('defeitoNao').addEventListener('change', () => {
+      if (defeitoNao.checked) document.getElementById('qualDefeitoLinha').classList.add('hidden');
+    });
 
-    .linha {
-      display: flex;
-      margin-bottom: 5px;
-      font-size: 14px;
-    }
+    carregarHistorico();
+  }
 
-    .linha label {
-      width: 180px;
-      font-weight: bold;
-      color: black;
-    }
+  function salvarOS() {
+    const os = {
+      numero: document.getElementById('osNumber').innerText,
+      nome: document.getElementById('nomeCliente').value,
+      telefone: document.getElementById('telefoneCliente').value,
+      whatsapp: document.getElementById('whatsappCheck').checked,
+      tecnico: document.getElementById('tecnicoResponsavel').value,
+      marcaModelo: document.getElementById('marcaModelo').value,
+      acessorio: acessorioSim.checked ? 'SIM' : acessorioNao.checked ? 'NÃO' : '',
+      qualAcessorio: document.getElementById('qualAcessorio').value,
+      liga: ligaSim.checked ? 'SIM' : ligaNao.checked ? 'NÃO' : '',
+      defeitoFisico: defeitoSim.checked ? 'SIM' : defeitoNao.checked ? 'NÃO' : '',
+      qualDefeito: document.getElementById('qualDefeito').value,
+      defeitoCliente: document.getElementById('defeitoCliente').value,
+      dataEntrada: document.getElementById('dataEntrada').innerText,
+      dataSaida: document.getElementById('dataSaida').value,
+      assinaturaCliente: document.getElementById('assinaturaCliente').value,
+      assinaturaTecnico: document.getElementById('assinaturaTecnico').value,
+      senha: document.getElementById('senha').value,
+      dataRegistro: new Date().toISOString()
+    };
 
-    .linha input, .linha textarea, .linha select {
-      flex: 1;
-      padding: 3px;
-      border: none;
-      border-bottom: 1px solid black;
-      color: black;
-      font-size: 14px;
-      background: transparent;
-    }
+    let historico = JSON.parse(localStorage.getItem('historicoOS') || '[]');
+    historico.push(os);
+    localStorage.setItem('historicoOS', JSON.stringify(historico));
+    alert("OS salva com sucesso!");
+  }
 
-    .linha textarea {
-      resize: vertical;
-    }
+  function abrirHistorico() {
+    document.getElementById('historicoPopup').style.display = 'block';
+  }
 
-    .termos {
-      margin-top: 10px;
-      font-size: 12px;
-      line-height: 1.4;
-      border-top: 1px solid black;
-      padding-top: 5px;
-    }
+  function fecharHistorico() {
+    document.getElementById('historicoPopup').style.display = 'none';
+  }
 
-    .assinatura {
-      margin-top: 15px;
-      display: flex;
-      justify-content: space-between;
-      font-size: 14px;
-    }
+  function carregarHistorico() {
+    const lista = document.getElementById('listaHistorico');
+    lista.innerHTML = '';
 
-    .assinatura div {
-      width: 48%;
-      text-align: center;
-      border-top: 1px solid black;
-      padding-top: 3px;
-    }
+    const historico = JSON.parse(localStorage.getItem('historicoOS') || '[]');
+    const agora = new Date();
+    const noventaDias = 90 * 24 * 60 * 60 * 1000;
 
-    @media print {
-      body {
-        margin: 0;
-        padding: 0;
+    historico.reverse().forEach(os => {
+      const dataOS = new Date(os.dataRegistro);
+      if (agora - dataOS <= noventaDias) {
+        const item = document.createElement('div');
+        item.textContent = `${os.numero} - ${os.nome}`;
+        item.onclick = () => preencherOS(os);
+        lista.appendChild(item);
       }
+    });
+  }
 
-      .no-print {
-        display: none;
-      }
+  function preencherOS(os) {
+    document.getElementById('osNumber').innerText = os.numero;
+    document.getElementById('nomeCliente').value = os.nome;
+    document.getElementById('telefoneCliente').value = os.telefone;
+    document.getElementById('whatsappCheck').checked = os.whatsapp;
+    document.getElementById('tecnicoResponsavel').value = os.tecnico;
+    document.getElementById('marcaModelo').value = os.marcaModelo;
+    document.getElementById('acessorioSim').checked = os.acessorio === 'SIM';
+    document.getElementById('acessorioNao').checked = os.acessorio === 'NÃO';
+    document.getElementById('qualAcessorio').value = os.qualAcessorio;
+    document.getElementById('ligaSim').checked = os.liga === 'SIM';
+    document.getElementById('ligaNao').checked = os.liga === 'NÃO';
+    document.getElementById('defeitoSim').checked = os.defeitoFisico === 'SIM';
+    document.getElementById('defeitoNao').checked = os.defeitoFisico === 'NÃO';
+    document.getElementById('qualDefeito').value = os.qualDefeito;
+    document.getElementById('defeitoCliente').value = os.defeitoCliente;
+    document.getElementById('dataEntrada').innerText = os.dataEntrada;
+    document.getElementById('dataSaida').value = os.dataSaida;
+    document.getElementById('assinaturaCliente').value = os.assinaturaCliente;
+    document.getElementById('assinaturaTecnico').value = os.assinaturaTecnico;
+    document.getElementById('senha').value = os.senha;
 
-      @page {
-        size: A4 portrait;
-        margin: 10mm;
-      }
-    }
-  </style>
-</head>
-<body>
-
-  <div class="pagina">
-    <!-- VIA 1 -->
-    <div class="container">
-      <h2 style="text-align:center;">ORDEM DE SERVIÇO</h2>
-
-      <div class="linha"><label>Cliente:</label><input type="text" /></div>
-      <div class="linha"><label>Telefone:</label><input type="text" /></div>
-      <div class="linha"><label>Data de Entrada:</label><input type="text" /></div>
-      <div class="linha"><label>Equipamento:</label><input type="text" /></div>
-      <div class="linha"><label>Marca/Modelo:</label><input type="text" /></div>
-      <div class="linha"><label>Defeito Informado:</label><textarea rows="2"></textarea></div>
-      <div class="linha"><label>Observações:</label><textarea rows="2"></textarea></div>
-
-      <div class="termos">
-        <strong>Termos de Responsabilidade:</strong><br>
-        1. O prazo para retirada do equipamento é de até 90 dias.<br>
-        2. Após este período, a empresa não se responsabiliza pelo equipamento.<br>
-        3. A garantia cobre apenas o serviço realizado e não cobre mau uso ou outros defeitos.<br>
-        4. O cliente está ciente de que a análise técnica pode gerar custos.<br>
-      </div>
-
-      <div class="assinatura">
-        <div>Assinatura do cliente</div>
-        <div>Assinatura na retirada</div>
-      </div>
-    </div>
-
-    <!-- VIA 2 -->
-    <div class="container">
-      <h2 style="text-align:center;">ORDEM DE SERVIÇO</h2>
-
-      <div class="linha"><label>Cliente:</label><input type="text" /></div>
-      <div class="linha"><label>Telefone:</label><input type="text" /></div>
-      <div class="linha"><label>Data de Entrada:</label><input type="text" /></div>
-      <div class="linha"><label>Equipamento:</label><input type="text" /></div>
-      <div class="linha"><label>Marca/Modelo:</label><input type="text" /></div>
-      <div class="linha"><label>Defeito Informado:</label><textarea rows="2"></textarea></div>
-      <div class="linha"><label>Observações:</label><textarea rows="2"></textarea></div>
-
-      <div class="termos">
-        <strong>Termos de Responsabilidade:</strong><br>
-        1. O prazo para retirada do equipamento é de até 90 dias.<br>
-        2. Após este período, a empresa não se responsabiliza pelo equipamento.<br>
-        3. A garantia cobre apenas o serviço realizado e não cobre mau uso ou outros defeitos.<br>
-        4. O cliente está ciente de que a análise técnica pode gerar custos.<br>
-      </div>
-
-      <div class="assinatura">
-        <div>Assinatura do cliente</div>
-        <div>Assinatura na retirada</div>
-      </div>
-    </div>
-  </div>
-
-  <div class="no-print" style="text-align:center; margin-top: 10px;">
-    <button onclick="window.print()">Imprimir OS</button>
-  </div>
-
-</body>
-</html>
+    // Mostrar campos escondidos se necessário
+    if (os.acessorio === 'SIM') document.getElementById('qualAcessorioLinha').classList.remove('hidden');
+    if (os.defeitoFisico === 'SIM') document.getElementById('qualDefeitoLinha').classList.remove('hidden');
+  }
+</script>
