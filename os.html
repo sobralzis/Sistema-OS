@@ -1,117 +1,473 @@
-<script>
-  function gerarNumeroOS() {
-    const hoje = new Date();
-    const dia = String(hoje.getDate()).padStart(2, '0');
-    const mes = String(hoje.getMonth() + 1).padStart(2, '0');
-    const ano = String(hoje.getFullYear()).slice(2);
-    const prefixo = `${dia}${mes}${ano}`;
-    let contador = parseInt(localStorage.getItem(`contador_${prefixo}`)) || 1;
-    const numeroOS = `${prefixo}-${String(contador).padStart(3, '0')}`;
-    localStorage.setItem(`contador_${prefixo}`, contador + 1);
-    return numeroOS;
-  }
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8" />
+  <title>Ordem de Serviço</title>
+  <style>
+    body {
+      background-color: #000;
+      color: #fff;
+      font-family: 'Times New Roman', Times, serif;
+      padding: 20px;
+    }
 
-  function inicializarOS() {
-    const numeroOS = gerarNumeroOS();
-    document.getElementById('osNumber').innerText = numeroOS;
-    document.getElementById('dataEntrada').innerText = formatarData(new Date());
+    .linha {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 15px;
+      margin-bottom: 8px;
+      align-items: center;
+    }
 
-    document.getElementById('acessorioSim').addEventListener('change', () => {
-      document.getElementById('qualAcessorioLinha').classList.toggle('hidden', !acessorioSim.checked);
-    });
-    document.getElementById('acessorioNao').addEventListener('change', () => {
-      if (acessorioNao.checked) document.getElementById('qualAcessorioLinha').classList.add('hidden');
-    });
+    .col {
+      flex: 1;
+      min-width: 150px;
+    }
 
-    document.getElementById('defeitoSim').addEventListener('change', () => {
-      document.getElementById('qualDefeitoLinha').classList.toggle('hidden', !defeitoSim.checked);
-    });
-    document.getElementById('defeitoNao').addEventListener('change', () => {
-      if (defeitoNao.checked) document.getElementById('qualDefeitoLinha').classList.add('hidden');
-    });
+    .col-nome {
+      flex: 2;
+      min-width: 300px;
+    }
 
-    carregarHistorico();
-  }
+    label {
+      display: block;
+      margin-bottom: 3px;
+      font-weight: bold;
+    }
 
-  function salvarOS() {
-    const os = {
-      numero: document.getElementById('osNumber').innerText,
-      nome: document.getElementById('nomeCliente').value,
-      telefone: document.getElementById('telefoneCliente').value,
-      whatsapp: document.getElementById('whatsappCheck').checked,
-      tecnico: document.getElementById('tecnicoResponsavel').value,
-      marcaModelo: document.getElementById('marcaModelo').value,
-      acessorio: acessorioSim.checked ? 'SIM' : acessorioNao.checked ? 'NÃO' : '',
-      qualAcessorio: document.getElementById('qualAcessorio').value,
-      liga: ligaSim.checked ? 'SIM' : ligaNao.checked ? 'NÃO' : '',
-      defeitoFisico: defeitoSim.checked ? 'SIM' : defeitoNao.checked ? 'NÃO' : '',
-      qualDefeito: document.getElementById('qualDefeito').value,
-      defeitoCliente: document.getElementById('defeitoCliente').value,
-      dataEntrada: document.getElementById('dataEntrada').innerText,
-      dataSaida: document.getElementById('dataSaida').value,
-      assinaturaCliente: document.getElementById('assinaturaCliente').value,
-      assinaturaTecnico: document.getElementById('assinaturaTecnico').value,
-      senha: document.getElementById('senha').value,
-      dataRegistro: new Date().toISOString()
-    };
+    input[type="text"], textarea, select {
+      width: 100%;
+      padding: 5px;
+      background-color: #111;
+      color: #fff;
+      border: 1px solid #555;
+      font-family: inherit;
+    }
 
-    let historico = JSON.parse(localStorage.getItem('historicoOS') || '[]');
-    historico.push(os);
-    localStorage.setItem('historicoOS', JSON.stringify(historico));
-    alert("OS salva com sucesso!");
-  }
+    textarea {
+      resize: vertical;
+      min-height: 50px;
+    }
 
-  function abrirHistorico() {
-    document.getElementById('historicoPopup').style.display = 'block';
-  }
+    .checkbox-inline {
+      display: inline-flex;
+      align-items: center;
+      margin-right: 10px;
+    }
 
-  function fecharHistorico() {
-    document.getElementById('historicoPopup').style.display = 'none';
-  }
+    .print-btn {
+      margin-top: 20px;
+      background-color: #333;
+      color: #fff;
+      padding: 10px 20px;
+      border: none;
+      cursor: pointer;
+    }
 
-  function carregarHistorico() {
-    const lista = document.getElementById('listaHistorico');
-    lista.innerHTML = '';
+    hr {
+      margin: 25px 0;
+      border-color: #444;
+    }
 
-    const historico = JSON.parse(localStorage.getItem('historicoOS') || '[]');
-    const agora = new Date();
-    const noventaDias = 90 * 24 * 60 * 60 * 1000;
-
-    historico.reverse().forEach(os => {
-      const dataOS = new Date(os.dataRegistro);
-      if (agora - dataOS <= noventaDias) {
-        const item = document.createElement('div');
-        item.textContent = `${os.numero} - ${os.nome}`;
-        item.onclick = () => preencherOS(os);
-        lista.appendChild(item);
+    @media print {
+      body {
+        background: #fff;
+        color: #000;
       }
-    });
-  }
+      .print-btn, button, #historicoBtn, #historicoPopup {
+        display: none;
+      }
+      input, textarea, select {
+        border: none;
+        background: transparent;
+        color: #000;
+      }
+      .linha {
+        page-break-inside: avoid;
+      }
+      .termos-condicoes {
+        page-break-before: always;
+      }
+    }
 
-  function preencherOS(os) {
-    document.getElementById('osNumber').innerText = os.numero;
-    document.getElementById('nomeCliente').value = os.nome;
-    document.getElementById('telefoneCliente').value = os.telefone;
-    document.getElementById('whatsappCheck').checked = os.whatsapp;
-    document.getElementById('tecnicoResponsavel').value = os.tecnico;
-    document.getElementById('marcaModelo').value = os.marcaModelo;
-    document.getElementById('acessorioSim').checked = os.acessorio === 'SIM';
-    document.getElementById('acessorioNao').checked = os.acessorio === 'NÃO';
-    document.getElementById('qualAcessorio').value = os.qualAcessorio;
-    document.getElementById('ligaSim').checked = os.liga === 'SIM';
-    document.getElementById('ligaNao').checked = os.liga === 'NÃO';
-    document.getElementById('defeitoSim').checked = os.defeitoFisico === 'SIM';
-    document.getElementById('defeitoNao').checked = os.defeitoFisico === 'NÃO';
-    document.getElementById('qualDefeito').value = os.qualDefeito;
-    document.getElementById('defeitoCliente').value = os.defeitoCliente;
-    document.getElementById('dataEntrada').innerText = os.dataEntrada;
-    document.getElementById('dataSaida').value = os.dataSaida;
-    document.getElementById('assinaturaCliente').value = os.assinaturaCliente;
-    document.getElementById('assinaturaTecnico').value = os.assinaturaTecnico;
-    document.getElementById('senha').value = os.senha;
+    .titulo {
+      text-align: center;
+      margin-bottom: 20px;
+    }
 
-    // Mostrar campos escondidos se necessário
-    if (os.acessorio === 'SIM') document.getElementById('qualAcessorioLinha').classList.remove('hidden');
-    if (os.defeitoFisico === 'SIM') document.getElementById('qualDefeitoLinha').classList.remove('hidden');
-  }
-</script>
+    .contato {
+      text-align: center;
+      font-size: 18px;
+      margin-top: 5px;
+    }
+
+    .hidden {
+      display: none;
+    }
+
+    #historicoPopup {
+      display: none;
+      position: fixed;
+      top: 10%;
+      left: 50%;
+      transform: translateX(-50%);
+      background: #222;
+      color: #fff;
+      padding: 20px;
+      border: 2px solid #444;
+      max-height: 70%;
+      overflow-y: auto;
+      z-index: 1000;
+      width: 400px;
+      border-radius: 8px;
+      box-shadow: 0 0 15px #444;
+    }
+
+    #historicoBtn {
+      position: absolute;
+      top: 20px;
+      right: 20px;
+      background: #111;
+      color: #fff;
+      border: 1px solid #555;
+      padding: 10px 18px;
+      cursor: pointer;
+      font-weight: 600;
+      border-radius: 5px;
+      transition: background-color 0.3s ease;
+      user-select: none;
+    }
+    #historicoBtn:hover {
+      background: #333;
+    }
+
+    #listaHistorico div {
+      padding: 8px;
+      border-bottom: 1px solid #444;
+      cursor: pointer;
+    }
+    #listaHistorico div:hover {
+      background-color: #444;
+    }
+  </style>
+</head>
+<body onload="inicializarOS()">
+
+  <button onclick="window.location.href='index.html'">INICIO</button>
+  <button id="historicoBtn" onclick="abrirHistorico()">Histórico de OS</button>
+
+  <div id="historicoPopup">
+    <h3>Histórico de OS (últimos 90 dias)</h3>
+    <div id="listaHistorico"></div>
+    <button onclick="fecharHistorico()">Fechar</button>
+  </div>
+
+  <div class="titulo">
+    <h1>CNT ASSISTÊNCIA TÉCNICA</h1>
+    <div class="contato">Contato: 84 99809-6865</div>
+  </div>
+
+  <h2 style="text-align: center;">ORDEM DE SERVIÇO</h2>
+
+  <div class="linha">
+    <div class="col">
+      <label>OS Nº</label>
+      <span id="osNumber"></span>
+    </div>
+  </div>
+
+  <div class="linha">
+    <div class="col col-nome">
+      <label>NOME</label>
+      <input type="text" id="nomeCliente" />
+    </div>
+  </div>
+
+  <div class="linha">
+    <div class="col" style="flex: 0.5;">
+      <label>TELEFONE</label>
+      <input type="text" id="telefoneCliente" />
+    </div>
+    <div class="col" style="flex: 0.3;">
+      <label class="checkbox-inline">
+        <input type="checkbox" id="whatsappCheck" /> WHATSAPP
+      </label>
+    </div>
+    <div class="col">
+      <label>TÉCNICO RESPONSÁVEL</label>
+      <select id="tecnicoResponsavel">
+        <option value="">Selecione</option>
+        <option>JOÃO PAULO AVELINO</option>
+        <option>BRUNO SANTOS</option>
+      </select>
+    </div>
+  </div>
+
+  <div class="linha">
+    <div class="col">
+      <label>MARCA / MODELO</label>
+      <input type="text" id="marcaModelo" />
+    </div>
+  </div>
+
+  <div class="linha">
+    <div class="col">
+      <label>ACESSÓRIO</label>
+      <label class="checkbox-inline"><input type="checkbox" id="acessorioSim" /> SIM</label>
+      <label class="checkbox-inline"><input type="checkbox" id="acessorioNao" /> NÃO</label>
+    </div>
+
+    <div class="col">
+      <label>LIGA</label>
+      <label class="checkbox-inline"><input type="checkbox" id="ligaSim" /> SIM</label>
+      <label class="checkbox-inline"><input type="checkbox" id="ligaNao" /> NÃO</label>
+    </div>
+
+    <div class="col">
+      <label>DEFEITO FÍSICO</label>
+      <label class="checkbox-inline"><input type="checkbox" id="defeitoSim" /> SIM</label>
+      <label class="checkbox-inline"><input type="checkbox" id="defeitoNao" /> NÃO</label>
+    </div>
+  </div>
+
+  <div class="linha hidden" id="qualAcessorioLinha">
+    <div class="col">
+      <label>QUAL ACESSÓRIO</label>
+      <input type="text" id="qualAcessorio" />
+    </div>
+  </div>
+
+  <div class="linha hidden" id="qualDefeitoLinha">
+    <div class="col">
+      <label>QUAL DEFEITO</label>
+      <input type="text" id="qualDefeito" />
+    </div>
+  </div>
+
+  <div class="linha">
+    <div class="col" style="flex: 100%;">
+      <label>DEFEITO RELATADO PELO CLIENTE</label>
+      <textarea rows="4" id="defeitoCliente"></textarea>
+    </div>
+  </div>
+
+  <div class="linha">
+    <div class="col">
+      <label>ENTRADA EM</label>
+      <span id="dataEntrada"></span>
+    </div>
+    <div class="col">
+      <label>SAÍDA EM</label>
+      <input type="text" id="dataSaida" placeholder="__/__/____" />
+    </div>
+  </div>
+
+  <div class="linha">
+    <div class="col">
+      <label>ASSINATURA DO CLIENTE</label>
+      <input type="text" id="assinaturaCliente" />
+    </div>
+    <div class="col">
+      <label>ASSINATURA DO TÉCNICO</label>
+      <input type="text" id="assinaturaTecnico" />
+    </div>
+  </div>
+
+  <div class="linha">
+    <div class="col">
+      <label>SENHA</label>
+      <input type="text" id="senha" />
+    </div>
+  </div>
+
+  <button class="print-btn" onclick="salvarOS()">Salvar OS</button>
+  <button class="print-btn" onclick="window.print()">Imprimir / Salvar como PDF</button>
+
+  <hr />
+
+  <div class="linha termos-condicoes">
+    <div class="col" style="flex: 100%;">
+      <h3>Termos e Condições</h3>
+      <p>Estou ciente de que a assistência técnica não se responsabiliza por dados armazenados no aparelho e que o prazo estimado para reparo será informado pelo técnico responsável.</p>
+      <p>O cliente concorda que, após o prazo de 30 dias da data de entrada, caso não haja retirada do equipamento, a assistência poderá dispor do aparelho sem aviso prévio.</p>
+      <p>Todos os serviços e peças fornecidas estão sujeitos à garantia conforme política interna.</p>
+    </div>
+  </div>
+
+  <script>
+    // Inicialização da OS
+    function inicializarOS() {
+      // Gera número da OS automático (simples contador com base em localStorage)
+      let osAtual = localStorage.getItem('osAtual');
+      if (!osAtual) {
+        osAtual = 1;
+      } else {
+        osAtual = parseInt(osAtual) + 1;
+      }
+      localStorage.setItem('osAtual', osAtual);
+      document.getElementById('osNumber').textContent = osAtual;
+
+      // Define data atual para entrada
+      const hoje = new Date();
+      document.getElementById('dataEntrada').textContent = hoje.toLocaleDateString('pt-BR');
+
+      // Eventos para checkbox (para garantir seleção exclusiva)
+      configurarCheckboxes('acessorioSim', 'acessorioNao', 'qualAcessorioLinha');
+      configurarCheckboxes('ligaSim', 'ligaNao', null);
+      configurarCheckboxes('defeitoSim', 'defeitoNao', 'qualDefeitoLinha');
+    }
+
+    // Configura checkbox para seleção exclusiva e exibir campo extra
+    function configurarCheckboxes(idSim, idNao, idCampoExtra) {
+      const sim = document.getElementById(idSim);
+      const nao = document.getElementById(idNao);
+
+      function atualizar() {
+        if (sim.checked) {
+          nao.checked = false;
+          if (idCampoExtra) {
+            document.getElementById(idCampoExtra).classList.remove('hidden');
+          }
+        } else {
+          if (idCampoExtra) {
+            document.getElementById(idCampoExtra).classList.add('hidden');
+            // Limpa campo extra quando ocultado
+            document.getElementById(idCampoExtra).querySelector('input').value = '';
+          }
+        }
+
+        if (nao.checked) {
+          sim.checked = false;
+          if (idCampoExtra) {
+            document.getElementById(idCampoExtra).classList.add('hidden');
+            document.getElementById(idCampoExtra).querySelector('input').value = '';
+          }
+        }
+      }
+
+      sim.addEventListener('change', atualizar);
+      nao.addEventListener('change', atualizar);
+    }
+
+    // Salva OS no localStorage (lista de OS)
+    function salvarOS() {
+      const osNumber = document.getElementById('osNumber').textContent;
+      const nomeCliente = document.getElementById('nomeCliente').value.trim();
+      const telefoneCliente = document.getElementById('telefoneCliente').value.trim();
+      const whatsapp = document.getElementById('whatsappCheck').checked;
+      const tecnico = document.getElementById('tecnicoResponsavel').value;
+      const marcaModelo = document.getElementById('marcaModelo').value.trim();
+
+      const acessorioSim = document.getElementById('acessorioSim').checked;
+      const acessorioNao = document.getElementById('acessorioNao').checked;
+      const qualAcessorio = document.getElementById('qualAcessorio').value.trim();
+
+      const ligaSim = document.getElementById('ligaSim').checked;
+      const ligaNao = document.getElementById('ligaNao').checked;
+
+      const defeitoSim = document.getElementById('defeitoSim').checked;
+      const defeitoNao = document.getElementById('defeitoNao').checked;
+      const qualDefeito = document.getElementById('qualDefeito').value.trim();
+
+      const defeitoCliente = document.getElementById('defeitoCliente').value.trim();
+      const dataEntrada = document.getElementById('dataEntrada').textContent;
+      const dataSaida = document.getElementById('dataSaida').value.trim();
+      const assinaturaCliente = document.getElementById('assinaturaCliente').value.trim();
+      const assinaturaTecnico = document.getElementById('assinaturaTecnico').value.trim();
+      const senha = document.getElementById('senha').value.trim();
+
+      // Validações básicas
+      if (!nomeCliente) {
+        alert('Por favor, preencha o nome do cliente.');
+        return;
+      }
+      if (!telefoneCliente) {
+        alert('Por favor, preencha o telefone do cliente.');
+        return;
+      }
+      if (!tecnico) {
+        alert('Por favor, selecione o técnico responsável.');
+        return;
+      }
+      if (!marcaModelo) {
+        alert('Por favor, preencha a marca e modelo do equipamento.');
+        return;
+      }
+
+      // Monta objeto OS
+      const os = {
+        osNumber,
+        nomeCliente,
+        telefoneCliente,
+        whatsapp,
+        tecnico,
+        marcaModelo,
+        acessorio: acessorioSim ? 'Sim' : (acessorioNao ? 'Não' : ''),
+        qualAcessorio,
+        liga: ligaSim ? 'Sim' : (ligaNao ? 'Não' : ''),
+        defeitoFisico: defeitoSim ? 'Sim' : (defeitoNao ? 'Não' : ''),
+        qualDefeito,
+        defeitoCliente,
+        dataEntrada,
+        dataSaida,
+        assinaturaCliente,
+        assinaturaTecnico,
+        senha,
+        dataSalvamento: new Date().toISOString()
+      };
+
+      // Recupera lista existente
+      let listaOS = JSON.parse(localStorage.getItem('listaOS')) || [];
+
+      // Adiciona nova OS e salva
+      listaOS.push(os);
+      localStorage.setItem('listaOS', JSON.stringify(listaOS));
+
+      alert('Ordem de Serviço salva com sucesso!');
+
+      // Após salvar, pode limpar os campos ou atualizar número OS
+      location.reload();
+    }
+
+    // Histórico de OS
+    function abrirHistorico() {
+      const popup = document.getElementById('historicoPopup');
+      const listaDiv = document.getElementById('listaHistorico');
+      listaDiv.innerHTML = '';
+
+      let listaOS = JSON.parse(localStorage.getItem('listaOS')) || [];
+
+      // Filtra para últimos 90 dias
+      const hoje = new Date();
+      const noventaDiasAtras = new Date(hoje.getTime() - 90 * 24 * 60 * 60 * 1000);
+
+      const osRecentes = listaOS.filter(os => {
+        const dataSalv = new Date(os.dataSalvamento);
+        return dataSalv >= noventaDiasAtras;
+      });
+
+      if (osRecentes.length === 0) {
+        listaDiv.innerHTML = '<p>Nenhuma OS encontrada nos últimos 90 dias.</p>';
+      } else {
+        osRecentes.forEach(os => {
+          const div = document.createElement('div');
+          div.textContent = `OS Nº ${os.osNumber} - ${os.nomeCliente} - ${os.dataEntrada}`;
+          div.onclick = () => mostrarDetalhesOS(os);
+          listaDiv.appendChild(div);
+        });
+      }
+
+      popup.style.display = 'block';
+    }
+
+    function fecharHistorico() {
+      document.getElementById('historicoPopup').style.display = 'none';
+    }
+
+    function mostrarDetalhesOS(os) {
+      alert(`OS Nº ${os.osNumber}\nNome: ${os.nomeCliente}\nTelefone: ${os.telefoneCliente}\nTécnico: ${os.tecnico}\nMarca/Modelo: ${os.marcaModelo}\nAcessório: ${os.acessorio}${os.qualAcessorio ? '\nQual acessório: ' + os.qualAcessorio : ''}\nLiga: ${os.liga}\nDefeito físico: ${os.defeitoFisico}${os.qualDefeito ? '\nQual defeito: ' + os.qualDefeito : ''}\nDefeito relatado: ${os.defeitoCliente}\nEntrada: ${os.dataEntrada}\nSaída: ${os.dataSaida}\nSenha: ${os.senha}`);
+    }
+  </script>
+
+</body>
+</html>
