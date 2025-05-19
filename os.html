@@ -333,65 +333,73 @@
   </div>
 
   <script>
-    function inicializarOS() {
-      let numeroOS = localStorage.getItem('osCount') || 1;
-      document.getElementById('osNumber').textContent = numeroOS;
-      
-      const hoje = new Date();
-      document.getElementById('dataEntrada').textContent = hoje.toLocaleDateString('pt-BR');
+   function inicializarOS() {
+        let numeroOS = localStorage.getItem('osCount') || 1;
+        document.getElementById('osNumber').textContent = numeroOS;
+        
+        const hoje = new Date();
+        document.getElementById('dataEntrada').textContent = hoje.toLocaleDateString('pt-BR');
 
-      // Configurar radios
-      configurarRadios('acessorio', 'campoAcessorio');
-      configurarRadios('defeito', 'campoDefeito');
+        configurarRadios('acessorio', 'campoAcessorio');
+        configurarRadios('defeito', 'campoDefeito');
     }
 
     function configurarRadios(nomeGrupo, idCampo) {
-      document.querySelectorAll(`input[name="${nomeGrupo}"]`).forEach(radio => {
-        radio.addEventListener('change', () => {
-          const campo = document.getElementById(idCampo);
-          campo.classList.toggle('hidden', radio.value !== 'sim');
-          if(radio.value !== 'sim') campo.querySelector('input').value = '';
+        document.querySelectorAll(`input[name="${nomeGrupo}"]`).forEach(radio => {
+            radio.addEventListener('change', () => {
+                const campo = document.getElementById(idCampo);
+                campo.classList.toggle('hidden', radio.value !== 'sim');
+                if(radio.value !== 'sim') campo.querySelector('input').value = '';
+            });
         });
-      });
     }
 
     function salvarImprimir() {
-      // Coletar dados
-      const dados = {
-        os: document.getElementById('osNumber').textContent,
-        nome: document.getElementById('nomeCliente').value,
-        telefone: document.getElementById('telefone').value,
-        tecnico: document.getElementById('tecnico').value,
-        equipamento: document.getElementById('equipamento').value,
-        acessorio: document.querySelector('input[name="acessorio"]:checked')?.value || 'NÃO',
-        liga: document.querySelector('input[name="liga"]:checked')?.value || 'NÃO',
-        defeito: document.querySelector('input[name="defeito"]:checked')?.value || 'NÃO',
-        qualAcessorio: document.getElementById('qualAcessorio').value,
-        qualDefeito: document.getElementById('qualDefeito').value,
-        defeitoRelatado: document.getElementById('defeitoRelatado').value,
-        dataEntrada: document.getElementById('dataEntrada').textContent,
-        dataSaida: document.getElementById('dataSaida').value,
-        assEnt: document.getElementById('assinaturaEntrega').value,
-        assRet: document.getElementById('assinaturaRetirada').value
-      };
+        // Coletar dados
+        const dados = {
+            os: document.getElementById('osNumber').textContent,
+            nome: document.getElementById('nomeCliente').value,
+            telefone: document.getElementById('telefone').value,
+            tecnico: document.getElementById('tecnico').value,
+            equipamento: document.getElementById('equipamento').value,
+            acessorio: document.querySelector('input[name="acessorio"]:checked')?.value || 'NÃO',
+            liga: document.querySelector('input[name="liga"]:checked')?.value || 'NÃO',
+            defeito: document.querySelector('input[name="defeito"]:checked')?.value || 'NÃO',
+            qualAcessorio: document.getElementById('qualAcessorio').value,
+            qualDefeito: document.getElementById('qualDefeito').value,
+            defeitoRelatado: document.getElementById('defeitoRelatado').value,
+            dataEntrada: document.getElementById('dataEntrada').textContent,
+            dataSaida: document.getElementById('dataSaida').value,
+            assEnt: document.getElementById('assinaturaEntrega').value,
+            assRet: document.getElementById('assinaturaRetirada').value
+        };
 
-      // Preencher via do cliente
-      document.getElementById('osPrint').textContent = dados.os;
-      document.getElementById('clientePrint').textContent = dados.nome;
-      document.getElementById('telefonePrint').textContent = dados.telefone;
-      document.getElementById('equipamentoPrint').textContent = dados.equipamento;
-      document.getElementById('acessorioPrint').textContent = dados.acessorio;
-      document.getElementById('ligaPrint').textContent = dados.liga;
-      document.getElementById('defeitoPrint').textContent = dados.defeito;
-      document.getElementById('defeitoRelatadoPrint').textContent = dados.defeitoRelatado;
-      document.getElementById('dataEntradaPrint').textContent = dados.dataEntrada;
-      document.getElementById('dataSaidaPrint').textContent = dados.dataSaida;
-      document.getElementById('assEntPrint').textContent = dados.assEnt;
-      document.getElementById('assRetPrint').textContent = dados.assRet;
+        // Preencher via do cliente (CORREÇÃO CRÍTICA)
+        const viaCliente = document.querySelector('.via-cliente');
+        
+        viaCliente.querySelector('#osPrint').textContent = dados.os;
+        viaCliente.querySelector('#clientePrint').textContent = dados.nome;
+        viaCliente.querySelector('#telefonePrint').textContent = dados.telefone;
+        viaCliente.querySelector('#tecnicoPrint').textContent = dados.tecnico;
+        viaCliente.querySelector('#equipamentoPrint').textContent = dados.equipamento;
+        viaCliente.querySelector('#acessorioPrint').textContent = `${dados.acessorio}${dados.qualAcessorio ? ': ' + dados.qualAcessorio : ''}`;
+        viaCliente.querySelector('#ligaPrint').textContent = dados.liga;
+        viaCliente.querySelector('#defeitoPrint').textContent = `${dados.defeito}${dados.qualDefeito ? ': ' + dados.qualDefeito : ''}`;
+        viaCliente.querySelector('#defeitoRelatadoPrint').textContent = dados.defeitoRelatado;
+        viaCliente.querySelector('#dataEntradaPrint').textContent = dados.dataEntrada;
+        viaCliente.querySelector('#dataSaidaPrint').textContent = dados.dataSaida;
+        viaCliente.querySelector('#assEntPrint').textContent = dados.assEnt;
+        viaCliente.querySelector('#assRetPrint').textContent = dados.assRet;
 
-      // Salvar e imprimir
-      localStorage.setItem('osCount', parseInt(dados.os) + 1);
-      window.print();
+        // Copiar termos para a via do cliente
+        const termosOriginal = document.querySelector('.termos-condicoes').innerHTML;
+        viaCliente.querySelector('.termos-condicoes').innerHTML = termosOriginal;
+
+        // Forçar atualização e imprimir
+        setTimeout(() => {
+            localStorage.setItem('osCount', parseInt(dados.os) + 1);
+            window.print();
+        }, 100);
     }
   </script>
 
