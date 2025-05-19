@@ -5,7 +5,6 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>OS - CNT Assistência</title>
   <style>
-    /* ESTILOS PARA TELA */
     body {
       background-color: #000;
       color: #fff;
@@ -54,7 +53,6 @@
       margin-top: 20px;
     }
 
-    /* ESTILOS PARA IMPRESSÃO */
     @media print {
       body {
         background: #fff !important;
@@ -81,8 +79,13 @@
       }
 
       .via-cliente {
+        display: block !important;
         page-break-before: always;
         margin-top: 30px;
+      }
+
+      .hidden {
+        display: block !important;
       }
 
       .termos-condicoes {
@@ -115,7 +118,7 @@
 
   <h2 style="text-align: center;">ORDEM DE SERVIÇO</h2>
 
-  <!-- FORMULÁRIO COMPLETO -->
+  <!-- FORMULÁRIO PRINCIPAL -->
   <div class="linha">
     <div class="col">
       <label>OS Nº</label>
@@ -220,15 +223,38 @@
 
   <button class="print-btn" onclick="salvarImprimir()">Salvar e Imprimir</button>
 
-  <!-- TERMOS E CONDIÇÕES -->
+  <!-- TERMOS ORIGINAIS -->
   <div class="termos-condicoes">
     <h3>Termos e Condições</h3>
     <ol>
-      <li>Responsabilidade por itens não declarados</li>
-      <li>Prazo para diagnóstico: 3 dias úteis</li>
-      <li>Garantia de 90 dias para peças</li>
-      <li>Taxa de armazenamento após 30 dias</li>
+      <li>
+        <strong>Recebimento do Equipamento</strong>
+        <p>o O equipamento entregue será avaliado, registrando estado físico, avarias e acessórios recebidos. Não nos responsabilizamos por itens não declarados.</p>
+      </li>
+      <li>
+        <strong>Diagnóstico e Orçamento</strong>
+        <p>o O diagnóstico será realizado em até 3 dias úteis. O serviço só será iniciado após aprovação do orçamento pelo cliente.</p>
+      </li>
+      <li>
+        <strong>Garantia</strong>
+        <p>o Garantia de <span style="border-bottom: 1px solid; display: inline-block; width: 80px;"></span> dias para o serviço realizado, limitada ao reparo efetuado. Não cobre mau uso, quedas, líquidos ou intervenções de terceiros.</p>
+      </li>
+      <li>
+        <strong>Equipamentos Não Retirados</strong>
+        <p>o Após 30 dias da conclusão, será cobrada taxa de armazenamento de R$ 1,00/dia. Após 90 dias, o equipamento será considerado abandonado, conforme o Código Civil Artigo 1.275, inciso III.</p>
+      </li>
+      <li>
+        <strong>Perda de Dados</strong>
+        <p>o Não nos responsabilizamos por perda de dados. Recomenda-se backup antes da entrega. Backup solicitado será cobrado à parte.</p>
+      </li>
+      <li>
+        <strong>Peças Substituídas</strong>
+        <p>o Garantia de 90 dias para peças substituídas contra defeitos de fabricação. Peças originais mediante solicitação e disponibilidade.</p>
+      </li>
     </ol>
+    <p style="margin-top: 20px; border-top: 1px solid; padding-top: 10px;">
+      Assinatura do Cliente: <span style="border-bottom: 1px solid; width: 300px; display: inline-block;"></span>
+    </p>
   </div>
 
   <!-- VIA DO CLIENTE -->
@@ -238,7 +264,7 @@
       <div class="contato">Contato: 84 99809-6865</div>
     </div>
     
-    <h2 style="text-align: center;">VIA DO CLIENTE</h2>
+    <h2 style="text-align: center; margin: 15px 0;">VIA DO CLIENTE</h2>
 
     <div class="linha linha-impressao">
       <div class="col">
@@ -255,20 +281,66 @@
       </div>
     </div>
 
-    <!-- ... (TODOS OS CAMPOS REPETIDOS AQUI) ... -->
+    <div class="linha linha-impressao">
+      <div class="col">
+        <label>CLIENTE</label>
+        <span id="clientePrint"></span>
+      </div>
+      <div class="col">
+        <label>EQUIPAMENTO</label>
+        <span id="equipamentoPrint"></span>
+      </div>
+    </div>
+
+    <div class="linha linha-impressao">
+      <div class="col">
+        <label>ACESSÓRIO</label>
+        <span id="acessorioPrint"></span>
+      </div>
+      <div class="col">
+        <label>LIGA</label>
+        <span id="ligaPrint"></span>
+      </div>
+      <div class="col">
+        <label>DEFEITO FÍSICO</label>
+        <span id="defeitoPrint"></span>
+      </div>
+    </div>
+
+    <div class="linha">
+      <div class="col">
+        <label>DEFEITO RELATADO</label>
+        <span id="defeitoRelatadoPrint"></span>
+      </div>
+    </div>
+
+    <div class="linha linha-impressao">
+      <div class="col">
+        <label>ASS. ENTREGA</label>
+        <span id="assEntPrint"></span>
+      </div>
+      <div class="col">
+        <label>ASS. RETIRADA</label>
+        <span id="assRetPrint"></span>
+      </div>
+    </div>
+
+    <!-- TERMOS NA VIA DO CLIENTE -->
+    <div class="termos-condicoes">
+      <h3>Termos e Condições</h3>
+      <!-- Mesmo conteúdo dos termos aqui -->
+    </div>
   </div>
 
   <script>
     function inicializarOS() {
-      // Gerar número da OS
       let numeroOS = localStorage.getItem('osCount') || 1;
       document.getElementById('osNumber').textContent = numeroOS;
       
-      // Data atual
       const hoje = new Date();
       document.getElementById('dataEntrada').textContent = hoje.toLocaleDateString('pt-BR');
 
-      // Configurar eventos para os radios
+      // Configurar radios
       configurarRadios('acessorio', 'campoAcessorio');
       configurarRadios('defeito', 'campoDefeito');
     }
@@ -284,28 +356,38 @@
     }
 
     function salvarImprimir() {
-      // Coletar todos os dados
+      // Coletar dados
       const dados = {
         os: document.getElementById('osNumber').textContent,
         nome: document.getElementById('nomeCliente').value,
         telefone: document.getElementById('telefone').value,
+        tecnico: document.getElementById('tecnico').value,
         equipamento: document.getElementById('equipamento').value,
         acessorio: document.querySelector('input[name="acessorio"]:checked')?.value || 'NÃO',
         liga: document.querySelector('input[name="liga"]:checked')?.value || 'NÃO',
         defeito: document.querySelector('input[name="defeito"]:checked')?.value || 'NÃO',
         qualAcessorio: document.getElementById('qualAcessorio').value,
         qualDefeito: document.getElementById('qualDefeito').value,
+        defeitoRelatado: document.getElementById('defeitoRelatado').value,
         dataEntrada: document.getElementById('dataEntrada').textContent,
         dataSaida: document.getElementById('dataSaida').value,
-        assinaturaEntrega: document.getElementById('assinaturaEntrega').value,
-        assinaturaRetirada: document.getElementById('assinaturaRetirada').value
+        assEnt: document.getElementById('assinaturaEntrega').value,
+        assRet: document.getElementById('assinaturaRetirada').value
       };
 
       // Preencher via do cliente
       document.getElementById('osPrint').textContent = dados.os;
+      document.getElementById('clientePrint').textContent = dados.nome;
+      document.getElementById('telefonePrint').textContent = dados.telefone;
+      document.getElementById('equipamentoPrint').textContent = dados.equipamento;
+      document.getElementById('acessorioPrint').textContent = dados.acessorio;
+      document.getElementById('ligaPrint').textContent = dados.liga;
+      document.getElementById('defeitoPrint').textContent = dados.defeito;
+      document.getElementById('defeitoRelatadoPrint').textContent = dados.defeitoRelatado;
       document.getElementById('dataEntradaPrint').textContent = dados.dataEntrada;
       document.getElementById('dataSaidaPrint').textContent = dados.dataSaida;
-      // ... (preencher todos os campos restantes)
+      document.getElementById('assEntPrint').textContent = dados.assEnt;
+      document.getElementById('assRetPrint').textContent = dados.assRet;
 
       // Salvar e imprimir
       localStorage.setItem('osCount', parseInt(dados.os) + 1);
