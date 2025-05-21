@@ -390,7 +390,7 @@
       /* Garante que os campos "QUAL ACESSÓRIO" e "QUAL DEFEITO" sempre apareçam,
          mesmo se estivessem hidden na tela. */
       #campoAcessorio.hidden, #campoDefeito.hidden {
-          display: flex !important; /* Força a exibição na impressão */
+          display: flex !important;
           opacity: 1 !important;
           max-height: none !important;
       }
@@ -452,28 +452,29 @@
           color: #000 !important;
       }
 
-      /* Esconde os elementos de rádio na impressão, mostrando apenas o valor selecionado */
-      .checkbox-group label input[type="radio"] {
+      /* Para os radios, vamos usar o JS para popular o span de impressão */
+      /* Oculta os inputs de radio/checkbox reais e os labels para impressão */
+      .checkbox-group input[type="radio"],
+      .checkbox-group input[type="checkbox"],
+      .checkbox-group label:not(.print-value) { /* Ajuste: selecione apenas os labels que não são para valor impresso */
           display: none !important;
       }
-      .checkbox-group label {
-          gap: 0 !important;
-      }
-      .checkbox-group label::before { /* Para mostrar o valor do radio na impressão */
-          content: attr(value) !important; /* Não funciona com value de input, precisa de um span ou JS */
-      }
 
-      /* Para os radios, vamos usar o JS para popular o span de impressão */
-      .checkbox-group {
-          display: block !important; /* Para que os labels se quebrem */
+      /* Cria um espaço para o valor do rádio na impressão, se necessário,
+         mas a melhor abordagem é popular um span com o valor via JS. */
+      .checkbox-group.print-display-radio-value { /* Nova classe para controlar isso no JS */
+          display: block !important;
+      }
+      .checkbox-group.print-display-radio-value .print-value { /* Span que vai receber o valor via JS */
+          display: inline-block !important;
+          width: 100% !important; /* Ocupa a linha */
+          border-bottom: 1px dashed #999 !important;
+          padding-bottom: 2px !important;
+          font-weight: normal !important;
       }
 
       /* Esconde o label "TÉCNICO" e exibe o valor diretamente para "TÉCNICO" na via do cliente */
-      #tecnicoPrint + label { /* Seleciona o label que vem depois do #tecnicoPrint */
-        display: inline !important;
-        font-weight: bold;
-        margin-right: 5px;
-      }
+      /* Removi esta regra específica, pois a regra geral para .via-cliente label já deve funcionar */
     }
   </style>
 </head>
@@ -520,6 +521,7 @@
           <label for="tecnico">TÉCNICO</label>
           <select id="tecnico">
             <option value="">Selecione</option>
+            <option>Bruno Santos</option>
             <option>João Paulo</option>
           </select>
         </div>
@@ -539,21 +541,21 @@
       <div class="linha">
         <div class="col">
           <label>ACESSÓRIO</label>
-          <div class="checkbox-group">
+          <div class="checkbox-group" id="acessorioGroup">
             <label><input type="radio" name="acessorio" value="sim"> SIM</label>
             <label><input type="radio" name="acessorio" value="nao"> NÃO</label>
           </div>
         </div>
         <div class="col">
           <label>LIGA</label>
-          <div class="checkbox-group">
+          <div class="checkbox-group" id="ligaGroup">
             <label><input type="radio" name="liga" value="sim"> SIM</label>
             <label><input type="radio" name="liga" value="nao"> NÃO</label>
           </div>
         </div>
         <div class="col">
           <label>DEFEITO FÍSICO</label>
-          <div class="checkbox-group">
+          <div class="checkbox-group" id="defeitoGroup">
             <label><input type="radio" name="defeito" value="sim"> SIM</label>
             <label><input type="radio" name="defeito" value="nao"> NÃO</label>
           </div>
@@ -644,65 +646,65 @@
       <div class="linha linha-impressao">
         <div class="col">
           <label>OS Nº</label>
-          <span id="osPrint"></span>
+          <span id="osPrint" class="print-value"></span>
         </div>
         <div class="col">
-          <label>DATA ENTREGA</label>
-          <span id="dataEntradaPrint"></span>
+          <label>DATA ENTRADA</label>
+          <span id="dataEntradaPrint" class="print-value"></span>
         </div>
         <div class="col">
-          <label>DATA RETIRADA</label>
-          <span id="dataSaidaPrint"></span>
+          <label>DATA SAÍDA</label>
+          <span id="dataSaidaPrint" class="print-value"></span>
         </div>
       </div>
       <div class="linha linha-impressao">
         <div class="col">
           <label>CLIENTE</label>
-          <span id="clientePrint"></span>
+          <span id="clientePrint" class="print-value"></span>
         </div>
         <div class="col">
           <label>TELEFONE</label>
-          <span id="telefonePrint"></span>
+          <span id="telefonePrint" class="print-value"></span>
         </div>
         <div class="col">
           <label>TÉCNICO</label>
-          <span id="tecnicoPrint"></span>
+          <span id="tecnicoPrint" class="print-value"></span>
         </div>
       </div>
       <div class="linha linha-impressao">
         <div class="col">
           <label>EQUIPAMENTO</label>
-          <span id="equipamentoPrint"></span>
+          <span id="equipamentoPrint" class="print-value"></span>
         </div>
       </div>
       <div class="linha linha-impressao">
         <div class="col">
           <label>ACESSÓRIO</label>
-          <span id="acessorioPrint"></span>
+          <span id="acessorioPrint" class="print-value"></span>
         </div>
         <div class="col">
           <label>LIGA</label>
-          <span id="ligaPrint"></span>
+          <span id="ligaPrint" class="print-value"></span>
         </div>
         <div class="col">
           <label>DEFEITO FÍSICO</label>
-          <span id="defeitoPrint"></span>
+          <span id="defeitoPrint" class="print-value"></span>
         </div>
       </div>
       <div class="linha">
         <div class="col">
           <label>DEFEITO RELATADO</label>
-          <span id="defeitoRelatadoPrint"></span>
+          <span id="defeitoRelatadoPrint" class="print-value"></span>
         </div>
       </div>
       <div class="linha linha-impressao">
         <div class="col">
           <label>ASS. ENTREGA</label>
-          <span id="assEntPrint"></span>
+          <span id="assEntPrint" class="print-value"></span>
         </div>
         <div class="col">
           <label>ASS. RETIRADA</label>
-          <span id="assRetPrint"></span>
+          <span id="assRetPrint" class="print-value"></span>
         </div>
       </div>
       <div class="termos-condicoes print-termos-via-cliente"></div>
@@ -713,7 +715,7 @@
 
   <script>
     let currentStep = 1;
-    const totalSteps = 6;
+    const totalSteps = 6; // Confirme o número total de passos, incluindo termos
 
     function inicializarOS() {
       const osNumberElement = document.getElementById('osNumber');
@@ -725,27 +727,31 @@
           dataEntradaElement.textContent = hoje.toLocaleDateString('pt-BR');
       }
 
+      // Configurar os listeners de radio para mostrar/esconder campos
       configurarRadios('acessorio', 'campoAcessorio');
       configurarRadios('defeito', 'campoDefeito');
+      // Não precisamos configurar 'liga' com campo oculto, apenas validar a seleção
 
+      // Adicionar listeners para revalidar o passo ao digitar ou mudar seleção
       document.querySelectorAll(".form-step input, .form-step textarea, .form-step select").forEach(element => {
         element.addEventListener('input', validarPassoAtual);
         element.addEventListener('change', validarPassoAtual);
       });
 
+      // Listener para formatar telefone
       const telefoneInput = document.getElementById('telefone');
       if (telefoneInput) {
           telefoneInput.addEventListener('input', formatarTelefone);
       }
 
-      showStep(currentStep);
+      showStep(currentStep); // Exibe o primeiro passo ao carregar
       atualizarProgresso();
     }
 
-    function configurarRadios(nomeGrupo, idCampo) {
-      const campoContainer = document.getElementById(idCampo);
+    function configurarRadios(nomeGrupo, idCampoOculto) {
+      const campoContainer = document.getElementById(idCampoOculto);
       if (!campoContainer) {
-          console.warn(`Elemento com ID '${idCampo}' não encontrado. Verifique o HTML.`);
+          console.warn(`Elemento com ID '${idCampoOculto}' não encontrado. Verifique o HTML.`);
           return;
       }
 
@@ -757,13 +763,14 @@
             campoContainer.classList.add('hidden');
             const inputAssociado = campoContainer.querySelector('input[type="text"]');
             if (inputAssociado) {
-                inputAssociado.value = '';
+                inputAssociado.value = ''; // Limpa o valor se o campo for ocultado
             }
           }
-          validarPassoAtual();
+          validarPassoAtual(); // Revalida o passo após a mudança do rádio
         });
       });
 
+      // Garante o estado inicial correto ao carregar
       const checkedRadio = document.querySelector(`input[name="${nomeGrupo}"]:checked`);
       if (!checkedRadio || checkedRadio.value === 'nao') {
           campoContainer.classList.add('hidden');
@@ -817,7 +824,7 @@
           }
       }
 
-      validarPassoAtual();
+      validarPassoAtual(); // Valida o passo imediatamente ao exibir
       atualizarProgresso();
     }
 
@@ -827,25 +834,28 @@
 
       if (!currentFormStepElement) {
         console.error(`Passo do formulário com data-step="${currentStep}" não encontrado para validação.`);
-        isValid = true;
+        isValid = true; // Permite avançar se o passo não for encontrado (segurança)
       } else {
+        // Validação de inputs de texto, telefone, textarea, select
         currentFormStepElement.querySelectorAll("input[type='text'], input[type='tel'], textarea, select").forEach(input => {
-          const isHiddenByParent = input.closest('.hidden');
-
-          if (input.id === 'telefone') {
-              const cleanedValue = input.value.replace(/\D/g, '');
-              if (cleanedValue.length < 10 || cleanedValue.length > 11) {
-                isValid = false;
-              }
-          }
-          else if (!isHiddenByParent && input.value.trim() === '') {
-            isValid = false;
-          }
+            // Verifica se o campo está visível E não está em um contêiner 'hidden'
+            // `.closest('.hidden')` verifica se o próprio elemento ou um ancestral está oculto
+            if (input.offsetParent !== null && !input.closest('.hidden')) {
+                if (input.id === 'telefone') {
+                    const cleanedValue = input.value.replace(/\D/g, '');
+                    if (cleanedValue.length < 10 || cleanedValue.length > 11) {
+                        isValid = false;
+                    }
+                } else if (input.value.trim() === '') {
+                    isValid = false;
+                }
+            }
         });
 
+        // Validação de grupos de rádio
         currentFormStepElement.querySelectorAll('.checkbox-group').forEach(group => {
             const radioName = group.querySelector('input[type="radio"]')?.name;
-            if (radioName) {
+            if (radioName) { // Apenas se houver rádios no grupo
                 const checkedRadio = group.querySelector(`input[name="${radioName}"]:checked`);
                 if (!checkedRadio) {
                     isValid = false;
@@ -853,18 +863,19 @@
             }
         });
 
+        // Validações específicas para o passo 4
         if (currentStep === 4) {
-            const acessorioSim = document.querySelector('input[name="acessorio"][value="sim"]:checked');
-            const defeitoSim = document.querySelector('input[name="defeito"][value="sim"]:checked');
-
+            // Valida 'QUAL ACESSÓRIO' se 'SIM' for selecionado e o campo for visível
+            const acessorioSimChecked = document.querySelector('input[name="acessorio"][value="sim"]:checked');
             const qualAcessorioInput = document.getElementById('qualAcessorio');
-            const qualDefeitoInput = document.getElementById('qualDefeito');
-
-            if (acessorioSim && qualAcessorioInput && !qualAcessorioInput.closest('.hidden') && qualAcessorioInput.value.trim() === '') {
+            if (acessorioSimChecked && qualAcessorioInput && !qualAcessorioInput.closest('.hidden') && qualAcessorioInput.value.trim() === '') {
                 isValid = false;
             }
 
-            if (defeitoSim && qualDefeitoInput && !qualDefeitoInput.closest('.hidden') && qualDefeitoInput.value.trim() === '') {
+            // Valida 'QUAL DEFEITO' se 'SIM' for selecionado e o campo for visível
+            const defeitoSimChecked = document.querySelector('input[name="defeito"][value="sim"]:checked');
+            const qualDefeitoInput = document.getElementById('qualDefeito');
+            if (defeitoSimChecked && qualDefeitoInput && !qualDefeitoInput.closest('.hidden') && qualDefeitoInput.value.trim() === '') {
                 isValid = false;
             }
         }
@@ -872,7 +883,7 @@
 
       const mainActionButton = document.getElementById('mainActionButton');
       if (mainActionButton) {
-          mainActionButton.disabled = !isValid && currentStep < totalSteps;
+          mainActionButton.disabled = !isValid; // Desabilita se não for válido
       }
       return isValid;
     }
@@ -885,69 +896,89 @@
         }
     }
 
+    function nextStep() {
+      if (validarPassoAtual()) { // Somente avança se o passo atual for válido
+        currentStep++;
+        if (currentStep > totalSteps) {
+          currentStep = totalSteps; // Garante que não ultrapasse o último passo
+        }
+        showStep(currentStep);
+      } else {
+          // Opcional: Adicionar feedback visual ao usuário sobre o que está faltando
+          console.log("Por favor, preencha todos os campos obrigatórios do passo atual.");
+          // Você pode adicionar classes CSS para inputs vazios, mensagens de erro, etc.
+      }
+    }
+
     function salvarImprimir() {
+      // Coleta de dados dos campos do formulário
       const dados = {
         os: document.getElementById('osNumber')?.textContent || '',
         nome: document.getElementById('nomeCliente')?.value || '',
         telefone: document.getElementById('telefone')?.value || '',
         tecnico: document.getElementById('tecnico')?.value || '',
         equipamento: document.getElementById('equipamento')?.value || '',
-        acessorio: document.querySelector('input[name="acessorio"]:checked')?.value || 'NÃO',
-        liga: document.querySelector('input[name="liga"]:checked')?.value || 'NÃO',
-        defeito: document.querySelector('input[name="defeito"]:checked')?.value || 'NÃO',
+        acessorioRadio: document.querySelector('input[name="acessorio"]:checked')?.value || 'NÃO',
+        ligaRadio: document.querySelector('input[name="liga"]:checked')?.value || 'NÃO',
+        defeitoRadio: document.querySelector('input[name="defeito"]:checked')?.value || 'NÃO',
         qualAcessorio: document.getElementById('qualAcessorio')?.value || '',
         qualDefeito: document.getElementById('qualDefeito')?.value || '',
         defeitoRelatado: document.getElementById('defeitoRelatado')?.value || '',
         dataEntrada: document.getElementById('dataEntrada')?.textContent || '',
-        dataSaida: '',
+        dataSaida: '', // Estes serão preenchidos manualmente na impressão se necessário
         assEnt: '',
         assRet: ''
       };
 
       const viaCliente = document.querySelector('.via-cliente');
       if (viaCliente) {
+          // Popula os spans da via do cliente com os dados coletados
           viaCliente.querySelector('#osPrint').textContent = dados.os;
           viaCliente.querySelector('#clientePrint').textContent = dados.nome;
           viaCliente.querySelector('#telefonePrint').textContent = dados.telefone;
           viaCliente.querySelector('#tecnicoPrint').textContent = dados.tecnico;
-          
-          // Acessório: Inclui o "QUAL" se houver e o rádio for "sim"
-          const acessorioRadio = document.querySelector('input[name="acessorio"]:checked')?.value;
-          let acessorioTexto = acessorioRadio === 'sim' ? `SIM${dados.qualAcessorio ? ': ' + dados.qualAcessorio : ''}` : 'NÃO';
-          viaCliente.querySelector('#acessorioPrint').textContent = acessorioTexto;
-
-          viaCliente.querySelector('#ligaPrint').textContent = dados.liga;
-
-          // Defeito: Inclui o "QUAL" se houver e o rádio for "sim"
-          const defeitoRadio = document.querySelector('input[name="defeito"]:checked')?.value;
-          let defeitoTexto = defeitoRadio === 'sim' ? `SIM${dados.qualDefeito ? ': ' + dados.qualDefeito : ''}` : 'NÃO';
-          viaCliente.querySelector('#defeitoPrint').textContent = defeitoTexto;
-
           viaCliente.querySelector('#equipamentoPrint').textContent = dados.equipamento;
+
+          // Tratamento para Acessório (inclui o "QUAL" se SIM)
+          let acessorioPrintText = dados.acessorioRadio.toUpperCase();
+          if (dados.acessorioRadio === 'sim' && dados.qualAcessorio) {
+              acessorioPrintText += `: ${dados.qualAcessorio}`;
+          }
+          viaCliente.querySelector('#acessorioPrint').textContent = acessorioPrintText;
+
+          // Tratamento para Liga
+          viaCliente.querySelector('#ligaPrint').textContent = dados.ligaRadio.toUpperCase();
+
+          // Tratamento para Defeito Físico (inclui o "QUAL" se SIM)
+          let defeitoPrintText = dados.defeitoRadio.toUpperCase();
+          if (dados.defeitoRadio === 'sim' && dados.qualDefeito) {
+              defeitoPrintText += `: ${dados.qualDefeito}`;
+          }
+          viaCliente.querySelector('#defeitoPrint').textContent = defeitoPrintText;
+
           viaCliente.querySelector('#defeitoRelatadoPrint').textContent = dados.defeitoRelatado;
           viaCliente.querySelector('#dataEntradaPrint').textContent = dados.dataEntrada;
           viaCliente.querySelector('#dataSaidaPrint').textContent = dados.dataSaida;
           viaCliente.querySelector('#assEntPrint').textContent = dados.assEnt;
           viaCliente.querySelector('#assRetPrint').textContent = dados.assRet;
 
+          // Clona os termos e condições do formulário principal para a via do cliente
           const termosOriginal = document.querySelector('.termos-condicoes');
-          // Para evitar problemas com IDs duplicados, clonamos e limpamos os IDs para impressão
           const termosClonados = termosOriginal.cloneNode(true);
           // Opcional: Remover IDs dos elementos clonados para evitar duplicidade no DOM
           termosClonados.querySelectorAll('[id]').forEach(el => el.removeAttribute('id'));
 
-          // O span da garantia também precisa ser populado na via do cliente se tiver valor
-          const garantiaSpanOriginal = termosOriginal.querySelector('.garantia-dias-span');
+          // Popula o span da garantia na via do cliente (exemplo com valor fixo)
           const garantiaSpanClonado = termosClonados.querySelector('.garantia-dias-span');
-          if (garantiaSpanOriginal && garantiaSpanClonado) {
-              garantiaSpanClonado.textContent = garantiaSpanOriginal.textContent; // Se você preencher isso via JS
+          if (garantiaSpanClonado) {
+              garantiaSpanClonado.textContent = '90'; // Ou qualquer valor que você deseje para impressão
           }
-          // Ou se for um valor fixo para impressão, você pode definir aqui:
-          garantiaSpanClonado.textContent = '90'; // Exemplo: Se for sempre 90 dias na impressão
 
+          // Injeta os termos clonados na via do cliente
           viaCliente.querySelector('.print-termos-via-cliente').innerHTML = termosClonados.innerHTML;
       }
 
+      // Pequeno atraso para garantir que o DOM seja atualizado antes de imprimir
       setTimeout(() => {
         const currentOsNumber = document.getElementById('osNumber')?.textContent;
         if (currentOsNumber && !isNaN(parseInt(currentOsNumber))) {
