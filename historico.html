@@ -246,7 +246,7 @@
             }
         }
 
-        /* Estilos para a área de impressão (similar ao OS.html) */
+        /* Estilos para a área de impressão (similar ao os.html) */
         @media print {
             body {
                 background: #fff !important;
@@ -430,11 +430,14 @@
         ];
 
         function goHome() {
-            window.location.href = 'index.html'; // Assumindo que index.html é a tela inicial
+            // Assumindo que index.html é a tela inicial
+            // Se o nome do seu arquivo for "index.html" (minúsculo), mantenha assim.
+            window.location.href = 'index.html'; 
         }
 
         function goNewOS() {
-            window.location.href = 'os.html'; // Redireciona para a tela de nova OS
+            // CORRIGIDO: Redireciona para 'os.html' (tudo em minúsculas)
+            window.location.href = 'os.html'; 
         }
 
         function carregarHistorico() {
