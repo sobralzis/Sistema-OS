@@ -457,10 +457,13 @@
             const groupedOS = {}; // { Ano: { Mês: { Dia: [os1, os2] } } }
 
             osList.forEach(os => {
-                const dataEntrada = new Date(os.timestamp); // Usar o timestamp para ordenação e agrupamento
-                const year = dataEntrada.getFullYear();
-                const month = dataEntrada.getMonth(); // 0-11
-                const day = dataEntrada.getDate();
+                // Ao carregar do localStorage, a dataEntrada é uma string.
+                // Criamos um objeto Date para obter o timestamp para agrupar
+                // ou usamos o timestamp já salvo. Preferimos o timestamp já salvo.
+                const dataParaAgrupamento = new Date(os.timestamp);
+                const year = dataParaAgrupamento.getFullYear();
+                const month = dataParaAgrupamento.getMonth(); // 0-11
+                const day = dataParaAgrupamento.getDate();
 
                 if (!groupedOS[year]) groupedOS[year] = {};
                 if (!groupedOS[year][month]) groupedOS[year][month] = {};
@@ -615,7 +618,7 @@
                 </div>
                 <div class="linha">
                     <div class="col"><label>CLIENTE</label><span class="print-only-field">${osToPrint.nomeCliente}</span></div>
-                    <div class="col"><label>TELEFONE</label><span class="print-only-field">${osToToPrint.telefone}</span></div>
+                    <div class="col"><label>TELEFONE</label><span class="print-only-field">${osToPrint.telefone}</span></div>
                     <div class="col"><label>TÉCNICO</label><span class="print-only-field">${osToPrint.tecnico}</span></div>
                 </div>
                 <div class="linha">
