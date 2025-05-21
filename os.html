@@ -5,6 +5,7 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>OS - CNT Assistência</title>
   <style>
+    /* Estilos do seu arquivo original (download.htm) */
     :root {
       /* Variáveis de cores */
       --background-dark: #1a1a1a;
@@ -167,7 +168,7 @@
     .form-group select {
       width: calc(100% - 20px); /* Ajuste para padding */
       padding: 10px;
-      background-color: var(--card-bg);
+      background-color: var(--input-bg); /* Alterado de card-bg para input-bg para consistência */
       border: 1px solid var(--input-border);
       border-radius: 5px;
       color: var(--text-light);
@@ -250,7 +251,7 @@
       transform: translateY(-2px);
     }
 
-    /* Estilos de impressão */
+    /* Estilos de impressão - Mantidos para o funcionamento */
     .print-area {
         display: none; /* Oculto por padrão */
         background-color: #fff;
@@ -478,7 +479,6 @@
       background-color: var(--accent-hover);
     }
 
-
   </style>
 </head>
 <body>
@@ -600,6 +600,7 @@
       loadLastOSNumber();
       setTodayDate();
       configurarRadios('acessorio', 'campoAcessorio', 'qualAcessorio');
+      // Correção: Use 'defeitoFisico' para o radio group de defeito físico
       configurarRadios('defeitoFisico', 'campoDefeito', 'qualDefeito');
       atualizarProgresso(); // Atualiza a barra de progresso inicial
     });
@@ -685,37 +686,36 @@
         if (!osNumber) {
             console.error("Erro: Número da OS vazio ao tentar salvar.");
             showMessagePopup("Erro ao salvar: O número da OS está vazio.");
-            return; // Não salva se o número da OS estiver vazio
+            return false; // Retorna false se o número da OS estiver vazio
         }
 
         const dataEntrada = document.getElementById('dataEntrada').value;
         if (!dataEntrada) {
             console.error("Erro: Data de Entrada vazia ao tentar salvar.");
             showMessagePopup("Erro ao salvar: A Data de Entrada está vazia.");
-            return;
+            return false;
         }
 
         const nomeCliente = document.getElementById('nomeCliente').value;
         if (!nomeCliente) {
             console.error("Erro: Nome do Cliente vazio ao tentar salvar.");
             showMessagePopup("Erro ao salvar: O Nome do Cliente está vazio.");
-            return;
+            return false;
         }
 
         const equipamento = document.getElementById('equipamento').value;
         if (!equipamento) {
             console.error("Erro: Equipamento vazio ao tentar salvar.");
             showMessagePopup("Erro ao salvar: O Equipamento está vazio.");
-            return;
+            return false;
         }
 
         const defeitoRelatado = document.getElementById('defeitoRelatado').value;
         if (!defeitoRelatado) {
             console.error("Erro: Defeito Relatado vazio ao tentar salvar.");
             showMessagePopup("Erro ao salvar: O Defeito Relatado está vazio.");
-            return;
+            return false;
         }
-
 
         // Coleta todos os dados relevantes do formulário
         const osData = {
@@ -735,7 +735,6 @@
             qualDefeito: document.getElementById('qualDefeito').value,
             defeitoRelatado: defeitoRelatado,
             garantiaDias: document.getElementById('garantiaDias').value || '90'
-            // Adicione outros campos conforme necessário
         };
 
         // Pega o histórico atual ou um array vazio se não houver nada
@@ -873,7 +872,7 @@
             return;
         }
 
-        // Tenta salvar a OS. Se saveOS retornar false (por erro de validação interna ou OS Number vazio),
+        // Tenta salvar a OS. Se saveOS retornar false (por erro de validação interna ou campos vazios),
         // a impressão não deve continuar.
         const osSavedSuccessfully = saveOS();
         if (!osSavedSuccessfully) {
@@ -915,7 +914,8 @@
 
             // Garante que os campos condicionais da tela voltem ao estado correto
             configurarRadios('acessorio', 'campoAcessorio', 'qualAcessorio');
-            configurarRadios('defeitoFisico', 'campoDefeito', 'qualDefeito'); // Corrigido 'defeito' para 'defeitoFisico'
+            // Correção: Use 'defeitoFisico' para o radio group de defeito físico
+            configurarRadios('defeitoFisico', 'campoDefeito', 'qualDefeito');
             
             // Opcional: Reiniciar a OS para um novo preenchimento após salvar e imprimir
             // Isso pode ser útil para o fluxo de trabalho
