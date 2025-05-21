@@ -18,6 +18,7 @@
             --card-border: #3a3a3a;
             --scroll-thumb: #666;
             --scroll-track: #333;
+            --readonly-text: #aaaaaa; /* Cor para textos "cinzas" ou não editáveis */
         }
 
         body {
@@ -210,6 +211,13 @@
         }
         .os-card .actions .btn-edit:hover {
             background-color: #5a6268;
+        }
+
+        .os-card .actions .btn-delete {
+            background-color: #dc3545; /* Vermelho para deletar */
+        }
+        .os-card .actions .btn-delete:hover {
+            background-color: #c82333;
         }
 
         /* Responsive adjustments */
@@ -419,7 +427,7 @@
         <div class="no-data-message" id="noDataMessage" style="display: none;">
             Nenhuma Ordem de Serviço encontrada.
         </div>
-        </div>
+    </div>
 
     <div id="printContainer" style="display: none;"></div>
 
@@ -430,14 +438,13 @@
         ];
 
         function goHome() {
-            // Assumindo que index.html é a tela inicial
-            // Se o nome do seu arquivo for "index.html" (minúsculo), mantenha assim.
-            window.location.href = 'index.html'; 
+            window.location.href = 'index.html';
         }
 
         function goNewOS() {
-            // CORRIGIDO: Redireciona para 'os.html' (tudo em minúsculas)
-            window.location.href = 'os.html'; 
+            // Limpa o os_to_load para garantir que uma nova OS seja criada
+            localStorage.removeItem('os_to_load');
+            window.location.href = 'os.html';
         }
 
         function carregarHistorico() {
@@ -460,9 +467,7 @@
             const groupedOS = {}; // { Ano: { Mês: { Dia: [os1, os2] } } }
 
             osList.forEach(os => {
-                // Ao carregar do localStorage, a dataEntrada é uma string.
-                // Criamos um objeto Date para obter o timestamp para agrupar
-                // ou usamos o timestamp já salvo. Preferimos o timestamp já salvo.
+                // Use o timestamp salvo para agrupar corretamente
                 const dataParaAgrupamento = new Date(os.timestamp);
                 const year = dataParaAgrupamento.getFullYear();
                 const month = dataParaAgrupamento.getMonth(); // 0-11
@@ -519,7 +524,11 @@
             const card = document.createElement('div');
             card.className = 'os-card';
 
-            const statusClass = 'pendente'; // Placeholder, você pode adicionar lógica para definir o status real
+            // Você pode adicionar a lógica para determinar o status real aqui
+            const statusClass = 'pendente'; // Exemplo: 'pendente', 'concluido', 'orcamento', 'cancelado'
+            // Se você tiver um campo de status na sua OS, use-o:
+            // const statusClass = os.status ? os.status.toLowerCase() : 'pendente';
+
             card.innerHTML = `
                 <p><strong>OS Nº:</strong> ${os.osNumber}</p>
                 <p><strong>Cliente:</strong> ${os.nomeCliente}</p>
@@ -528,8 +537,10 @@
                 <p><strong>Técnico:</strong> ${os.tecnico}</p>
                 <div class="status ${statusClass}">Status: ${statusClass.charAt(0).toUpperCase() + statusClass.slice(1)}</div>
                 <div class="actions">
-                    <button class="action-button btn-print" onclick="reimprimirOS('${os.id}')">Imprimir</button>
-                    </div>
+                    <button class="action-button btn-print" onclick="reimprimirOS('${os.osNumber}')">Imprimir</button>
+                    <button class="action-button btn-edit" onclick="editOS('${os.osNumber}')">Editar</button>
+                    <button class="action-button btn-delete" onclick="deleteOS('${os.osNumber}')">Deletar</button>
+                </div>
             `;
             return card;
         }
@@ -537,6 +548,8 @@
         function limparHistorico() {
             if (confirm('Tem certeza que deseja limpar todo o histórico de Ordens de Serviço? Esta ação é irreversível!')) {
                 localStorage.removeItem('os_history');
+                // Opcional: Resetar o contador de OS se o histórico for limpo
+                localStorage.removeItem('last_os_number');
                 carregarHistorico(); // Recarrega para mostrar a mensagem de "nenhuma OS"
                 alert('Histórico limpo com sucesso!');
             }
@@ -557,9 +570,9 @@
         }
 
         // Função para simular a reimpressão de uma OS
-        function reimprimirOS(osId) {
+        function reimprimirOS(osNumberToPrint) {
             const osHistory = JSON.parse(localStorage.getItem('os_history') || '[]');
-            const osToPrint = osHistory.find(os => os.id === osId);
+            const osToPrint = osHistory.find(os => os.osNumber === osNumberToPrint);
 
             if (!osToPrint) {
                 alert('Ordem de Serviço não encontrada!');
@@ -572,33 +585,33 @@
             // Recria o "Termos e Condições" com os dados da OS específica
             const termosCondicoesHTML = `
                 <div class="termos-condicoes">
-                  <h3>Termos e Condições</h3>
-                  <ol>
-                    <li>
-                      <strong>Recebimento do Equipamento</strong>
-                      <p>o O equipamento entregue será avaliado, registrando estado físico, avarias e acessórios recebidos. Não nos responsabilizamos por itens não declarados.</p>
-                    </li>
-                    <li>
-                      <strong>Diagnóstico e Orçamento</strong>
-                      <p>o O diagnóstico será realizado em até 3 dias úteis. O serviço só será iniciado após aprovação do orçamento pelo cliente.</p>
-                    </li>
-                    <li>
-                      <strong>Garantia
-                      <p>o Garantia de <span class="garantia-dias-span">${osToPrint.garantiaDias || '90'}</span> dias para o serviço realizado, limitada ao reparo efetuado. Não cobre mau uso, quedas, líquidos ou intervenções de terceiros.</p>
-                    </li>
-                    <li>
-                      <strong>Equipamentos Não Retirados</strong>
-                      <p>o Após 30 dias da conclusão, será cobrada taxa de armazenamento de R$ 1,00/dia. Após 90 dias, o equipamento será considerado abandonado, conforme o Código Civil Artigo 1.275, inciso III.</p>
-                    </li>
-                    <li>
-                      <strong>Perda de Dados</strong>
-                      <p>o Não nos responsabilizamos por perda de dados. Recomenda-se backup antes da entrega. Backup solicitado será cobrado à parte.</p>
-                    </li>
-                    <li>
-                      <strong>Peças Substituídas</strong>
-                      <p>o Garantia de <span class="garantia-dias-span">${osToPrint.garantiaDias || '90'}</span> dias para peças substituídas contra defeitos de fabricação. Peças originais mediante solicitação e disponibilidade.</p>
-                    </li>
-                  </ol>
+                    <h3>Termos e Condições</h3>
+                    <ol>
+                        <li>
+                            <strong>Recebimento do Equipamento</strong>
+                            <p>o O equipamento entregue será avaliado, registrando estado físico, avarias e acessórios recebidos. Não nos responsabilizamos por itens não declarados.</p>
+                        </li>
+                        <li>
+                            <strong>Diagnóstico e Orçamento</strong>
+                            <p>o O diagnóstico será realizado em até 3 dias úteis. O serviço só será iniciado após aprovação do orçamento pelo cliente.</p>
+                        </li>
+                        <li>
+                            <strong>Garantia
+                            <p>o Garantia de <span class="garantia-dias-span">${osToPrint.garantiaDias || '90'}</span> dias para o serviço realizado, limitada ao reparo efetuado. Não cobre mau uso, quedas, líquidos ou intervenções de terceiros.</p>
+                        </li>
+                        <li>
+                            <strong>Equipamentos Não Retirados</strong>
+                            <p>o Após 30 dias da conclusão, será cobrada taxa de armazenamento de R$ 1,00/dia. Após 90 dias, o equipamento será considerado abandonado, conforme o Código Civil Artigo 1.275, inciso III.</p>
+                        </li>
+                        <li>
+                            <strong>Perda de Dados</strong>
+                            <p>o Não nos responsabilizamos por perda de dados. Recomenda-se backup antes da entrega. Backup solicitado será cobrado à parte.</p>
+                        </li>
+                        <li>
+                            <strong>Peças Substituídas</strong>
+                            <p>o Garantia de <span class="garantia-dias-span">${osToPrint.garantiaDias || '90'}</span> dias para peças substituídas contra defeitos de fabricação. Peças originais mediante solicitação e disponibilidade.</p>
+                        </li>
+                    </ol>
                 </div>
             `;
 
@@ -726,6 +739,24 @@
                 printContainer.style.display = 'none';
                 printContainer.innerHTML = ''; // Limpa a área de impressão
             }, 300);
+        }
+
+        // Função para editar uma OS
+        function editOS(osNumberToEdit) {
+            // Salva o número da OS no localStorage para que os.html saiba qual OS carregar
+            localStorage.setItem('os_to_load', osNumberToEdit);
+            window.location.href = 'os.html'; // Redireciona para a página do formulário
+        }
+
+        // Função para deletar uma OS
+        function deleteOS(osNumberToDelete) {
+            if (confirm(`Tem certeza que deseja deletar a OS Nº ${osNumberToDelete}? Esta ação é irreversível.`)) {
+                let history = JSON.parse(localStorage.getItem('os_history') || '[]');
+                history = history.filter(item => item.osNumber !== osNumberToDelete);
+                localStorage.setItem('os_history', JSON.stringify(history));
+                carregarHistorico(); // Recarrega a tabela após a exclusão
+                alert('OS deletada com sucesso!');
+            }
         }
     </script>
 </body>
