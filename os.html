@@ -223,10 +223,46 @@
       box-shadow: none;
     }
 
+    /* Estilo para o botão INICIO */
+    .inicio-action-button {
+      position: fixed;
+      top: 20px; /* Distância do topo */
+      left: 20px; /* Distância da esquerda */
+      background-color: var(--accent-color);
+      color: var(--text-light);
+      padding: 10px 20px; /* Um pouco menor para ficar mais discreto no topo */
+      border: none;
+      border-radius: 20px; /* Borda arredondada */
+      cursor: pointer;
+      font-size: 1em; /* Tamanho da fonte ajustado */
+      box-shadow: 0 4px 10px rgba(0, 0, 0, 0.3);
+      transition: background-color 0.3s ease, transform 0.3s ease, box-shadow 0.3s ease;
+      z-index: 1000;
+      font-weight: bold;
+      letter-spacing: 0.5px;
+    }
+
+    .inicio-action-button:hover {
+      background-color: var(--accent-hover);
+      transform: translateY(-2px);
+      box-shadow: 0 6px 15px rgba(0, 0, 0, 0.4);
+    }
+
+    .inicio-action-button:disabled {
+      background-color: var(--input-border);
+      color: var(--readonly-text);
+      cursor: not-allowed;
+      opacity: 0.7;
+      transform: none;
+      box-shadow: none;
+    }
+
     .titulo {
       text-align: center;
       margin-bottom: 20px;
       margin-top: 10px;
+      /* Removendo position: relative e width: fit-content; */
+      /* O .titulo não precisa ser posicionado relativo se os botões forem fixed */
     }
 
     .titulo img {
@@ -234,6 +270,32 @@
         height: auto;
         margin-bottom: 10px;
         filter: drop-shadow(0 0 8px rgba(0, 123, 255, 0.5));
+    }
+
+    /* Estilo para o botão HISTORICO - AGORA FIXED NA EXTREMIDADE DIREITA */
+    .historico-button {
+        position: fixed; /* Posiciona fixo na tela */
+        top: 20px; /* Distância do topo */
+        right: 20px; /* Distância da direita */
+        background-color: var(--accent-color);
+        color: var(--text-light);
+        padding: 10px 20px; /* Um pouco menor para ficar mais discreto */
+        border: none;
+        border-radius: 20px;
+        cursor: pointer;
+        font-size: 1em;
+        box-shadow: 0 4px 10px rgba(0, 0, 0, 0.3);
+        transition: background-color 0.3s ease, transform 0.3s ease, box-shadow 0.3s ease;
+        z-index: 1000;
+        font-weight: bold;
+        letter-spacing: 0.5px;
+        white-space: nowrap; /* Evita quebra de linha */
+    }
+
+    .historico-button:hover {
+      background-color: var(--accent-hover);
+      transform: translateY(-2px);
+      box-shadow: 0 6px 15px rgba(0, 0, 0, 0.4);
     }
 
     .conteudo h2 {
@@ -381,7 +443,7 @@
           */
       }
 
-      .barra-progresso, .fixed-action-button, button {
+      .barra-progresso, .fixed-action-button, button, .inicio-action-button, .historico-button { /* Incluído o novo botão */
         display: none !important;
       }
 
@@ -389,6 +451,7 @@
       .form-step { display: none !important; }
       .conteudo .linha:not(.initial-active) { display: none !important; } /* Oculta as linhas do formulário visível */
       .conteudo h2 { display: none !important; } /* Oculta o título do formulário visível */
+
 
       /* Oculta o input de garantia na impressão, pois o valor estará no span */
       #garantiaDiasInput {
@@ -530,9 +593,13 @@
     <div id="barra" class="progresso" style="height: 0%;"></div>
   </div>
 
+  <button id="homeButton" class="inicio-action-button" onclick="goHome()">INICIO</button>
+
+  <button id="historicoButton" class="historico-button" onclick="alert('Funcionalidade de Histórico a ser implementada!')">HISTÓRICO</button>
+
   <div class="conteudo">
     <div class="titulo">
-      <img src="img/logo.png" alt="Logo CNT Assistência Técnica">
+      <img src="logo.png" alt="Logo CNT Assistência Técnica">
       <div class="contato">Contato: 84 99809-6865</div>
     </div>
     <h2 style="text-align: center;">ORDEM DE SERVIÇO</h2>
@@ -653,7 +720,7 @@
               <p>o O diagnóstico será realizado em até 3 dias úteis. O serviço só será iniciado após aprovação do orçamento pelo cliente.</p>
             </li>
             <li>
-              <strong>Garantia</strong>
+              <strong>Garantia
               <p>o Garantia de <span class="garantia-dias-span" id="garantiaServico"></span> dias para o serviço realizado, limitada ao reparo efetuado. Não cobre mau uso, quedas, líquidos ou intervenções de terceiros.</p>
             </li>
             <li>
@@ -732,7 +799,7 @@
             telefoneInput.addEventListener('input', formatarTelefone);
         }
 
-        // NOVO: Linka o input de garantia com os spans nos termos e condições
+        // Linka o input de garantia com os spans nos termos e condições
         const garantiaInput = document.getElementById('garantiaDiasInput');
         const garantiaServicoSpan = document.getElementById('garantiaServico');
         const garantiaPecasSpan = document.getElementById('garantiaPecas');
@@ -830,6 +897,12 @@
       }
       validarPassoAtual();
       atualizarProgresso();
+
+      // Linha removida/comentada para manter o botão INICIO sempre habilitado
+      // const homeButton = document.getElementById('homeButton');
+      // if (homeButton) {
+      //   homeButton.disabled = (currentStep === 1);
+      // }
     }
 
     function validarPassoAtual() {
@@ -909,6 +982,11 @@
       }
     }
 
+    // Função para retornar à página inicial (index.html)
+    function goHome() {
+        window.location.href = 'index.html'; // Redireciona para a página index.html
+    }
+
     // Função única para criar o conteúdo de impressão para uma via
     function createPrintableContent(isClientCopy) {
         const printArea = document.createElement('div');
@@ -918,7 +996,7 @@
         const header = document.createElement('div');
         header.className = 'titulo';
         const img = document.createElement('img');
-        img.src = 'img/logo.png'; // Substitua pelo caminho correto da sua logo
+        img.src = 'logo.png'; // Substitua pelo caminho correto da sua logo
         img.alt = 'Logo CNT Assistência Técnica';
         const contato = document.createElement('div');
         contato.className = 'contato';
@@ -1118,6 +1196,11 @@
         // Esconde o formulário da tela e mostra a área de impressão
         document.querySelector('.conteudo').style.display = 'none';
         document.getElementById('mainActionButton').style.display = 'none';
+        // Esconde o botão INICIO ao imprimir
+        document.getElementById('homeButton').style.display = 'none';
+        // Esconde o botão HISTORICO ao imprimir
+        document.getElementById('historicoButton').style.display = 'none';
+
         printContainer.style.display = 'block';
 
         setTimeout(() => {
@@ -1125,6 +1208,11 @@
             // Após a impressão, reverte para o estado original
             document.querySelector('.conteudo').style.display = 'block';
             document.getElementById('mainActionButton').style.display = 'block';
+            // Mostra o botão INICIO novamente
+            document.getElementById('homeButton').style.display = 'block';
+            // Mostra o botão HISTORICO novamente
+            document.getElementById('historicoButton').style.display = 'block';
+
             printContainer.style.display = 'none';
             printContainer.innerHTML = ''; // Limpa a área de impressão novamente
 
