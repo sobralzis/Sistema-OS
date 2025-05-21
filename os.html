@@ -760,8 +760,7 @@
 
     function collectOSData() {
         const osData = {
-            id: document.getElementById('osNumber').textContent + '_' + new Date().getTime(), // Unique ID for each OS
-            osNumber: document.getElementById('osNumber').textContent,
+            osNumber: document.getElementById('osNumber').textContent, // Usamos osNumber como ID único para edição
             dataEntrada: document.getElementById('dataEntrada').textContent,
             dataSaida: document.getElementById('dataSaida').textContent,
             nomeCliente: document.getElementById('nomeCliente').value,
@@ -775,7 +774,7 @@
             qualDefeito: document.getElementById('qualDefeito').value,
             defeitoRelatado: document.getElementById('defeitoRelatado').value,
             garantiaDias: document.getElementById('garantiaDiasInput').value,
-            timestamp: new Date().getTime() // Timestamp for 90-day expiry
+            timestamp: new Date().getTime() // Timestamp para controle de expiração (se necessário)
         };
         return osData;
     }
@@ -783,10 +782,17 @@
     // Function to save OS data to localStorage
     function saveOSData(osData) {
         let history = JSON.parse(localStorage.getItem('os_history') || '[]');
-        // Remove existing OS if editing (based on osNumber and a potential original ID for uniqueness)
-        // For now, we'll just add. If editing is implemented, we'll need a unique ID to replace.
-        // For initial save, we just add it to the history.
-        history.push(osData);
+        
+        // Encontra se já existe uma entrada com o mesmo osNumber
+        const existingIndex = history.findIndex(item => item.osNumber === osData.osNumber);
+
+        if (existingIndex > -1) {
+            // Atualiza a entrada existente
+            history[existingIndex] = osData;
+        } else {
+            // Adiciona uma nova entrada
+            history.push(osData);
+        }
         localStorage.setItem('os_history', JSON.stringify(history));
     }
 
@@ -1229,7 +1235,7 @@
 
     function salvarImprimir() {
         const osDataToSave = collectOSData();
-        saveOSData(osDataToSave); // Save the collected data
+        saveOSData(osDataToSave); // Salva os dados coletados
 
         const printContainer = document.getElementById('printContainer');
         printContainer.innerHTML = ''; // Limpa a área de impressão
