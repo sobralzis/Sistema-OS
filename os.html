@@ -633,7 +633,7 @@
       <div class="linha">
         <div class="col">
           <label for="nomeCliente">NOME DO CLIENTE</label>
-          <input type="text" id="nomeCliente">
+          <input type="text" id="nomeCliente" required>
         </div>
       </div>
     </div>
@@ -642,11 +642,11 @@
       <div class="linha">
         <div class="col">
           <label for="telefone">TELEFONE</label>
-          <input type="tel" id="telefone" placeholder="(00)00000-0000" maxlength="15">
+          <input type="tel" id="telefone" placeholder="(00)00000-0000" maxlength="15" required>
         </div>
         <div class="col">
           <label for="tecnico">TÉCNICO</label>
-          <select id="tecnico">
+          <select id="tecnico" required>
             <option value="">Selecione</option>
             <option>Bruno Santos</option>
             <option>João Paulo</option>
@@ -659,7 +659,7 @@
       <div class="linha">
         <div class="col">
           <label for="equipamento">EQUIPAMENTO</label>
-          <input type="text" id="equipamento">
+          <input type="text" id="equipamento" required>
         </div>
       </div>
     </div>
@@ -669,22 +669,22 @@
         <div class="col">
           <label>ACESSÓRIO</label>
           <div class="checkbox-group" id="acessorioGroup">
-            <label><input type="radio" name="acessorio" value="sim"> SIM</label>
-            <label><input type="radio" name="acessorio" value="nao"> NÃO</label>
+            <label><input type="radio" name="acessorio" value="sim" required> SIM</label>
+            <label><input type="radio" name="acessorio" value="nao" checked> NÃO</label>
           </div>
         </div>
         <div class="col">
           <label>LIGA</label>
           <div class="checkbox-group" id="ligaGroup">
             <label><input type="radio" name="liga" value="sim"> SIM</label>
-            <label><input type="radio" name="liga" value="nao"> NÃO</label>
+            <label><input type="radio" name="liga" value="nao" checked> NÃO</label>
           </div>
         </div>
         <div class="col">
           <label>DEFEITO FÍSICO</label>
           <div class="checkbox-group" id="defeitoGroup">
             <label><input type="radio" name="defeito" value="sim"> SIM</label>
-            <label><input type="radio" name="defeito" value="nao"> NÃO</label>
+            <label><input type="radio" name="defeito" value="nao" checked> NÃO</label>
           </div>
         </div>
       </div>
@@ -706,7 +706,7 @@
       <div class="linha">
         <div class="col">
           <label for="defeitoRelatado">DEFEITO RELATADO</label>
-          <textarea id="defeitoRelatado" rows="3"></textarea>
+          <textarea id="defeitoRelatado" rows="3" required></textarea>
         </div>
       </div>
     </div>
@@ -715,7 +715,7 @@
         <div class="linha">
             <div class="col">
                 <label for="garantiaDiasInput">DIAS DE GARANTIA (Serviço)</label>
-                <input type="number" id="garantiaDiasInput" value="90" min="0">
+                <input type="number" id="garantiaDiasInput" value="90" min="0" required>
             </div>
         </div>
         <div class="termos-condicoes" id="termosFormulario">
@@ -730,7 +730,7 @@
               <p>o O diagnóstico será realizado em até 3 dias úteis. O serviço só será iniciado após aprovação do orçamento pelo cliente.</p>
             </li>
             <li>
-              <strong>Garantia
+              <strong>Garantia</strong>
               <p>o Garantia de <span class="garantia-dias-span" id="garantiaServico"></span> dias para o serviço realizado, limitada ao reparo efetuado. Não cobre mau uso, quedas, líquidos ou intervenções de terceiros.</p>
             </li>
             <li>
@@ -746,7 +746,7 @@
               <p>o Garantia de <span class="garantia-dias-span" id="garantiaPecas"></span> dias para peças substituídas contra defeitos de fabricação. Peças originais mediante solicitação e disponibilidade.</p>
             </li>
           </ol>
-          </div>
+        </div>
     </div>
   </div>
 
@@ -760,7 +760,7 @@
 
     function collectOSData() {
         const osData = {
-            osNumber: document.getElementById('osNumber').textContent, // Usamos osNumber como ID único para edição
+            osNumber: document.getElementById('osNumber').textContent,
             dataEntrada: document.getElementById('dataEntrada').textContent,
             dataSaida: document.getElementById('dataSaida').textContent,
             nomeCliente: document.getElementById('nomeCliente').value,
@@ -774,29 +774,25 @@
             qualDefeito: document.getElementById('qualDefeito').value,
             defeitoRelatado: document.getElementById('defeitoRelatado').value,
             garantiaDias: document.getElementById('garantiaDiasInput').value,
-            timestamp: new Date().getTime() // Timestamp para controle de expiração (se necessário)
+            timestamp: new Date().getTime()
         };
         return osData;
     }
 
-    // Function to save OS data to localStorage
     function saveOSData(osData) {
         let history = JSON.parse(localStorage.getItem('os_history') || '[]');
         
-        // Encontra se já existe uma entrada com o mesmo osNumber
         const existingIndex = history.findIndex(item => item.osNumber === osData.osNumber);
 
         if (existingIndex > -1) {
-            // Atualiza a entrada existente
             history[existingIndex] = osData;
         } else {
-            // Adiciona uma nova entrada
             history.push(osData);
         }
+        
         localStorage.setItem('os_history', JSON.stringify(history));
     }
 
-    // --- FUNÇÃO PARA GERAR E GERENCIAR O NÚMERO DA OS ---
     function generateOSNumber() {
         const today = new Date();
         const year = today.getFullYear();
@@ -807,110 +803,39 @@
         const localStorageKey = `osCount_${datePart}`;
 
         let counter = parseInt(localStorage.getItem(localStorageKey) || '0');
-
-        // Se o contador exceder 99, reinicia para 1 (ou para 0 e depois 1)
-        if (counter >= 99) {
-            counter = 0; // Reinicia o contador para o dia atual se atingir 99
-        }
+        if (counter >= 99) counter = 0;
         counter++;
 
         localStorage.setItem(localStorageKey, counter.toString());
-
-        const formattedCounter = counter.toString().padStart(2, '0');
-
-        return `${year} ${month}${day} ${formattedCounter}`;
-    }
-
-    function inicializarOS() {
-        const osNumberElement = document.getElementById('osNumber');
-        const dataEntradaElement = document.getElementById('dataEntrada');
-        const dataSaidaElement = document.getElementById('dataSaida');
-
-        if (osNumberElement && dataEntradaElement) {
-            osNumberElement.textContent = generateOSNumber();
-            const hoje = new Date();
-            dataEntradaElement.textContent = hoje.toLocaleDateString('pt-BR');
-            dataSaidaElement.textContent = '___/___/___'; // Formato padrão para preenchimento manual
-        }
-
-        configurarRadios('acessorio', 'campoAcessorio', 'qualAcessorio');
-        configurarRadios('defeito', 'campoDefeito', 'qualDefeito');
-
-        // Adiciona listeners para validar a cada mudança
-        document.querySelectorAll(".form-step input, .form-step textarea, .form-step select, .checkbox-group input[type='radio']").forEach(element => {
-          element.addEventListener('input', validarPassoAtual);
-          element.addEventListener('change', validarPassoAtual); // Para radios e selects
-        });
-
-        const telefoneInput = document.getElementById('telefone');
-        if (telefoneInput) {
-            telefoneInput.addEventListener('input', formatarTelefone);
-        }
-
-        // Linka o input de garantia com os spans nos termos e condições
-        const garantiaInput = document.getElementById('garantiaDiasInput');
-        const garantiaServicoSpan = document.getElementById('garantiaServico');
-        const garantiaPecasSpan = document.getElementById('garantiaPecas');
-
-        if (garantiaInput && garantiaServicoSpan && garantiaPecasSpan) {
-            // Inicializa os spans com o valor padrão do input (90)
-            garantiaServicoSpan.textContent = garantiaInput.value;
-            garantiaPecasSpan.textContent = garantiaInput.value;
-
-            // Atualiza os spans sempre que o input mudar
-            garantiaInput.addEventListener('input', () => {
-                garantiaServicoSpan.textContent = garantiaInput.value;
-                garantiaPecasSpan.textContent = garantiaInput.value;
-            });
-        }
-
-        showStep(currentStep);
-        atualizarProgresso();
+        return `${year} ${month}${day} ${counter.toString().padStart(2, '0')}`;
     }
 
     function configurarRadios(nomeGrupo, idCampoContainer, idInputAssociado) {
       const campoContainer = document.getElementById(idCampoContainer);
       const inputAssociado = document.getElementById(idInputAssociado);
 
-      if (!campoContainer) {
-          console.warn(`Elemento com ID '${idCampoContainer}' não encontrado. Verifique o HTML.`);
-          return;
-      }
-
       document.querySelectorAll(`input[name="${nomeGrupo}"]`).forEach(radio => {
         radio.addEventListener('change', () => {
           if (radio.value === 'sim') {
             campoContainer.classList.remove('hidden');
+            if (inputAssociado) inputAssociado.required = true;
           } else {
             campoContainer.classList.add('hidden');
             if (inputAssociado) {
-                inputAssociado.value = ''; // Limpa o valor quando oculta
+              inputAssociado.value = '';
+              inputAssociado.required = false;
             }
           }
           validarPassoAtual();
         });
       });
-
-      // Estado inicial ao carregar a página
-      const checkedRadio = document.querySelector(`input[name="${nomeGrupo}"]:checked`);
-      if (!checkedRadio || checkedRadio.value === 'nao') {
-          campoContainer.classList.add('hidden');
-          if (inputAssociado) {
-              inputAssociado.value = ''; // Garante que esteja limpo na inicialização
-          }
-      } else {
-          campoContainer.classList.remove('hidden');
-      }
     }
 
     function formatarTelefone(event) {
         let input = event.target;
         let value = input.value.replace(/\D/g, '');
 
-        if (value.length > 11) {
-            value = value.substring(0, 11);
-        }
-
+        if (value.length > 11) value = value.substring(0, 11);
         if (value.length > 0) {
             value = value.replace(/^(\d{2})(\d)/g, '($1)$2');
             if (value.length > 9) {
@@ -923,72 +848,61 @@
         validarPassoAtual();
     }
 
-    function showStep(step) {
-      document.querySelectorAll('.form-step').forEach(s => {
-        const stepNum = parseInt(s.dataset.step);
-        if (stepNum <= step) { // Mostra o passo atual e todos os anteriores
-          s.classList.add('visible-step');
-        } else { // Oculta os passos futuros
-          s.classList.remove('visible-step');
+    function inicializarOS() {
+        document.getElementById('osNumber').textContent = generateOSNumber();
+        document.getElementById('dataEntrada').textContent = new Date().toLocaleDateString('pt-BR');
+        document.getElementById('dataSaida').textContent = '___/___/___';
+
+        configurarRadios('acessorio', 'campoAcessorio', 'qualAcessorio');
+        configurarRadios('defeito', 'campoDefeito', 'qualDefeito');
+
+        document.getElementById('telefone').addEventListener('input', formatarTelefone);
+
+        const garantiaInput = document.getElementById('garantiaDiasInput');
+        const garantiaServicoSpan = document.getElementById('garantiaServico');
+        const garantiaPecasSpan = document.getElementById('garantiaPecas');
+
+        if (garantiaInput && garantiaServicoSpan && garantiaPecasSpan) {
+            garantiaServicoSpan.textContent = garantiaInput.value;
+            garantiaPecasSpan.textContent = garantiaInput.value;
+            garantiaInput.addEventListener('input', () => {
+                garantiaServicoSpan.textContent = garantiaInput.value;
+                garantiaPecasSpan.textContent = garantiaInput.value;
+            });
         }
-      });
 
-      const mainActionButton = document.getElementById('mainActionButton');
-      if (mainActionButton) {
-          if (step === totalSteps) {
-              mainActionButton.innerHTML = 'Salvar e Imprimir'; // Use innerHTML
-              mainActionButton.onclick = handleActionButtonClick; // Mantém o handler único
-          } else {
-              mainActionButton.innerHTML = 'Próximo &#9658;'; // Use innerHTML
-              mainActionButton.onclick = handleActionButtonClick; // Mantém o handler único
-          }
-      }
-      validarPassoAtual();
-      atualizarProgresso();
-
-      // Linha removida/comentada para manter o botão INICIO sempre habilitado
-      // const homeButton = document.getElementById('homeButton');
-      // if (homeButton) {
-      //   homeButton.disabled = (currentStep === 1);
-      // }
+        showStep(currentStep);
+        atualizarProgresso();
     }
 
     function validarPassoAtual() {
       const currentFormStepElement = document.querySelector(`.form-step[data-step="${currentStep}"]`);
       let isValid = true;
 
-      if (!currentFormStepElement) {
-        console.error(`Passo do formulário com data-step="${currentStep}" não encontrado para validação.`);
-        return true;
-      }
+      if (!currentFormStepElement) return true;
 
-      // Validação de inputs de texto, tel, textarea e select
       currentFormStepElement.querySelectorAll("input[type='text'], input[type='tel'], textarea, select, input[type='number']").forEach(input => {
-          // Verifica se o input é visível e não está dentro de um container com a classe 'hidden'
           if (input.offsetParent !== null && !input.closest('.hidden')) {
               if (input.id === 'telefone') {
                   const cleanedValue = input.value.replace(/\D/g, '');
-                  if (cleanedValue.length < 10 || cleanedValue.length > 11) { // Telefone com 10 ou 11 dígitos
+                  if (cleanedValue.length < 10 || cleanedValue.length > 11) {
                       isValid = false;
                   }
-              } else if (input.value.trim() === '' && !input.readOnly) {
+              } else if (input.value.trim() === '' && input.required) {
                   isValid = false;
               }
           }
       });
 
-      // Validação de grupos de rádio (se ao menos um está selecionado)
       currentFormStepElement.querySelectorAll('.checkbox-group').forEach(group => {
-          const radioName = group.querySelector('input[type="radio"]')?.name;
-          if (radioName) {
-              const checkedRadio = group.querySelector(`input[name="${radioName}"]:checked`);
-              if (!checkedRadio) {
+          if (group.offsetParent !== null && !group.closest('.hidden')) {
+              const radioName = group.querySelector('input[type="radio"]')?.name;
+              if (radioName && !group.querySelector(`input[name="${radioName}"]:checked`)) {
                   isValid = false;
               }
           }
       });
 
-      // Validação condicional para "QUAL ACESSÓRIO" e "QUAL DEFEITO"
       if (currentStep === 4) {
           const acessorioSimChecked = document.querySelector('input[name="acessorio"][value="sim"]:checked');
           const qualAcessorioInput = document.getElementById('qualAcessorio');
@@ -1005,9 +919,31 @@
 
       const mainActionButton = document.getElementById('mainActionButton');
       if (mainActionButton) {
-          mainActionButton.disabled = !isValid;
+          mainActionButton.disabled = (currentStep === totalSteps) ? !isValid : false;
       }
       return isValid;
+    }
+
+    function showStep(step) {
+      document.querySelectorAll('.form-step').forEach(s => {
+        const stepNum = parseInt(s.dataset.step);
+        if (stepNum <= step) {
+          s.classList.add('visible-step');
+        } else {
+          s.classList.remove('visible-step');
+        }
+      });
+
+      const mainActionButton = document.getElementById('mainActionButton');
+      if (mainActionButton) {
+          if (step === totalSteps) {
+              mainActionButton.textContent = 'Salvar e Imprimir';
+          } else {
+              mainActionButton.textContent = 'Próximo →';
+          }
+      }
+      validarPassoAtual();
+      atualizarProgresso();
     }
 
     function handleActionButtonClick() {
@@ -1021,35 +957,55 @@
     function nextStep() {
       if (validarPassoAtual()) {
         currentStep++;
-        if (currentStep > totalSteps) {
-          currentStep = totalSteps;
-        }
+        if (currentStep > totalSteps) currentStep = totalSteps;
         showStep(currentStep);
       } else {
           alert("Por favor, preencha todos os campos obrigatórios do passo atual.");
       }
     }
 
-    // Função para redirecionar para o histórico
-    function goHistorico() {
-        window.location.href = 'historico.html';
+    function salvarImprimir() {
+        const osDataToSave = collectOSData();
+        saveOSData(osDataToSave);
+
+        if (!validarPassoAtual()) {
+            alert("Atenção: Alguns campos obrigatórios não foram preenchidos corretamente. A OS foi salva, mas revise os dados antes de imprimir.");
+            return;
+        }
+
+        const printContainer = document.getElementById('printContainer');
+        printContainer.innerHTML = '';
+
+        const lojaCopy = createPrintableContent(false);
+        const clientCopy = createPrintableContent(true);
+        printContainer.appendChild(lojaCopy);
+        printContainer.appendChild(clientCopy);
+
+        document.querySelector('.conteudo').style.display = 'none';
+        document.getElementById('mainActionButton').style.display = 'none';
+        document.getElementById('homeButton').style.display = 'none';
+        document.getElementById('historicoButton').style.display = 'none';
+        printContainer.style.display = 'block';
+
+        setTimeout(() => {
+            window.print();
+            document.querySelector('.conteudo').style.display = 'block';
+            document.getElementById('mainActionButton').style.display = 'block';
+            document.getElementById('homeButton').style.display = 'block';
+            document.getElementById('historicoButton').style.display = 'block';
+            printContainer.style.display = 'none';
+            printContainer.innerHTML = '';
+        }, 300);
     }
 
-    // Função para retornar à página inicial (index.html)
-    function goHome() {
-        window.location.href = 'index.html'; // Redireciona para a página index.html
-    }
-
-    // Função única para criar o conteúdo de impressão para uma via
     function createPrintableContent(isClientCopy) {
         const printArea = document.createElement('div');
         printArea.className = 'print-area';
 
-        // Título e Contato (igual para ambas as vias)
         const header = document.createElement('div');
         header.className = 'titulo';
         const img = document.createElement('img');
-        img.src = 'img/logo.png'; // Substitua pelo caminho correto da sua logo
+        img.src = 'img/logo.png';
         img.alt = 'Logo CNT Assistência Técnica';
         const contato = document.createElement('div');
         contato.className = 'contato';
@@ -1058,14 +1014,12 @@
         header.appendChild(contato);
         printArea.appendChild(header);
 
-        // Título da OS (diferente para cada via)
         const osTitle = document.createElement('h2');
         osTitle.style.textAlign = 'center';
         osTitle.style.margin = '15px 0';
         osTitle.textContent = isClientCopy ? 'VIA DO CLIENTE' : 'ORDEM DE SERVIÇO';
         printArea.appendChild(osTitle);
 
-        // Seção de Dados da OS (OS Nº, Data Entrada, Data Saída)
         const linhaOsDatas = document.createElement('div');
         linhaOsDatas.className = 'linha';
         linhaOsDatas.innerHTML = `
@@ -1084,7 +1038,6 @@
         `;
         printArea.appendChild(linhaOsDatas);
 
-        // Seção de Dados do Cliente (Cliente, Telefone, Técnico)
         const linhaClienteTelTec = document.createElement('div');
         linhaClienteTelTec.className = 'linha';
         linhaClienteTelTec.innerHTML = `
@@ -1103,7 +1056,6 @@
         `;
         printArea.appendChild(linhaClienteTelTec);
 
-        // Seção de Equipamento
         const linhaEquipamento = document.createElement('div');
         linhaEquipamento.className = 'linha';
         linhaEquipamento.innerHTML = `
@@ -1114,7 +1066,6 @@
         `;
         printArea.appendChild(linhaEquipamento);
 
-        // Seção Acessório (Condicional)
         const acessorioSimChecked = document.querySelector('input[name="acessorio"][value="sim"]:checked');
         const qualAcessorioVal = document.getElementById('qualAcessorio').value.trim();
 
@@ -1126,7 +1077,6 @@
                 <span class="print-only-field">${acessorioSimChecked ? 'SIM' : 'NÃO'}</span>
             </div>
         `;
-        // Adiciona o campo "QUAL" apenas se "SIM" for selecionado E houver valor
         if (acessorioSimChecked && qualAcessorioVal !== '') {
             acessorioHtml += `
                 <div class="col">
@@ -1138,7 +1088,6 @@
         linhaAcessorio.innerHTML = acessorioHtml;
         printArea.appendChild(linhaAcessorio);
 
-        // Seção Liga
         const linhaLiga = document.createElement('div');
         linhaLiga.className = 'linha';
         linhaLiga.innerHTML = `
@@ -1149,7 +1098,6 @@
         `;
         printArea.appendChild(linhaLiga);
 
-        // Seção Defeito Físico (Condicional)
         const defeitoSimChecked = document.querySelector('input[name="defeito"][value="sim"]:checked');
         const qualDefeitoVal = document.getElementById('qualDefeito').value.trim();
 
@@ -1161,7 +1109,6 @@
                 <span class="print-only-field">${defeitoSimChecked ? 'SIM' : 'NÃO'}</span>
             </div>
         `;
-        // Adiciona o campo "QUAL" apenas se "SIM" for selecionado E houver valor
         if (defeitoSimChecked && qualDefeitoVal !== '') {
             defeitoHtml += `
                 <div class="col">
@@ -1173,7 +1120,6 @@
         linhaDefeito.innerHTML = defeitoHtml;
         printArea.appendChild(linhaDefeito);
 
-        // Seção Defeito Relatado
         const linhaDefeitoRelatado = document.createElement('div');
         linhaDefeitoRelatado.className = 'linha';
         linhaDefeitoRelatado.innerHTML = `
@@ -1184,31 +1130,22 @@
         `;
         printArea.appendChild(linhaDefeitoRelatado);
 
-        // Termos e Condições
         const termosOriginal = document.getElementById('termosFormulario');
         const termosClonados = termosOriginal.cloneNode(true);
-        termosClonados.removeAttribute('id'); // Remove ID para evitar duplicidade na impressão
+        termosClonados.removeAttribute('id');
         
-        // Atualiza os spans da garantia com o valor do input (para a impressão)
         const garantiaServicoSpan = termosClonados.querySelector('#garantiaServico');
         const garantiaPecasSpan = termosClonados.querySelector('#garantiaPecas');
         const garantiaDiasInput = document.getElementById('garantiaDiasInput');
 
-        if (garantiaServicoSpan) {
-             garantiaServicoSpan.textContent = garantiaDiasInput ? garantiaDiasInput.value : '';
-        }
-        if (garantiaPecasSpan) {
-             garantiaPecasSpan.textContent = garantiaDiasInput ? garantiaDiasInput.value : '';
-        }
+        if (garantiaServicoSpan) garantiaServicoSpan.textContent = garantiaDiasInput ? garantiaDiasInput.value : '';
+        if (garantiaPecasSpan) garantiaPecasSpan.textContent = garantiaDiasInput ? garantiaDiasInput.value : '';
 
         printArea.appendChild(termosClonados);
 
-
-        // Seção de Assinaturas (Entrega e Retirada)
         const assinaturasRow = document.createElement('div');
         assinaturasRow.className = 'linha assinaturas-row';
 
-        // Assinatura de Entrega
         assinaturasRow.innerHTML += `
             <div class="col">
                 <div class="assinatura-container">
@@ -1216,10 +1153,6 @@
                     <span class="linha-assinatura-label">ASS. CLIENTE / ENTREGA</span>
                 </div>
             </div>
-        `;
-
-        // Assinatura de Retirada
-        assinaturasRow.innerHTML += `
             <div class="col">
                 <div class="assinatura-container">
                     <span class="linha-assinatura"></span>
@@ -1229,58 +1162,7 @@
         `;
         printArea.appendChild(assinaturasRow);
 
-
         return printArea;
-    }
-
-    function salvarImprimir() {
-        const osDataToSave = collectOSData();
-        saveOSData(osDataToSave); // Salva os dados coletados
-
-        const printContainer = document.getElementById('printContainer');
-        printContainer.innerHTML = ''; // Limpa a área de impressão
-
-        // Gera a via da loja
-        const lojaCopy = createPrintableContent(false);
-        printContainer.appendChild(lojaCopy);
-
-        // Gera a via do cliente
-        const clientCopy = createPrintableContent(true);
-        printContainer.appendChild(clientCopy);
-
-        // Esconde o formulário da tela e mostra a área de impressão
-        document.querySelector('.conteudo').style.display = 'none';
-        document.getElementById('mainActionButton').style.display = 'none';
-        // Esconde o botão INICIO ao imprimir
-        document.getElementById('homeButton').style.display = 'none';
-        // Esconde o botão HISTORICO ao imprimir
-        document.getElementById('historicoButton').style.display = 'none';
-
-        printContainer.style.display = 'block';
-
-        setTimeout(() => {
-            window.print();
-            // Após a impressão, reverte para o estado original
-            document.querySelector('.conteudo').style.display = 'block';
-            document.getElementById('mainActionButton').style.display = 'block';
-            // Mostra o botão INICIO novamente
-            document.getElementById('homeButton').style.display = 'block';
-            // Mostra o botão HISTORICO novamente
-            document.getElementById('historicoButton').style.display = 'block';
-
-            printContainer.style.display = 'none';
-            printContainer.innerHTML = ''; // Limpa a área de impressão novamente
-
-            // Garante que os campos condicionais da tela voltem ao estado correto
-            configurarRadios('acessorio', 'campoAcessorio', 'qualAcessorio');
-            configurarRadios('defeito', 'campoDefeito', 'qualDefeito');
-
-            // Opcional: Reiniciar a OS para um novo preenchimento após salvar e imprimir
-            // Isso pode ser útil para o fluxo de trabalho
-            // setTimeout(() => {
-            //     location.reload(); // Recarrega a página para uma nova OS limpa
-            // }, 100);
-        }, 300);
     }
 
     function atualizarProgresso() {
@@ -1291,6 +1173,13 @@
       }
     }
 
+    function goHistorico() {
+        window.location.href = 'historico.html';
+    }
+
+    function goHome() {
+        window.location.href = 'index.html';
+    }
   </script>
 </body>
 </html>
