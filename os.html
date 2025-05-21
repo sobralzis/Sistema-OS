@@ -6,7 +6,6 @@
   <title>OS - CNT Assistência</title>
   <style>
     :root {
-      /* Variáveis de cores */
       --background-dark: #1a1a1a;
       --text-light: #f0f0f0;
       --input-bg: #333333;
@@ -60,7 +59,6 @@
       box-sizing: border-box;
     }
 
-    /* Ajuste para telas menores */
     @media (max-width: 600px) {
         .conteudo {
             margin-left: 0;
@@ -133,7 +131,6 @@
       padding: 0;
     }
 
-    /* Ajuste para que em telas menores as colunas quebrem corretamente */
     @media (max-width: 480px) {
         .col {
             min-width: 100%;
@@ -149,19 +146,17 @@
       min-width: 200px;
     }
 
-    /* Oculta os form-steps por padrão. Eles serão exibidos via JS */
     .form-step {
-      margin-bottom: 0; /* Começa sem margem */
+      margin-bottom: 0;
       transition: opacity 0.5s ease-in-out, max-height 0.5s ease-in-out, margin-bottom 0.5s ease-in-out;
-      display: none; /* Agora oculta por padrão */
+      display: none;
     }
 
-    /* Exibe os form-steps que são marcados como 'visible-step' */
     .form-step.visible-step {
-      opacity: 1; /* Garante que estejam visíveis */
-      max-height: 1000px; /* Garante que o conteúdo seja visível */
-      margin-bottom: 25px; /* Adiciona a margem quando visível */
-      display: block; /* Torna o bloco visível */
+      opacity: 1;
+      max-height: 1000px;
+      margin-bottom: 25px;
+      display: block;
     }
 
     .checkbox-group {
@@ -223,18 +218,17 @@
       box-shadow: none;
     }
 
-    /* Estilo para o botão INICIO */
     .inicio-action-button {
       position: fixed;
-      top: 20px; /* Distância do topo */
-      left: 20px; /* Distância da esquerda */
+      top: 20px;
+      left: 20px;
       background-color: var(--accent-color);
       color: var(--text-light);
-      padding: 10px 20px; /* Um pouco menor para ficar mais discreto no topo */
+      padding: 10px 20px;
       border: none;
-      border-radius: 20px; /* Borda arredondada */
+      border-radius: 20px;
       cursor: pointer;
-      font-size: 1em; /* Tamanho da fonte ajustado */
+      font-size: 1em;
       box-shadow: 0 4px 10px rgba(0, 0, 0, 0.3);
       transition: background-color 0.3s ease, transform 0.3s ease, box-shadow 0.3s ease;
       z-index: 1000;
@@ -261,8 +255,6 @@
       text-align: center;
       margin-bottom: 20px;
       margin-top: 10px;
-      /* Removendo position: relative e width: fit-content; */
-      /* O .titulo não precisa ser posicionado relativo se os botões forem fixed */
     }
 
     .titulo img {
@@ -272,14 +264,13 @@
         filter: drop-shadow(0 0 8px rgba(0, 123, 255, 0.5));
     }
 
-    /* Estilo para o botão HISTORICO - AGORA FIXED NA EXTREMIDADE DIREITA */
     .historico-button {
-        position: fixed; /* Posiciona fixo na tela */
-        top: 20px; /* Distância do topo */
-        right: 20px; /* Distância da direita */
+        position: fixed;
+        top: 20px;
+        right: 20px;
         background-color: var(--accent-color);
         color: var(--text-light);
-        padding: 10px 20px; /* Um pouco menor para ficar mais discreto */
+        padding: 10px 20px;
         border: none;
         border-radius: 20px;
         cursor: pointer;
@@ -289,7 +280,7 @@
         z-index: 1000;
         font-weight: bold;
         letter-spacing: 0.5px;
-        white-space: nowrap; /* Evita quebra de linha */
+        white-space: nowrap;
     }
 
     .historico-button:hover {
@@ -323,7 +314,6 @@
       color: var(--readonly-text);
     }
 
-    /* Classe 'hidden' agora é exclusiva para campos condicionais que podem ou não aparecer na tela */
     .hidden {
       display: none;
     }
@@ -367,19 +357,18 @@
         color: var(--orange-progress);
     }
 
-    /* Container para a linha e a label da assinatura */
     .assinatura-container {
         display: flex;
-        flex-direction: column; /* Coloca a linha acima da label por padrão na tela */
+        flex-direction: column;
         width: 100%;
-        margin-top: 15px; /* Espaçamento entre os blocos */
+        margin-top: 15px;
     }
 
     .linha-assinatura {
         display: block;
         border-bottom: 1px solid var(--separator-color);
         width: 100%;
-        min-height: 1em; /* Garante que a linha tenha uma altura mínima */
+        min-height: 1em;
         box-sizing: border-box;
     }
 
@@ -387,23 +376,21 @@
         text-align: center;
         font-weight: normal;
         font-size: 0.9em;
-        margin-top: 5px; /* Espaço entre a linha e a label */
-        padding-bottom: 5px; /* Espaço abaixo da label */
+        margin-top: 5px;
+        padding-bottom: 5px;
     }
 
-    /* Estilo para o span da garantia, para evitar quebras de linha indesejadas */
     .garantia-dias-span {
         display: inline-block;
-        width: 60px; /* Largura ajustada para ser um pouco mais flexível */
+        width: 60px;
         border-bottom: 1px solid var(--separator-color);
         text-align: center;
         line-height: 1;
         vertical-align: middle;
     }
 
-    /* Estilo para o input de garantia */
     #garantiaDiasInput {
-        width: 80px; /* Ajuste a largura conforme necessário */
+        width: 80px;
         text-align: center;
         margin-left: 5px;
         margin-right: 5px;
@@ -413,16 +400,21 @@
         background-color: var(--input-bg);
         color: var(--text-light);
         border-radius: 4px;
-        -moz-appearance: textfield; /* Remove setas em Firefox */
+        -moz-appearance: textfield;
     }
-    /* Remove setas de number input em Chrome, Safari, Edge */
+    
+    #garantiaDiasInput::placeholder {
+      color: var(--readonly-text);
+      opacity: 0.7;
+      font-size: 0.9em;
+    }
+    
     #garantiaDiasInput::-webkit-outer-spin-button,
     #garantiaDiasInput::-webkit-inner-spin-button {
         -webkit-appearance: none;
         margin: 0;
     }
 
-    /* --- ESTILOS DE IMPRESSÃO --- */
     @media print {
       body {
         background: #fff !important;
@@ -433,7 +425,7 @@
         overflow: visible !important;
         height: auto !important;
         margin: 0 !important;
-        display: block !important; /* Reseta o display flex do body */
+        display: block !important;
       }
 
       * {
@@ -442,32 +434,22 @@
         print-color-adjust: exact;
       }
       .titulo img {
-          /* Remove o filtro de sombra aplicado na tela */
           filter: none !important;
-          /* Transforma a imagem para preto e branco invertendo as cores */
           filter: invert(1) grayscale(100%) !important;
-          /* Se a logo original for clara, essa é uma boa opção para ela ficar escura na impressão */
-          /* Se a logo for mais escura, você pode tentar:
-             filter: grayscale(100%) brightness(0.5) contrast(2) !important;
-          */
       }
 
-      .barra-progresso, .fixed-action-button, button, .inicio-action-button, .historico-button { /* Incluído o novo botão */
+      .barra-progresso, .fixed-action-button, button, .inicio-action-button, .historico-button {
         display: none !important;
       }
 
-      /* OCULTA os form-steps no formulário principal durante a impressão */
       .form-step { display: none !important; }
-      .conteudo .linha:not(.initial-active) { display: none !important; } /* Oculta as linhas do formulário visível */
-      .conteudo h2 { display: none !important; } /* Oculta o título do formulário visível */
+      .conteudo .linha:not(.initial-active) { display: none !important; }
+      .conteudo h2 { display: none !important; }
 
-
-      /* Oculta o input de garantia na impressão, pois o valor estará no span */
       #garantiaDiasInput {
           display: none !important;
       }
 
-      /* Torna os campos de impressão (print-only-field) visíveis */
       .print-only-field {
           display: block !important;
           color: #000 !important;
@@ -484,7 +466,6 @@
           width: 100% !important;
       }
 
-      /* Estilos para as linhas e colunas na impressão (aplicados a ambas as vias) */
       .linha {
         display: flex !important;
         flex-wrap: wrap !important;
@@ -505,28 +486,26 @@
           font-weight: bold !important;
       }
 
-      /* Assinaturas: Ajusta para que a linha venha ANTES da label na impressão */
       .assinatura-container {
-        margin-top: 0 !important; /* Remove margem extra */
-        align-items: center; /* Centraliza a linha e a label */
-        display: flex !important; /* Mantém como flexbox na impressão */
-        flex-direction: column !important; /* Garante que a linha fique acima */
+        margin-top: 0 !important;
+        align-items: center;
+        display: flex !important;
+        flex-direction: column !important;
       }
       .linha-assinatura {
           border-bottom: 1px solid #000 !important;
           width: 100% !important;
-          min-height: 1.5em !important; /* Garante altura para a linha */
+          min-height: 1.5em !important;
           box-sizing: border-box !important;
       }
       .linha-assinatura-label {
           text-align: center;
           font-weight: normal;
           font-size: 0.9em !important;
-          margin-top: 5px !important; /* Espaço entre a linha e a label */
-          padding-bottom: 5px !important; /* Espaço abaixo da label */
+          margin-top: 5px !important;
+          padding-bottom: 5px !important;
       }
 
-      /* Container para as 2 ou 3 assinaturas (cliente/entrega/retirada) */
       .assinaturas-row {
           display: flex !important;
           gap: 20px !important;
@@ -538,7 +517,6 @@
           min-width: 200px;
       }
 
-      /* Termos e Condições */
       .termos-condicoes {
         background-color: #fff !important;
         border: 1px solid #000 !important;
@@ -571,29 +549,27 @@
           color: #000 !important;
       }
 
-      /* Estilo para o span da garantia, para evitar quebras de linha indesejadas */
       .garantia-dias-span {
           display: inline-block;
-          width: 60px; /* Largura ajustada para ser um pouco mais flexível */
-          border-bottom: 1px solid #000 !important; /* Linha preta na impressão */
+          width: 60px;
+          border-bottom: 1px solid #000 !important;
           text-align: center;
           line-height: 1;
           vertical-align: middle;
-          color: #000 !important; /* Garante que o underline seja visível */
+          color: #000 !important;
       }
 
-      /* Área de impressão principal (para ambas as vias) */
       .print-area {
         display: block !important;
         padding: 0 !important;
         margin-bottom: 20px !important;
-        page-break-after: always; /* Garante que cada via comece em uma nova página */
-        border: 1px solid #ccc; /* Adiciona uma borda leve para separar as vias visualmente */
+        page-break-after: always;
+        border: 1px solid #ccc;
         padding: 10px;
       }
 
       .print-area:last-child {
-        page-break-after: avoid; /* A última via não força quebra de página */
+        page-break-after: avoid;
       }
     }
   </style>
@@ -604,7 +580,6 @@
   </div>
 
   <button id="homeButton" class="inicio-action-button" onclick="goHome()">INICIO</button>
-
   <button id="historicoButton" class="historico-button" onclick="goHistorico()">HISTÓRICO</button>
 
   <div class="conteudo">
@@ -712,46 +687,45 @@
     </div>
 
     <div class="form-step" data-step="6">
-        <div class="linha">
-            <div class="col">
-                <label for="garantiaDiasInput">DIAS DE GARANTIA (Serviço)</label>
-                <input type="number" id="garantiaDiasInput" value="90" min="0" required>
-            </div>
+      <div class="linha">
+        <div class="col">
+          <label for="garantiaDiasInput">DIAS DE GARANTIA (Serviço)</label>
+          <input type="number" id="garantiaDiasInput" min="0" placeholder="Deixe em branco para preencher manual">
         </div>
-        <div class="termos-condicoes" id="termosFormulario">
-          <h3>Termos e Condições</h3>
-          <ol>
-            <li>
-              <strong>Recebimento do Equipamento</strong>
-              <p>o O equipamento entregue será avaliado, registrando estado físico, avarias e acessórios recebidos. Não nos responsabilizamos por itens não declarados.</p>
-            </li>
-            <li>
-              <strong>Diagnóstico e Orçamento</strong>
-              <p>o O diagnóstico será realizado em até 3 dias úteis. O serviço só será iniciado após aprovação do orçamento pelo cliente.</p>
-            </li>
-            <li>
-              <strong>Garantia</strong>
-              <p>o Garantia de <span class="garantia-dias-span" id="garantiaServico"></span> dias para o serviço realizado, limitada ao reparo efetuado. Não cobre mau uso, quedas, líquidos ou intervenções de terceiros.</p>
-            </li>
-            <li>
-              <strong>Equipamentos Não Retirados</strong>
-              <p>o Após 30 dias da conclusão, será cobrada taxa de armazenamento de R$ 1,00/dia. Após 90 dias, o equipamento será considerado abandonado, conforme o Código Civil Artigo 1.275, inciso III.</p>
-            </li>
-            <li>
-              <strong>Perda de Dados</strong>
-              <p>o Não nos responsabilizamos por perda de dados. Recomenda-se backup antes da entrega. Backup solicitado será cobrado à parte.</p>
-            </li>
-            <li>
-              <strong>Peças Substituídas</strong>
-              <p>o Garantia de <span class="garantia-dias-span" id="garantiaPecas"></span> dias para peças substituídas contra defeitos de fabricação. Peças originais mediante solicitação e disponibilidade.</p>
-            </li>
-          </ol>
-        </div>
+      </div>
+      <div class="termos-condicoes" id="termosFormulario">
+        <h3>Termos e Condições</h3>
+        <ol>
+          <li>
+            <strong>Recebimento do Equipamento</strong>
+            <p>o O equipamento entregue será avaliado, registrando estado físico, avarias e acessórios recebidos. Não nos responsabilizamos por itens não declarados.</p>
+          </li>
+          <li>
+            <strong>Diagnóstico e Orçamento</strong>
+            <p>o O diagnóstico será realizado em até 3 dias úteis. O serviço só será iniciado após aprovação do orçamento pelo cliente.</p>
+          </li>
+          <li>
+            <strong>Garantia</strong>
+            <p>o Garantia de <span class="garantia-dias-span" id="garantiaServico">______</span> dias para o serviço realizado, limitada ao reparo efetuado. Não cobre mau uso, quedas, líquidos ou intervenções de terceiros.</p>
+          </li>
+          <li>
+            <strong>Equipamentos Não Retirados</strong>
+            <p>o Após 30 dias da conclusão, será cobrada taxa de armazenamento de R$ 1,00/dia. Após 90 dias, o equipamento será considerado abandonado, conforme o Código Civil Artigo 1.275, inciso III.</p>
+          </li>
+          <li>
+            <strong>Perda de Dados</strong>
+            <p>o Não nos responsabilizamos por perda de dados. Recomenda-se backup antes da entrega. Backup solicitado será cobrado à parte.</p>
+          </li>
+          <li>
+            <strong>Peças Substituídas</strong>
+            <p>o Garantia de <span class="garantia-dias-span" id="garantiaPecas">______</span> dias para peças substituídas contra defeitos de fabricação. Peças originais mediante solicitação e disponibilidade.</p>
+          </li>
+        </ol>
+      </div>
     </div>
   </div>
 
   <div id="printContainer" style="display: none;"></div>
-
   <button id="mainActionButton" class="fixed-action-button" onclick="handleActionButtonClick()">Próximo &#9658;</button>
 
   <script>
@@ -759,7 +733,7 @@
     const totalSteps = 6;
 
     function collectOSData() {
-        const osData = {
+        return {
             osNumber: document.getElementById('osNumber').textContent,
             dataEntrada: document.getElementById('dataEntrada').textContent,
             dataSaida: document.getElementById('dataSaida').textContent,
@@ -773,41 +747,30 @@
             defeitoFisicoSim: document.querySelector('input[name="defeito"][value="sim"]:checked') ? true : false,
             qualDefeito: document.getElementById('qualDefeito').value,
             defeitoRelatado: document.getElementById('defeitoRelatado').value,
-            garantiaDias: document.getElementById('garantiaDiasInput').value,
+            garantiaDias: document.getElementById('garantiaDiasInput').value || null, // Salva como null se vazio
             timestamp: new Date().getTime()
         };
-        return osData;
     }
 
     function saveOSData(osData) {
         let history = JSON.parse(localStorage.getItem('os_history') || '[]');
-        
         const existingIndex = history.findIndex(item => item.osNumber === osData.osNumber);
-
         if (existingIndex > -1) {
             history[existingIndex] = osData;
         } else {
             history.push(osData);
         }
-        
         localStorage.setItem('os_history', JSON.stringify(history));
     }
 
     function generateOSNumber() {
         const today = new Date();
-        const year = today.getFullYear();
-        const month = (today.getMonth() + 1).toString().padStart(2, '0');
-        const day = today.getDate().toString().padStart(2, '0');
-
-        const datePart = `${year}${month}${day}`;
-        const localStorageKey = `osCount_${datePart}`;
-
-        let counter = parseInt(localStorage.getItem(localStorageKey) || '0');
+        const datePart = `${today.getFullYear()}${(today.getMonth() + 1).toString().padStart(2, '0')}${today.getDate().toString().padStart(2, '0')}`;
+        let counter = parseInt(localStorage.getItem(`osCount_${datePart}`) || 0);
         if (counter >= 99) counter = 0;
         counter++;
-
-        localStorage.setItem(localStorageKey, counter.toString());
-        return `${year} ${month}${day} ${counter.toString().padStart(2, '0')}`;
+        localStorage.setItem(`osCount_${datePart}`, counter.toString());
+        return `${today.getFullYear()} ${datePart.slice(4, 6)}${datePart.slice(6, 8)} ${counter.toString().padStart(2, '0')}`;
     }
 
     function configurarRadios(nomeGrupo, idCampoContainer, idInputAssociado) {
@@ -834,15 +797,11 @@
     function formatarTelefone(event) {
         let input = event.target;
         let value = input.value.replace(/\D/g, '');
-
         if (value.length > 11) value = value.substring(0, 11);
         if (value.length > 0) {
             value = value.replace(/^(\d{2})(\d)/g, '($1)$2');
-            if (value.length > 9) {
-                value = value.replace(/(\d{5})(\d)/, '$1-$2');
-            } else if (value.length > 6) {
-                value = value.replace(/(\d{4})(\d)/, '$1-$2');
-            }
+            if (value.length > 9) value = value.replace(/(\d{5})(\d)/, '$1-$2');
+            else if (value.length > 6) value = value.replace(/(\d{4})(\d)/, '$1-$2');
         }
         input.value = value;
         validarPassoAtual();
@@ -862,14 +821,10 @@
         const garantiaServicoSpan = document.getElementById('garantiaServico');
         const garantiaPecasSpan = document.getElementById('garantiaPecas');
 
-        if (garantiaInput && garantiaServicoSpan && garantiaPecasSpan) {
-            garantiaServicoSpan.textContent = garantiaInput.value;
-            garantiaPecasSpan.textContent = garantiaInput.value;
-            garantiaInput.addEventListener('input', () => {
-                garantiaServicoSpan.textContent = garantiaInput.value;
-                garantiaPecasSpan.textContent = garantiaInput.value;
-            });
-        }
+        garantiaInput.addEventListener('input', () => {
+            garantiaServicoSpan.textContent = garantiaInput.value || "______";
+            garantiaPecasSpan.textContent = garantiaInput.value || "______";
+        });
 
         showStep(currentStep);
         atualizarProgresso();
@@ -885,79 +840,55 @@
           if (input.offsetParent !== null && !input.closest('.hidden')) {
               if (input.id === 'telefone') {
                   const cleanedValue = input.value.replace(/\D/g, '');
-                  if (cleanedValue.length < 10 || cleanedValue.length > 11) {
-                      isValid = false;
-                  }
-              } else if (input.value.trim() === '' && input.required) {
-                  isValid = false;
-              }
+                  if (cleanedValue.length < 10 || cleanedValue.length > 11) isValid = false;
+              } else if (input.value.trim() === '' && input.required) isValid = false;
           }
       });
 
       currentFormStepElement.querySelectorAll('.checkbox-group').forEach(group => {
           if (group.offsetParent !== null && !group.closest('.hidden')) {
               const radioName = group.querySelector('input[type="radio"]')?.name;
-              if (radioName && !group.querySelector(`input[name="${radioName}"]:checked`)) {
-                  isValid = false;
-              }
+              if (radioName && !group.querySelector(`input[name="${radioName}"]:checked`)) isValid = false;
           }
       });
 
       if (currentStep === 4) {
           const acessorioSimChecked = document.querySelector('input[name="acessorio"][value="sim"]:checked');
           const qualAcessorioInput = document.getElementById('qualAcessorio');
-          if (acessorioSimChecked && qualAcessorioInput && !qualAcessorioInput.closest('.hidden') && qualAcessorioInput.value.trim() === '') {
-              isValid = false;
-          }
+          if (acessorioSimChecked && qualAcessorioInput && !qualAcessorioInput.closest('.hidden') && qualAcessorioInput.value.trim() === '') isValid = false;
 
           const defeitoSimChecked = document.querySelector('input[name="defeito"][value="sim"]:checked');
           const qualDefeitoInput = document.getElementById('qualDefeito');
-          if (defeitoSimChecked && qualDefeitoInput && !qualDefeitoInput.closest('.hidden') && qualDefeitoInput.value.trim() === '') {
-              isValid = false;
-          }
+          if (defeitoSimChecked && qualDefeitoInput && !qualDefeitoInput.closest('.hidden') && qualDefeitoInput.value.trim() === '') isValid = false;
       }
 
       const mainActionButton = document.getElementById('mainActionButton');
-      if (mainActionButton) {
-          mainActionButton.disabled = (currentStep === totalSteps) ? !isValid : false;
-      }
+      if (mainActionButton) mainActionButton.disabled = (currentStep === totalSteps) ? !isValid : false;
       return isValid;
     }
 
     function showStep(step) {
       document.querySelectorAll('.form-step').forEach(s => {
         const stepNum = parseInt(s.dataset.step);
-        if (stepNum <= step) {
-          s.classList.add('visible-step');
-        } else {
-          s.classList.remove('visible-step');
-        }
+        s.classList.toggle('visible-step', stepNum <= step);
       });
 
       const mainActionButton = document.getElementById('mainActionButton');
       if (mainActionButton) {
-          if (step === totalSteps) {
-              mainActionButton.textContent = 'Salvar e Imprimir';
-          } else {
-              mainActionButton.textContent = 'Próximo →';
-          }
+          mainActionButton.textContent = (step === totalSteps) ? 'Salvar e Imprimir' : 'Próximo →';
       }
       validarPassoAtual();
       atualizarProgresso();
     }
 
     function handleActionButtonClick() {
-        if (currentStep === totalSteps) {
-            salvarImprimir();
-        } else {
-            nextStep();
-        }
+        if (currentStep === totalSteps) salvarImprimir();
+        else nextStep();
     }
 
     function nextStep() {
       if (validarPassoAtual()) {
-        currentStep++;
-        if (currentStep > totalSteps) currentStep = totalSteps;
+        currentStep = Math.min(currentStep + 1, totalSteps);
         showStep(currentStep);
       } else {
           alert("Por favor, preencha todos os campos obrigatórios do passo atual.");
@@ -1002,165 +933,150 @@
         const printArea = document.createElement('div');
         printArea.className = 'print-area';
 
+        // Cabeçalho
         const header = document.createElement('div');
         header.className = 'titulo';
-        const img = document.createElement('img');
-        img.src = 'img/logo.png';
-        img.alt = 'Logo CNT Assistência Técnica';
-        const contato = document.createElement('div');
-        contato.className = 'contato';
-        contato.textContent = 'Contato: 84 99809-6865';
-        header.appendChild(img);
-        header.appendChild(contato);
+        header.innerHTML = `
+          <img src="img/logo.png" alt="Logo CNT Assistência Técnica">
+          <div class="contato">Contato: 84 99809-6865</div>
+        `;
         printArea.appendChild(header);
 
+        // Título (VIA DO CLIENTE ou ORDEM DE SERVIÇO)
         const osTitle = document.createElement('h2');
         osTitle.style.textAlign = 'center';
         osTitle.style.margin = '15px 0';
         osTitle.textContent = isClientCopy ? 'VIA DO CLIENTE' : 'ORDEM DE SERVIÇO';
         printArea.appendChild(osTitle);
 
-        const linhaOsDatas = document.createElement('div');
-        linhaOsDatas.className = 'linha';
-        linhaOsDatas.innerHTML = `
+        // Dados da OS
+        printArea.innerHTML += `
+          <div class="linha">
             <div class="col">
-                <label>OS Nº</label>
-                <span class="print-only-field">${document.getElementById('osNumber').textContent}</span>
+              <label>OS Nº</label>
+              <span class="print-only-field">${document.getElementById('osNumber').textContent}</span>
             </div>
             <div class="col">
-                <label>DATA ENTRADA</label>
-                <span class="print-only-field">${document.getElementById('dataEntrada').textContent}</span>
+              <label>DATA ENTRADA</label>
+              <span class="print-only-field">${document.getElementById('dataEntrada').textContent}</span>
             </div>
             <div class="col">
-                <label>DATA SAÍDA</label>
-                <span class="print-only-field">${document.getElementById('dataSaida').textContent}</span>
+              <label>DATA SAÍDA</label>
+              <span class="print-only-field">${document.getElementById('dataSaida').textContent}</span>
             </div>
+          </div>
+          <div class="linha">
+            <div class="col">
+              <label>CLIENTE</label>
+              <span class="print-only-field">${document.getElementById('nomeCliente').value}</span>
+            </div>
+            <div class="col">
+              <label>TELEFONE</label>
+              <span class="print-only-field">${document.getElementById('telefone').value}</span>
+            </div>
+            <div class="col">
+              <label>TÉCNICO</label>
+              <span class="print-only-field">${document.getElementById('tecnico').value}</span>
+            </div>
+          </div>
+          <div class="linha">
+            <div class="col">
+              <label>EQUIPAMENTO</label>
+              <span class="print-only-field">${document.getElementById('equipamento').value}</span>
+            </div>
+          </div>
         `;
-        printArea.appendChild(linhaOsDatas);
 
-        const linhaClienteTelTec = document.createElement('div');
-        linhaClienteTelTec.className = 'linha';
-        linhaClienteTelTec.innerHTML = `
-            <div class="col">
-                <label>CLIENTE</label>
-                <span class="print-only-field">${document.getElementById('nomeCliente').value}</span>
-            </div>
-            <div class="col">
-                <label>TELEFONE</label>
-                <span class="print-only-field">${document.getElementById('telefone').value}</span>
-            </div>
-            <div class="col">
-                <label>TÉCNICO</label>
-                <span class="print-only-field">${document.getElementById('tecnico').value}</span>
-            </div>
-        `;
-        printArea.appendChild(linhaClienteTelTec);
-
-        const linhaEquipamento = document.createElement('div');
-        linhaEquipamento.className = 'linha';
-        linhaEquipamento.innerHTML = `
-            <div class="col">
-                <label>EQUIPAMENTO</label>
-                <span class="print-only-field">${document.getElementById('equipamento').value}</span>
-            </div>
-        `;
-        printArea.appendChild(linhaEquipamento);
-
+        // Acessório (condicional)
         const acessorioSimChecked = document.querySelector('input[name="acessorio"][value="sim"]:checked');
         const qualAcessorioVal = document.getElementById('qualAcessorio').value.trim();
-
-        const linhaAcessorio = document.createElement('div');
-        linhaAcessorio.className = 'linha';
         let acessorioHtml = `
+          <div class="linha">
             <div class="col">
-                <label>ACESSÓRIO</label>
-                <span class="print-only-field">${acessorioSimChecked ? 'SIM' : 'NÃO'}</span>
+              <label>ACESSÓRIO</label>
+              <span class="print-only-field">${acessorioSimChecked ? 'SIM' : 'NÃO'}</span>
             </div>
         `;
         if (acessorioSimChecked && qualAcessorioVal !== '') {
             acessorioHtml += `
-                <div class="col">
-                    <label>QUAL</label>
-                    <span class="print-only-field">${qualAcessorioVal}</span>
-                </div>
+              <div class="col">
+                <label>QUAL</label>
+                <span class="print-only-field">${qualAcessorioVal}</span>
+              </div>
             `;
         }
-        linhaAcessorio.innerHTML = acessorioHtml;
-        printArea.appendChild(linhaAcessorio);
+        acessorioHtml += `</div>`;
+        printArea.innerHTML += acessorioHtml;
 
-        const linhaLiga = document.createElement('div');
-        linhaLiga.className = 'linha';
-        linhaLiga.innerHTML = `
+        // Liga
+        printArea.innerHTML += `
+          <div class="linha">
             <div class="col">
-                <label>LIGA</label>
-                <span class="print-only-field">${document.querySelector('input[name="liga"]:checked')?.value.toUpperCase() || ''}</span>
+              <label>LIGA</label>
+              <span class="print-only-field">${document.querySelector('input[name="liga"]:checked')?.value.toUpperCase() || ''}</span>
             </div>
+          </div>
         `;
-        printArea.appendChild(linhaLiga);
 
+        // Defeito Físico (condicional)
         const defeitoSimChecked = document.querySelector('input[name="defeito"][value="sim"]:checked');
         const qualDefeitoVal = document.getElementById('qualDefeito').value.trim();
-
-        const linhaDefeito = document.createElement('div');
-        linhaDefeito.className = 'linha';
         let defeitoHtml = `
+          <div class="linha">
             <div class="col">
-                <label>DEFEITO FÍSICO</label>
-                <span class="print-only-field">${defeitoSimChecked ? 'SIM' : 'NÃO'}</span>
+              <label>DEFEITO FÍSICO</label>
+              <span class="print-only-field">${defeitoSimChecked ? 'SIM' : 'NÃO'}</span>
             </div>
         `;
         if (defeitoSimChecked && qualDefeitoVal !== '') {
             defeitoHtml += `
-                <div class="col">
-                    <label>QUAL</label>
-                    <span class="print-only-field">${qualDefeitoVal}</span>
-                </div>
+              <div class="col">
+                <label>QUAL</label>
+                <span class="print-only-field">${qualDefeitoVal}</span>
+              </div>
             `;
         }
-        linhaDefeito.innerHTML = defeitoHtml;
-        printArea.appendChild(linhaDefeito);
+        defeitoHtml += `</div>`;
+        printArea.innerHTML += defeitoHtml;
 
-        const linhaDefeitoRelatado = document.createElement('div');
-        linhaDefeitoRelatado.className = 'linha';
-        linhaDefeitoRelatado.innerHTML = `
+        // Defeito Relatado
+        printArea.innerHTML += `
+          <div class="linha">
             <div class="col">
-                <label>DEFEITO RELATADO</label>
-                <span class="print-only-field" style="min-height: 3.5em;">${document.getElementById('defeitoRelatado').value}</span>
+              <label>DEFEITO RELATADO</label>
+              <span class="print-only-field" style="min-height: 3.5em;">${document.getElementById('defeitoRelatado').value}</span>
             </div>
+          </div>
         `;
-        printArea.appendChild(linhaDefeitoRelatado);
 
+        // Termos e Condições (clonados do original)
         const termosOriginal = document.getElementById('termosFormulario');
         const termosClonados = termosOriginal.cloneNode(true);
         termosClonados.removeAttribute('id');
         
-        const garantiaServicoSpan = termosClonados.querySelector('#garantiaServico');
-        const garantiaPecasSpan = termosClonados.querySelector('#garantiaPecas');
-        const garantiaDiasInput = document.getElementById('garantiaDiasInput');
-
-        if (garantiaServicoSpan) garantiaServicoSpan.textContent = garantiaDiasInput ? garantiaDiasInput.value : '';
-        if (garantiaPecasSpan) garantiaPecasSpan.textContent = garantiaDiasInput ? garantiaDiasInput.value : '';
-
+        // Atualiza os spans da garantia
+        const garantiaInput = document.getElementById('garantiaDiasInput');
+        termosClonados.querySelector('#garantiaServico').textContent = garantiaInput.value || "______";
+        termosClonados.querySelector('#garantiaPecas').textContent = garantiaInput.value || "______";
         printArea.appendChild(termosClonados);
 
-        const assinaturasRow = document.createElement('div');
-        assinaturasRow.className = 'linha assinaturas-row';
-
-        assinaturasRow.innerHTML += `
+        // Assinaturas
+        printArea.innerHTML += `
+          <div class="linha assinaturas-row">
             <div class="col">
-                <div class="assinatura-container">
-                    <span class="linha-assinatura"></span>
-                    <span class="linha-assinatura-label">ASS. CLIENTE / ENTREGA</span>
-                </div>
+              <div class="assinatura-container">
+                <span class="linha-assinatura"></span>
+                <span class="linha-assinatura-label">ASS. CLIENTE / ENTREGA</span>
+              </div>
             </div>
             <div class="col">
-                <div class="assinatura-container">
-                    <span class="linha-assinatura"></span>
-                    <span class="linha-assinatura-label">ASS. CNT ASSISTÊNCIA / RETIRADA</span>
-                </div>
+              <div class="assinatura-container">
+                <span class="linha-assinatura"></span>
+                <span class="linha-assinatura-label">ASS. CNT ASSISTÊNCIA / RETIRADA</span>
+              </div>
             </div>
+          </div>
         `;
-        printArea.appendChild(assinaturasRow);
 
         return printArea;
     }
@@ -1168,9 +1084,7 @@
     function atualizarProgresso() {
       const progress = Math.round((currentStep / totalSteps) * 100);
       const barraElement = document.getElementById("barra");
-      if (barraElement) {
-        barraElement.style.height = progress + "%";
-      }
+      if (barraElement) barraElement.style.height = progress + "%";
     }
 
     function goHistorico() {
