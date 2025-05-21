@@ -330,6 +330,27 @@
         vertical-align: middle;
     }
 
+    /* Estilo para o input de garantia */
+    #garantiaDiasInput {
+        width: 80px; /* Ajuste a largura conforme necessário */
+        text-align: center;
+        margin-left: 5px;
+        margin-right: 5px;
+        padding: 5px 10px;
+        font-size: 1em;
+        border: 1px solid var(--input-border);
+        background-color: var(--input-bg);
+        color: var(--text-light);
+        border-radius: 4px;
+        -moz-appearance: textfield; /* Remove setas em Firefox */
+    }
+    /* Remove setas de number input em Chrome, Safari, Edge */
+    #garantiaDiasInput::-webkit-outer-spin-button,
+    #garantiaDiasInput::-webkit-inner-spin-button {
+        -webkit-appearance: none;
+        margin: 0;
+    }
+
     /* --- ESTILOS DE IMPRESSÃO --- */
     @media print {
       body {
@@ -350,7 +371,14 @@
         print-color-adjust: exact;
       }
       .titulo img {
+          /* Remove o filtro de sombra aplicado na tela */
           filter: none !important;
+          /* Transforma a imagem para preto e branco invertendo as cores */
+          filter: invert(1) grayscale(100%) !important;
+          /* Se a logo original for clara, essa é uma boa opção para ela ficar escura na impressão */
+          /* Se a logo for mais escura, você pode tentar:
+             filter: grayscale(100%) brightness(0.5) contrast(2) !important;
+          */
       }
 
       .barra-progresso, .fixed-action-button, button {
@@ -362,6 +390,10 @@
       .conteudo .linha:not(.initial-active) { display: none !important; } /* Oculta as linhas do formulário visível */
       .conteudo h2 { display: none !important; } /* Oculta o título do formulário visível */
 
+      /* Oculta o input de garantia na impressão, pois o valor estará no span */
+      #garantiaDiasInput {
+          display: none !important;
+      }
 
       /* Torna os campos de impressão (print-only-field) visíveis */
       .print-only-field {
@@ -401,12 +433,12 @@
           font-weight: bold !important;
       }
 
-      /* Assinaturas: linha ACIMA da label em ambas as vias */
+      /* Assinaturas: Ajusta para que a linha venha ANTES da label na impressão */
       .assinatura-container {
-        /* Garante que a linha venha ANTES da label na impressão */
-        flex-direction: column-reverse !important;
         margin-top: 0 !important; /* Remove margem extra */
         align-items: center; /* Centraliza a linha e a label */
+        display: flex !important; /* Mantém como flexbox na impressão */
+        flex-direction: column !important; /* Garante que a linha fique acima */
       }
       .linha-assinatura {
           border-bottom: 1px solid #000 !important;
@@ -464,6 +496,17 @@
       }
       .termos-condicoes strong {
           color: #000 !important;
+      }
+
+      /* Estilo para o span da garantia, para evitar quebras de linha indesejadas */
+      .garantia-dias-span {
+          display: inline-block;
+          width: 60px; /* Largura ajustada para ser um pouco mais flexível */
+          border-bottom: 1px solid #000 !important; /* Linha preta na impressão */
+          text-align: center;
+          line-height: 1;
+          vertical-align: middle;
+          color: #000 !important; /* Garante que o underline seja visível */
       }
 
       /* Área de impressão principal (para ambas as vias) */
@@ -592,6 +635,12 @@
     </div>
 
     <div class="form-step" data-step="6">
+        <div class="linha">
+            <div class="col">
+                <label for="garantiaDiasInput">DIAS DE GARANTIA (Serviço)</label>
+                <input type="number" id="garantiaDiasInput" value="90" min="0">
+            </div>
+        </div>
         <div class="termos-condicoes" id="termosFormulario">
           <h3>Termos e Condições</h3>
           <ol>
@@ -605,7 +654,7 @@
             </li>
             <li>
               <strong>Garantia</strong>
-              <p>o Garantia de ___________ dias para o serviço realizado, limitada ao reparo efetuado. Não cobre mau uso, quedas, líquidos ou intervenções de terceiros.</p>
+              <p>o Garantia de <span class="garantia-dias-span" id="garantiaServico"></span> dias para o serviço realizado, limitada ao reparo efetuado. Não cobre mau uso, quedas, líquidos ou intervenções de terceiros.</p>
             </li>
             <li>
               <strong>Equipamentos Não Retirados</strong>
@@ -617,7 +666,7 @@
             </li>
             <li>
               <strong>Peças Substituídas</strong>
-              <p>o Garantia de _________ dias para peças substituídas contra defeitos de fabricação. Peças originais mediante solicitação e disponibilidade.</p>
+              <p>o Garantia de <span class="garantia-dias-span" id="garantiaPecas"></span> dias para peças substituídas contra defeitos de fabricação. Peças originais mediante solicitação e disponibilidade.</p>
             </li>
           </ol>
           </div>
@@ -681,6 +730,23 @@
         const telefoneInput = document.getElementById('telefone');
         if (telefoneInput) {
             telefoneInput.addEventListener('input', formatarTelefone);
+        }
+
+        // NOVO: Linka o input de garantia com os spans nos termos e condições
+        const garantiaInput = document.getElementById('garantiaDiasInput');
+        const garantiaServicoSpan = document.getElementById('garantiaServico');
+        const garantiaPecasSpan = document.getElementById('garantiaPecas');
+
+        if (garantiaInput && garantiaServicoSpan && garantiaPecasSpan) {
+            // Inicializa os spans com o valor padrão do input (90)
+            garantiaServicoSpan.textContent = garantiaInput.value;
+            garantiaPecasSpan.textContent = garantiaInput.value;
+
+            // Atualiza os spans sempre que o input mudar
+            garantiaInput.addEventListener('input', () => {
+                garantiaServicoSpan.textContent = garantiaInput.value;
+                garantiaPecasSpan.textContent = garantiaInput.value;
+            });
         }
 
         showStep(currentStep);
@@ -776,7 +842,7 @@
       }
 
       // Validação de inputs de texto, tel, textarea e select
-      currentFormStepElement.querySelectorAll("input[type='text'], input[type='tel'], textarea, select").forEach(input => {
+      currentFormStepElement.querySelectorAll("input[type='text'], input[type='tel'], textarea, select, input[type='number']").forEach(input => {
           // Verifica se o input é visível e não está dentro de um container com a classe 'hidden'
           if (input.offsetParent !== null && !input.closest('.hidden')) {
               if (input.id === 'telefone') {
@@ -991,17 +1057,19 @@
         const termosOriginal = document.getElementById('termosFormulario');
         const termosClonados = termosOriginal.cloneNode(true);
         termosClonados.removeAttribute('id'); // Remove ID para evitar duplicidade na impressão
-        // Ajusta o span da garantia para ter 90 dias
-        const garantiaSpanClonado = termosClonados.querySelector('.garantia-dias-span');
-        if (garantiaSpanClonado) {
-            garantiaSpanClonado.textContent = '';
+        
+        // Atualiza os spans da garantia com o valor do input (para a impressão)
+        const garantiaServicoSpan = termosClonados.querySelector('#garantiaServico');
+        const garantiaPecasSpan = termosClonados.querySelector('#garantiaPecas');
+        const garantiaDiasInput = document.getElementById('garantiaDiasInput');
+
+        if (garantiaServicoSpan) {
+             garantiaServicoSpan.textContent = garantiaDiasInput ? garantiaDiasInput.value : '';
+        }
+        if (garantiaPecasSpan) {
+             garantiaPecasSpan.textContent = garantiaDiasInput ? garantiaDiasInput.value : '';
         }
 
-        // Remova a assinatura do cliente DENTRO dos termos, pois ela foi eliminada
-        const assinaturaContainerInTermos = termosClonados.querySelector('.assinatura-container');
-        if(assinaturaContainerInTermos) {
-            assinaturaContainerInTermos.remove();
-        }
         printArea.appendChild(termosClonados);
 
 
@@ -1014,7 +1082,7 @@
             <div class="col">
                 <div class="assinatura-container">
                     <span class="linha-assinatura"></span>
-                    <span class="linha-assinatura-label">ASS. ENTREGA</span>
+                    <span class="linha-assinatura-label">ASS. CLIENTE / ENTREGA</span>
                 </div>
             </div>
         `;
@@ -1024,7 +1092,7 @@
             <div class="col">
                 <div class="assinatura-container">
                     <span class="linha-assinatura"></span>
-                    <span class="linha-assinatura-label">ASS. RETIRADA</span>
+                    <span class="linha-assinatura-label">ASS. CNT ASSISTÊNCIA / RETIRADA</span>
                 </div>
             </div>
         `;
