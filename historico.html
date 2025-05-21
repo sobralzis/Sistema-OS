@@ -1,1 +1,726 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Histórico de OS - CNT Assistência</title>
+    <style>
+        :root {
+            --background-dark: #1a1a1a;
+            --text-light: #f0f0f0;
+            --input-bg: #333333;
+            --input-border: #555555;
+            --input-focus-border: #007bff;
+            --accent-color: orange;
+            --accent-hover: #cc8400;
+            --separator-color: #444444;
+            --card-bg: #2a2a2a;
+            --card-border: #3a3a3a;
+            --scroll-thumb: #666;
+            --scroll-track: #333;
+        }
 
+        body {
+            margin: 0;
+            background-color: var(--background-dark);
+            color: var(--text-light);
+            font-family: 'Roboto', sans-serif;
+            display: flex;
+            flex-direction: column;
+            min-height: 100vh;
+            font-size: 16px;
+            line-height: 1.6;
+        }
+
+        header {
+            background-color: var(--input-bg);
+            padding: 15px 20px;
+            border-bottom: 1px solid var(--separator-color);
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            flex-wrap: wrap;
+            gap: 10px;
+            position: sticky;
+            top: 0;
+            z-index: 100;
+        }
+
+        header h1 {
+            margin: 0;
+            font-size: 1.8em;
+            color: var(--accent-color);
+        }
+
+        .header-buttons {
+            display: flex;
+            gap: 10px;
+            flex-wrap: wrap;
+        }
+
+        .header-buttons button, .action-button {
+            background-color: var(--accent-color);
+            color: var(--text-light);
+            padding: 8px 15px;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            font-size: 0.9em;
+            transition: background-color 0.3s ease, transform 0.2s ease;
+        }
+
+        .header-buttons button:hover, .action-button:hover {
+            background-color: var(--accent-hover);
+            transform: translateY(-1px);
+        }
+
+        .header-buttons button:disabled, .action-button:disabled {
+            background-color: var(--input-border);
+            color: var(--readonly-text);
+            cursor: not-allowed;
+            opacity: 0.7;
+            transform: none;
+        }
+
+        .search-bar {
+            padding: 8px 15px;
+            background-color: var(--card-bg);
+            border: 1px solid var(--card-border);
+            border-radius: 5px;
+            color: var(--text-light);
+            width: 250px;
+            box-sizing: border-box;
+            font-size: 0.9em;
+        }
+
+        .search-bar:focus {
+            border-color: var(--input-focus-border);
+            outline: none;
+        }
+
+        .conteudo {
+            flex-grow: 1;
+            padding: 20px;
+            max-width: 1200px;
+            margin: 20px auto;
+            width: 100%;
+            box-sizing: border-box;
+        }
+
+        .no-data-message {
+            text-align: center;
+            color: var(--readonly-text);
+            font-size: 1.2em;
+            margin-top: 50px;
+        }
+
+        .year-group, .month-group, .day-group {
+            margin-bottom: 30px;
+        }
+
+        .year-group h2, .month-group h3, .day-group h4 {
+            color: var(--accent-color);
+            border-bottom: 2px solid var(--separator-color);
+            padding-bottom: 10px;
+            margin-top: 0;
+        }
+        .month-group h3 {
+            color: var(--text-light);
+            border-bottom: 1px solid var(--separator-color);
+            font-size: 1.5em;
+            margin-top: 20px;
+        }
+        .day-group h4 {
+            color: var(--readonly-text);
+            border-bottom: none;
+            font-size: 1.2em;
+            margin-top: 15px;
+            padding-bottom: 5px;
+        }
+
+        .os-list {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+            gap: 20px;
+            margin-top: 20px;
+        }
+
+        .os-card {
+            background-color: var(--card-bg);
+            border: 1px solid var(--card-border);
+            border-radius: 8px;
+            padding: 15px;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+            transition: transform 0.2s ease, box-shadow 0.2s ease;
+            display: flex;
+            flex-direction: column;
+            justify-content: space-between;
+        }
+
+        .os-card:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 6px 12px rgba(0, 0, 0, 0.3);
+        }
+
+        .os-card p {
+            margin: 5px 0;
+            font-size: 0.95em;
+        }
+
+        .os-card p strong {
+            color: var(--accent-color);
+            margin-right: 5px;
+        }
+
+        .os-card .status {
+            font-weight: bold;
+            padding: 5px 10px;
+            border-radius: 5px;
+            text-align: center;
+            margin-top: 10px;
+            margin-bottom: 10px;
+        }
+
+        .status.pendente { background-color: #ffc107; color: #333; } /* Amarelo */
+        .status.concluido { background-color: #28a745; color: #fff; } /* Verde */
+        .status.orcamento { background-color: #17a2b8; color: #fff; } /* Azul claro */
+        .status.cancelado { background-color: #dc3545; color: #fff; } /* Vermelho */
+
+        .os-card .actions {
+            display: flex;
+            gap: 10px;
+            margin-top: 15px;
+        }
+
+        .os-card .actions button {
+            flex-grow: 1;
+            padding: 10px;
+            font-size: 0.9em;
+            border-radius: 5px;
+        }
+        .os-card .actions .btn-print {
+            background-color: #007bff; /* Azul */
+        }
+        .os-card .actions .btn-print:hover {
+            background-color: #0056b3;
+        }
+
+        .os-card .actions .btn-edit {
+            background-color: #6c757d; /* Cinza */
+        }
+        .os-card .actions .btn-edit:hover {
+            background-color: #5a6268;
+        }
+
+        /* Responsive adjustments */
+        @media (max-width: 768px) {
+            header {
+                flex-direction: column;
+                align-items: flex-start;
+            }
+            .header-buttons {
+                width: 100%;
+                justify-content: space-between;
+            }
+            .search-bar {
+                width: 100%;
+                margin-top: 10px;
+            }
+            .conteudo {
+                padding: 15px;
+            }
+            .os-list {
+                grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
+            }
+        }
+
+        @media (max-width: 480px) {
+            header h1 {
+                font-size: 1.5em;
+            }
+            .os-list {
+                grid-template-columns: 1fr;
+            }
+            .os-card .actions {
+                flex-direction: column;
+            }
+        }
+
+        /* Estilos para a área de impressão (similar ao OS.html) */
+        @media print {
+            body {
+                background: #fff !important;
+                color: #000 !important;
+                font-size: 11px !important;
+                line-height: 1.2 !important;
+                padding: 10px !important;
+                overflow: visible !important;
+                height: auto !important;
+                margin: 0 !important;
+                display: block !important;
+            }
+
+            * {
+                color: #000 !important;
+                -webkit-print-color-adjust: exact;
+                print-color-adjust: exact;
+            }
+            .titulo img {
+                filter: invert(1) grayscale(100%) !important;
+            }
+
+            header, .header-buttons, .action-button, .os-card .actions {
+                display: none !important;
+            }
+
+            .conteudo {
+                margin: 0 !important;
+                padding: 0 !important;
+                width: 100% !important;
+            }
+            .year-group, .month-group, .day-group, .os-list, .os-card {
+                display: none !important; /* Oculta o histórico e mostra apenas o print-area */
+            }
+
+            .print-area {
+                display: block !important;
+                padding: 0 !important;
+                margin-bottom: 20px !important;
+                page-break-after: always;
+                border: 1px solid #ccc;
+                padding: 10px;
+            }
+            .print-area:last-child {
+                page-break-after: avoid;
+            }
+
+            .print-only-field {
+                display: block !important;
+                color: #000 !important;
+                font-size: 0.9em !important;
+                border: 1px solid #000 !important;
+                padding: 2px 4px !important;
+                border-radius: 2px !important;
+                box-sizing: border-box !important;
+                min-height: 1.2em !important;
+                white-space: pre-wrap !important;
+            }
+
+            .col .print-only-field {
+                width: 100% !important;
+            }
+
+            .linha {
+                display: flex !important;
+                flex-wrap: wrap !important;
+                gap: 8px !important;
+                margin-bottom: 5px !important;
+                padding: 0 !important;
+            }
+
+            .col {
+                flex: 1;
+                min-width: 120px;
+                padding: 0 !important;
+            }
+            .col label {
+                display: block !important;
+                margin-bottom: 2px !important;
+                font-size: 0.9em !important;
+                font-weight: bold !important;
+            }
+
+            .assinatura-container {
+                margin-top: 0 !important;
+                align-items: center;
+                display: flex !important;
+                flex-direction: column !important;
+            }
+            .linha-assinatura {
+                border-bottom: 1px solid #000 !important;
+                width: 100% !important;
+                min-height: 1.5em !important;
+                box-sizing: border-box !important;
+            }
+            .linha-assinatura-label {
+                text-align: center;
+                font-weight: normal;
+                font-size: 0.9em !important;
+                margin-top: 5px !important;
+                padding-bottom: 5px !important;
+            }
+
+            .assinaturas-row {
+                display: flex !important;
+                gap: 20px !important;
+                margin-top: 15px !important;
+                flex-wrap: wrap !important;
+            }
+            .assinaturas-row .col {
+                flex: 1;
+                min-width: 200px;
+            }
+
+            .termos-condicoes {
+                background-color: #fff !important;
+                border: 1px solid #000 !important;
+                border-radius: 5px !important;
+                padding: 10px !important;
+                margin-top: 15px !important;
+                box-shadow: none !important;
+                page-break-inside: avoid !important;
+            }
+            .termos-condicoes h3 {
+                font-size: 1em !important;
+                margin-bottom: 8px !important;
+                padding-bottom: 5px !important;
+                border-bottom: 1px dashed #666 !important;
+            }
+            .termos-condicoes ol {
+                padding-left: 15px !important;
+                margin-bottom: 10px !important;
+            }
+            .termos-condicoes li {
+                margin-bottom: 3px !important;
+                font-size: 0.8em !important;
+                line-height: 1.2 !important;
+            }
+            .termos-condicoes p {
+                margin: 3px 0 !important;
+                font-size: 0.8em !important;
+            }
+            .termos-condicoes strong {
+                color: #000 !important;
+            }
+            .garantia-dias-span {
+                display: inline-block;
+                width: 60px;
+                border-bottom: 1px solid #000 !important;
+                text-align: center;
+                line-height: 1;
+                vertical-align: middle;
+                color: #000 !important;
+            }
+        }
+    </style>
+</head>
+<body onload="carregarHistorico()">
+    <header>
+        <h1>Histórico de Ordens de Serviço</h1>
+        <input type="text" id="searchInput" class="search-bar" placeholder="Buscar por OS ou Cliente..." onkeyup="filtrarOS()">
+        <div class="header-buttons">
+            <button onclick="goHome()">Início</button>
+            <button onclick="goNewOS()">Nova OS</button>
+            <button onclick="limparHistorico()">Limpar Histórico</button>
+        </div>
+    </header>
+
+    <div class="conteudo" id="historicoContent">
+        <div class="no-data-message" id="noDataMessage" style="display: none;">
+            Nenhuma Ordem de Serviço encontrada.
+        </div>
+        </div>
+
+    <div id="printContainer" style="display: none;"></div>
+
+    <script>
+        const MONTH_NAMES = [
+            "Janeiro", "Fevereiro", "Março", "Abril", "Maio", "Junho",
+            "Julho", "Agosto", "Setembro", "Outubro", "Novembro", "Dezembro"
+        ];
+
+        function goHome() {
+            window.location.href = 'index.html'; // Assumindo que index.html é a tela inicial
+        }
+
+        function goNewOS() {
+            window.location.href = 'OS.html'; // Redireciona para a tela de nova OS
+        }
+
+        function carregarHistorico() {
+            const osHistory = JSON.parse(localStorage.getItem('os_history') || '[]');
+            renderizarHistorico(osHistory);
+        }
+
+        function renderizarHistorico(osList) {
+            const historicoContent = document.getElementById('historicoContent');
+            historicoContent.innerHTML = ''; // Limpa o conteúdo existente
+
+            if (osList.length === 0) {
+                document.getElementById('noDataMessage').style.display = 'block';
+                return;
+            } else {
+                document.getElementById('noDataMessage').style.display = 'none';
+            }
+
+            // Agrupa as OSs por Ano -> Mês -> Dia
+            const groupedOS = {}; // { Ano: { Mês: { Dia: [os1, os2] } } }
+
+            osList.forEach(os => {
+                const dataEntrada = new Date(os.timestamp); // Usar o timestamp para ordenação e agrupamento
+                const year = dataEntrada.getFullYear();
+                const month = dataEntrada.getMonth(); // 0-11
+                const day = dataEntrada.getDate();
+
+                if (!groupedOS[year]) groupedOS[year] = {};
+                if (!groupedOS[year][month]) groupedOS[year][month] = {};
+                if (!groupedOS[year][month][day]) groupedOS[year][month][day] = [];
+
+                groupedOS[year][month][day].push(os);
+            });
+
+            // Ordena os anos (descendente)
+            const sortedYears = Object.keys(groupedOS).sort((a, b) => b - a);
+
+            sortedYears.forEach(year => {
+                const yearGroupDiv = document.createElement('div');
+                yearGroupDiv.className = 'year-group';
+                yearGroupDiv.innerHTML = `<h2>${year}</h2>`;
+                historicoContent.appendChild(yearGroupDiv);
+
+                // Ordena os meses (descendente)
+                const sortedMonths = Object.keys(groupedOS[year]).sort((a, b) => b - a);
+                sortedMonths.forEach(month => {
+                    const monthGroupDiv = document.createElement('div');
+                    monthGroupDiv.className = 'month-group';
+                    monthGroupDiv.innerHTML = `<h3>${MONTH_NAMES[month]}</h3>`;
+                    yearGroupDiv.appendChild(monthGroupDiv);
+
+                    // Ordena os dias (descendente)
+                    const sortedDays = Object.keys(groupedOS[year][month]).sort((a, b) => b - a);
+                    sortedDays.forEach(day => {
+                        const dayGroupDiv = document.createElement('div');
+                        dayGroupDiv.className = 'day-group';
+                        dayGroupDiv.innerHTML = `<h4>${String(day).padStart(2, '0')} de ${MONTH_NAMES[month].toLowerCase()}</h4>`;
+                        monthGroupDiv.appendChild(dayGroupDiv);
+
+                        const osListDiv = document.createElement('div');
+                        osListDiv.className = 'os-list';
+                        dayGroupDiv.appendChild(osListDiv);
+
+                        // Ordena as OSs por timestamp (a mais recente primeiro)
+                        const sortedDayOS = groupedOS[year][month][day].sort((a, b) => b.timestamp - a.timestamp);
+                        sortedDayOS.forEach(os => {
+                            const osCard = criarOSCard(os);
+                            osListDiv.appendChild(osCard);
+                        });
+                    });
+                });
+            });
+        }
+
+        function criarOSCard(os) {
+            const card = document.createElement('div');
+            card.className = 'os-card';
+
+            const statusClass = 'pendente'; // Placeholder, você pode adicionar lógica para definir o status real
+            card.innerHTML = `
+                <p><strong>OS Nº:</strong> ${os.osNumber}</p>
+                <p><strong>Cliente:</strong> ${os.nomeCliente}</p>
+                <p><strong>Equipamento:</strong> ${os.equipamento}</p>
+                <p><strong>Entrada:</strong> ${os.dataEntrada}</p>
+                <p><strong>Técnico:</strong> ${os.tecnico}</p>
+                <div class="status ${statusClass}">Status: ${statusClass.charAt(0).toUpperCase() + statusClass.slice(1)}</div>
+                <div class="actions">
+                    <button class="action-button btn-print" onclick="reimprimirOS('${os.id}')">Imprimir</button>
+                    </div>
+            `;
+            return card;
+        }
+
+        function limparHistorico() {
+            if (confirm('Tem certeza que deseja limpar todo o histórico de Ordens de Serviço? Esta ação é irreversível!')) {
+                localStorage.removeItem('os_history');
+                carregarHistorico(); // Recarrega para mostrar a mensagem de "nenhuma OS"
+                alert('Histórico limpo com sucesso!');
+            }
+        }
+
+        function filtrarOS() {
+            const searchValue = document.getElementById('searchInput').value.toLowerCase();
+            const osHistory = JSON.parse(localStorage.getItem('os_history') || '[]');
+
+            const filteredOS = osHistory.filter(os =>
+                os.osNumber.toLowerCase().includes(searchValue) ||
+                os.nomeCliente.toLowerCase().includes(searchValue) ||
+                os.equipamento.toLowerCase().includes(searchValue) ||
+                os.tecnico.toLowerCase().includes(searchValue)
+            );
+
+            renderizarHistorico(filteredOS);
+        }
+
+        // Função para simular a reimpressão de uma OS
+        function reimprimirOS(osId) {
+            const osHistory = JSON.parse(localStorage.getItem('os_history') || '[]');
+            const osToPrint = osHistory.find(os => os.id === osId);
+
+            if (!osToPrint) {
+                alert('Ordem de Serviço não encontrada!');
+                return;
+            }
+
+            const printContainer = document.getElementById('printContainer');
+            printContainer.innerHTML = ''; // Limpa o conteúdo existente
+
+            // Recria o "Termos e Condições" com os dados da OS específica
+            const termosCondicoesHTML = `
+                <div class="termos-condicoes">
+                  <h3>Termos e Condições</h3>
+                  <ol>
+                    <li>
+                      <strong>Recebimento do Equipamento</strong>
+                      <p>o O equipamento entregue será avaliado, registrando estado físico, avarias e acessórios recebidos. Não nos responsabilizamos por itens não declarados.</p>
+                    </li>
+                    <li>
+                      <strong>Diagnóstico e Orçamento</strong>
+                      <p>o O diagnóstico será realizado em até 3 dias úteis. O serviço só será iniciado após aprovação do orçamento pelo cliente.</p>
+                    </li>
+                    <li>
+                      <strong>Garantia
+                      <p>o Garantia de <span class="garantia-dias-span">${osToPrint.garantiaDias || '90'}</span> dias para o serviço realizado, limitada ao reparo efetuado. Não cobre mau uso, quedas, líquidos ou intervenções de terceiros.</p>
+                    </li>
+                    <li>
+                      <strong>Equipamentos Não Retirados</strong>
+                      <p>o Após 30 dias da conclusão, será cobrada taxa de armazenamento de R$ 1,00/dia. Após 90 dias, o equipamento será considerado abandonado, conforme o Código Civil Artigo 1.275, inciso III.</p>
+                    </li>
+                    <li>
+                      <strong>Perda de Dados</strong>
+                      <p>o Não nos responsabilizamos por perda de dados. Recomenda-se backup antes da entrega. Backup solicitado será cobrado à parte.</p>
+                    </li>
+                    <li>
+                      <strong>Peças Substituídas</strong>
+                      <p>o Garantia de <span class="garantia-dias-span">${osToPrint.garantiaDias || '90'}</span> dias para peças substituídas contra defeitos de fabricação. Peças originais mediante solicitação e disponibilidade.</p>
+                    </li>
+                  </ol>
+                </div>
+            `;
+
+            // Helper para formatar a data de saída (se vazia, mostra o placeholder)
+            const dataSaidaFormatada = osToPrint.dataSaida === '___/___/___' ? '___/___/___' : osToPrint.dataSaida;
+
+            // Gera a via da loja
+            const lojaCopy = document.createElement('div');
+            lojaCopy.className = 'print-area';
+            lojaCopy.innerHTML = `
+                <div class="titulo">
+                  <img src="logo.png" alt="Logo CNT Assistência Técnica">
+                  <div class="contato">Contato: 84 99809-6865</div>
+                </div>
+                <h2>ORDEM DE SERVIÇO</h2>
+                <div class="linha">
+                    <div class="col"><label>OS Nº</label><span class="print-only-field">${osToPrint.osNumber}</span></div>
+                    <div class="col"><label>DATA ENTRADA</label><span class="print-only-field">${osToPrint.dataEntrada}</span></div>
+                    <div class="col"><label>DATA SAÍDA</label><span class="print-only-field">${dataSaidaFormatada}</span></div>
+                </div>
+                <div class="linha">
+                    <div class="col"><label>CLIENTE</label><span class="print-only-field">${osToPrint.nomeCliente}</span></div>
+                    <div class="col"><label>TELEFONE</label><span class="print-only-field">${osToToPrint.telefone}</span></div>
+                    <div class="col"><label>TÉCNICO</label><span class="print-only-field">${osToPrint.tecnico}</span></div>
+                </div>
+                <div class="linha">
+                    <div class="col"><label>EQUIPAMENTO</label><span class="print-only-field">${osToPrint.equipamento}</span></div>
+                </div>
+                <div class="linha">
+                    <div class="col"><label>ACESSÓRIO</label><span class="print-only-field">${osToPrint.acessorioSim ? 'SIM' : 'NÃO'}</span></div>
+                    ${osToPrint.acessorioSim && osToPrint.qualAcessorio ? `<div class="col"><label>QUAL</label><span class="print-only-field">${osToPrint.qualAcessorio}</span></div>` : ''}
+                </div>
+                <div class="linha">
+                    <div class="col"><label>LIGA</label><span class="print-only-field">${osToPrint.ligaSim ? 'SIM' : 'NÃO'}</span></div>
+                </div>
+                <div class="linha">
+                    <div class="col"><label>DEFEITO FÍSICO</label><span class="print-only-field">${osToPrint.defeitoFisicoSim ? 'SIM' : 'NÃO'}</span></div>
+                    ${osToPrint.defeitoFisicoSim && osToPrint.qualDefeito ? `<div class="col"><label>QUAL</label><span class="print-only-field">${osToPrint.qualDefeito}</span></div>` : ''}
+                </div>
+                <div class="linha">
+                    <div class="col"><label>DEFEITO RELATADO</label><span class="print-only-field" style="min-height: 3.5em;">${osToPrint.defeitoRelatado}</span></div>
+                </div>
+                ${termosCondicoesHTML}
+                <div class="linha assinaturas-row">
+                    <div class="col">
+                        <div class="assinatura-container">
+                            <span class="linha-assinatura"></span>
+                            <span class="linha-assinatura-label">ASS. CLIENTE / ENTREGA</span>
+                        </div>
+                    </div>
+                    <div class="col">
+                        <div class="assinatura-container">
+                            <span class="linha-assinatura"></span>
+                            <span class="linha-assinatura-label">ASS. CNT ASSISTÊNCIA / RETIRADA</span>
+                        </div>
+                    </div>
+                </div>
+            `;
+            printContainer.appendChild(lojaCopy);
+
+            // Gera a via do cliente
+            const clientCopy = document.createElement('div');
+            clientCopy.className = 'print-area';
+            clientCopy.innerHTML = `
+                <div class="titulo">
+                  <img src="logo.png" alt="Logo CNT Assistência Técnica">
+                  <div class="contato">Contato: 84 99809-6865</div>
+                </div>
+                <h2>VIA DO CLIENTE</h2>
+                <div class="linha">
+                    <div class="col"><label>OS Nº</label><span class="print-only-field">${osToPrint.osNumber}</span></div>
+                    <div class="col"><label>DATA ENTRADA</label><span class="print-only-field">${osToPrint.dataEntrada}</span></div>
+                    <div class="col"><label>DATA SAÍDA</label><span class="print-only-field">${dataSaidaFormatada}</span></div>
+                </div>
+                <div class="linha">
+                    <div class="col"><label>CLIENTE</label><span class="print-only-field">${osToPrint.nomeCliente}</span></div>
+                    <div class="col"><label>TELEFONE</label><span class="print-only-field">${osToPrint.telefone}</span></div>
+                    <div class="col"><label>TÉCNICO</label><span class="print-only-field">${osToPrint.tecnico}</span></div>
+                </div>
+                <div class="linha">
+                    <div class="col"><label>EQUIPAMENTO</label><span class="print-only-field">${osToPrint.equipamento}</span></div>
+                </div>
+                <div class="linha">
+                    <div class="col"><label>ACESSÓRIO</label><span class="print-only-field">${osToPrint.acessorioSim ? 'SIM' : 'NÃO'}</span></div>
+                    ${osToPrint.acessorioSim && osToPrint.qualAcessorio ? `<div class="col"><label>QUAL</label><span class="print-only-field">${osToPrint.qualAcessorio}</span></div>` : ''}
+                </div>
+                <div class="linha">
+                    <div class="col"><label>LIGA</label><span class="print-only-field">${osToPrint.ligaSim ? 'SIM' : 'NÃO'}</span></div>
+                </div>
+                <div class="linha">
+                    <div class="col"><label>DEFEITO FÍSICO</label><span class="print-only-field">${osToPrint.defeitoFisicoSim ? 'SIM' : 'NÃO'}</span></div>
+                    ${osToPrint.defeitoFisicoSim && osToPrint.qualDefeito ? `<div class="col"><label>QUAL</label><span class="print-only-field">${osToPrint.qualDefeito}</span></div>` : ''}
+                </div>
+                <div class="linha">
+                    <div class="col"><label>DEFEITO RELATADO</label><span class="print-only-field" style="min-height: 3.5em;">${osToPrint.defeitoRelatado}</span></div>
+                </div>
+                ${termosCondicoesHTML}
+                <div class="linha assinaturas-row">
+                    <div class="col">
+                        <div class="assinatura-container">
+                            <span class="linha-assinatura"></span>
+                            <span class="linha-assinatura-label">ASS. CLIENTE / ENTREGA</span>
+                        </div>
+                    </div>
+                    <div class="col">
+                        <div class="assinatura-container">
+                            <span class="linha-assinatura"></span>
+                            <span class="linha-assinatura-label">ASS. CNT ASSISTÊNCIA / RETIRADA</span>
+                        </div>
+                    </div>
+                </div>
+            `;
+            printContainer.appendChild(clientCopy);
+
+            // Esconde o histórico e mostra a área de impressão
+            document.getElementById('historicoContent').style.display = 'none';
+            document.querySelector('header').style.display = 'none'; // Oculta o cabeçalho
+            printContainer.style.display = 'block';
+
+            setTimeout(() => {
+                window.print();
+                // Após a impressão, reverte para o estado original
+                document.getElementById('historicoContent').style.display = 'block';
+                document.querySelector('header').style.display = 'flex'; // Mostra o cabeçalho
+                printContainer.style.display = 'none';
+                printContainer.innerHTML = ''; // Limpa a área de impressão
+            }, 300);
+        }
+    </script>
+</body>
+</html>
