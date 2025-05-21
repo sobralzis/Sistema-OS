@@ -298,6 +298,15 @@
       box-shadow: 0 6px 15px rgba(0, 0, 0, 0.4);
     }
 
+    .historico-button:disabled {
+      background-color: var(--input-border);
+      color: var(--readonly-text);
+      cursor: not-allowed;
+      opacity: 0.7;
+      transform: none;
+      box-shadow: none;
+    }
+
     .conteudo h2 {
         text-align: center;
         margin-bottom: 20px;
@@ -517,7 +526,8 @@
           padding-bottom: 5px !important; /* Espaço abaixo da label */
       }
 
-      .assinaturas-row { /* Container para as 2 ou 3 assinaturas (cliente/entrega/retirada) */
+      /* Container para as 2 ou 3 assinaturas (cliente/entrega/retirada) */
+      .assinaturas-row {
           display: flex !important;
           gap: 20px !important;
           margin-top: 15px !important;
@@ -595,11 +605,11 @@
 
   <button id="homeButton" class="inicio-action-button" onclick="goHome()">INICIO</button>
 
-  <button id="historicoButton" class="historico-button" onclick="alert('Funcionalidade de Histórico a ser implementada!')">HISTÓRICO</button>
+  <button id="historicoButton" class="historico-button" onclick="goHistorico()">HISTÓRICO</button>
 
   <div class="conteudo">
     <div class="titulo">
-      <img src="img/logo.png" alt="Logo CNT Assistência Técnica">
+      <img src="logo.png" alt="Logo CNT Assistência Técnica">
       <div class="contato">Contato: 84 99809-6865</div>
     </div>
     <h2 style="text-align: center;">ORDEM DE SERVIÇO</h2>
@@ -742,11 +752,43 @@
 
   <div id="printContainer" style="display: none;"></div>
 
-  <button id="mainActionButton" class="fixed-action-button" onclick="handleActionButtonClick()">Próximo &#9654;</button>
+  <button id="mainActionButton" class="fixed-action-button" onclick="handleActionButtonClick()">Próximo &#9658;</button>
 
   <script>
     let currentStep = 1;
     const totalSteps = 6;
+
+    function collectOSData() {
+        const osData = {
+            id: document.getElementById('osNumber').textContent + '_' + new Date().getTime(), // Unique ID for each OS
+            osNumber: document.getElementById('osNumber').textContent,
+            dataEntrada: document.getElementById('dataEntrada').textContent,
+            dataSaida: document.getElementById('dataSaida').textContent,
+            nomeCliente: document.getElementById('nomeCliente').value,
+            telefone: document.getElementById('telefone').value,
+            tecnico: document.getElementById('tecnico').value,
+            equipamento: document.getElementById('equipamento').value,
+            acessorioSim: document.querySelector('input[name="acessorio"][value="sim"]:checked') ? true : false,
+            qualAcessorio: document.getElementById('qualAcessorio').value,
+            ligaSim: document.querySelector('input[name="liga"][value="sim"]:checked') ? true : false,
+            defeitoFisicoSim: document.querySelector('input[name="defeito"][value="sim"]:checked') ? true : false,
+            qualDefeito: document.getElementById('qualDefeito').value,
+            defeitoRelatado: document.getElementById('defeitoRelatado').value,
+            garantiaDias: document.getElementById('garantiaDiasInput').value,
+            timestamp: new Date().getTime() // Timestamp for 90-day expiry
+        };
+        return osData;
+    }
+
+    // Function to save OS data to localStorage
+    function saveOSData(osData) {
+        let history = JSON.parse(localStorage.getItem('os_history') || '[]');
+        // Remove existing OS if editing (based on osNumber and a potential original ID for uniqueness)
+        // For now, we'll just add. If editing is implemented, we'll need a unique ID to replace.
+        // For initial save, we just add it to the history.
+        history.push(osData);
+        localStorage.setItem('os_history', JSON.stringify(history));
+    }
 
     // --- FUNÇÃO PARA GERAR E GERENCIAR O NÚMERO DA OS ---
     function generateOSNumber() {
@@ -888,10 +930,10 @@
       const mainActionButton = document.getElementById('mainActionButton');
       if (mainActionButton) {
           if (step === totalSteps) {
-              mainActionButton.textContent = 'Salvar e Imprimir';
+              mainActionButton.innerHTML = 'Salvar e Imprimir'; // Use innerHTML
               mainActionButton.onclick = handleActionButtonClick; // Mantém o handler único
           } else {
-              mainActionButton.textContent = 'Próximo \u25B8';
+              mainActionButton.innerHTML = 'Próximo &#9658;'; // Use innerHTML
               mainActionButton.onclick = handleActionButtonClick; // Mantém o handler único
           }
       }
@@ -982,6 +1024,11 @@
       }
     }
 
+    // Função para redirecionar para o histórico
+    function goHistorico() {
+        window.location.href = 'historico.html';
+    }
+
     // Função para retornar à página inicial (index.html)
     function goHome() {
         window.location.href = 'index.html'; // Redireciona para a página index.html
@@ -996,7 +1043,7 @@
         const header = document.createElement('div');
         header.className = 'titulo';
         const img = document.createElement('img');
-        img.src = 'img/logo.png'; // Substitua pelo caminho correto da sua logo
+        img.src = 'logo.png'; // Substitua pelo caminho correto da sua logo
         img.alt = 'Logo CNT Assistência Técnica';
         const contato = document.createElement('div');
         contato.className = 'contato';
@@ -1180,8 +1227,10 @@
         return printArea;
     }
 
-
     function salvarImprimir() {
+        const osDataToSave = collectOSData();
+        saveOSData(osDataToSave); // Save the collected data
+
         const printContainer = document.getElementById('printContainer');
         printContainer.innerHTML = ''; // Limpa a área de impressão
 
@@ -1219,6 +1268,12 @@
             // Garante que os campos condicionais da tela voltem ao estado correto
             configurarRadios('acessorio', 'campoAcessorio', 'qualAcessorio');
             configurarRadios('defeito', 'campoDefeito', 'qualDefeito');
+
+            // Opcional: Reiniciar a OS para um novo preenchimento após salvar e imprimir
+            // Isso pode ser útil para o fluxo de trabalho
+            // setTimeout(() => {
+            //     location.reload(); // Recarrega a página para uma nova OS limpa
+            // }, 100);
         }, 300);
     }
 
