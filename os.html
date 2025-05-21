@@ -5,7 +5,6 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>OS - CNT Assistência</title>
   <style>
-    /* TODO: SEUS ESTILOS CSS ORIGINAIS DO download.htm */
     :root {
       /* Variáveis de cores */
       --background-dark: #1a1a1a;
@@ -27,7 +26,7 @@
       font-family: 'Roboto', sans-serif;
       display: flex;
       height: 100vh;
-      overflow: hidden; /* Evita rolagem desnecessária */
+      overflow: hidden;
       font-size: 16px;
       line-height: 1.6;
     }
@@ -36,855 +35,1256 @@
       width: 15px;
       background-color: var(--input-bg);
       display: flex;
-      flex-direction: column-reverse; /* Enche de baixo para cima */
+      flex-direction: column-reverse;
       justify-content: flex-start;
       position: fixed;
       left: 0;
       top: 0;
-      height: 100%;
-      z-index: 100;
-      box-shadow: 2px 0 5px rgba(0, 0, 0, 0.5);
+      bottom: 0;
+      border-right: 1px solid var(--separator-color);
+      z-index: 1001;
     }
 
-    #barra {
+    .progresso {
       width: 100%;
       background-color: var(--orange-progress);
-      transition: height 0.3s ease-out;
-      height: 0%; /* Começa vazio */
+      transition: height 0.3s ease;
     }
 
-    .menu-lateral {
-      width: 60px;
-      background-color: var(--background-dark);
-      padding-top: 20px;
-      display: flex;
-      flex-direction: column;
-      align-items: center;
-      gap: 15px;
-      border-right: 1px solid var(--separator-color);
-      z-index: 200; /* Acima da barra de progresso */
-    }
-
-    .menu-item {
-      background: none;
-      border: none;
-      color: var(--text-light);
-      padding: 10px;
-      border-radius: 5px;
-      cursor: pointer;
-      font-size: 1.5em; /* Ícones maiores */
-      transition: background-color 0.3s ease, color 0.3s ease;
-      width: 40px; /* Largura fixa para os botões */
-      height: 40px; /* Altura fixa para os botões */
-      display: flex;
-      justify-content: center;
-      align-items: center;
-    }
-
-    .menu-item:hover {
-      background-color: var(--input-bg);
-      color: var(--accent-color);
-    }
-
-    .menu-item i {
-      pointer-events: none; /* Garante que o clique seja no botão, não no ícone */
-    }
-
-    .main-content {
+    .conteudo {
+      margin-left: 35px;
       flex-grow: 1;
       padding: 20px;
-      overflow-y: auto; /* Permite rolagem no conteúdo principal */
-      display: flex;
-      flex-direction: column;
-      align-items: center;
-    }
-
-    .container {
-      max-width: 800px;
-      width: 100%;
-      background-color: var(--input-bg);
-      padding: 30px;
-      border-radius: 10px;
-      box-shadow: 0 5px 15px rgba(0, 0, 0, 0.4);
+      overflow-y: auto;
+      padding-bottom: 100px;
       box-sizing: border-box;
-      margin-bottom: 20px; /* Espaço para o botão principal */
     }
 
-    h1, h2 {
-      color: var(--accent-color);
-      text-align: center;
-      margin-bottom: 20px;
-      text-transform: uppercase;
+    /* Ajuste para telas menores */
+    @media (max-width: 600px) {
+        .conteudo {
+            margin-left: 0;
+            padding-left: 20px;
+            padding-right: 20px;
+        }
+        .barra-progresso {
+            display: none;
+        }
     }
 
-    .form-section {
-      margin-bottom: 30px;
-      border: 1px solid var(--separator-color);
-      padding: 20px;
-      border-radius: 8px;
-      background-color: #2a2a2a;
+    input[type="text"],
+    input[type="tel"],
+    textarea,
+    select {
+      width: 100%;
+      padding: 12px 15px;
+      background-color: var(--input-bg);
+      color: var(--text-light);
+      border: 1px solid var(--input-border);
+      box-sizing: border-box;
+      border-radius: 6px;
+      font-size: 1em;
+      transition: border-color 0.3s ease, box-shadow 0.3s ease;
+      -webkit-appearance: none;
+      -moz-appearance: none;
+      appearance: none;
     }
 
-    .form-group {
-      margin-bottom: 15px;
+    input[type="text"]:focus,
+    input[type="tel"]:focus,
+    textarea:focus,
+    select:focus {
+      border-color: var(--input-focus-border);
+      box-shadow: 0 0 0 3px rgba(0, 123, 255, 0.3);
+      outline: none;
+    }
+
+    select {
+        background-image: url('data:image/svg+xml;utf8,<svg fill="%23f0f0f0" height="24" viewBox="0 0 24 24" width="24" xmlns="http://www.w3.org/2000/svg"><path d="M7 10l5 5 5-5z"/><path d="M0 0h24v24H0z" fill="none"/></svg>');
+        background-repeat: no-repeat;
+        background-position: right 10px center;
+        background-size: 20px;
+        padding-right: 40px;
     }
 
     label {
       display: block;
       margin-bottom: 8px;
       font-weight: bold;
-      color: var(--text-light);
-    }
-
-    input[type="text"],
-    input[type="tel"],
-    input[type="date"],
-    input[type="number"],
-    textarea {
-      width: calc(100% - 18px); /* Ajustado para padding e borda */
-      padding: 10px;
-      border: 1px solid var(--input-border);
-      border-radius: 5px;
-      background-color: #444444;
-      color: var(--text-light);
-      box-sizing: border-box;
-      font-size: 1em;
-      transition: border-color 0.3s ease;
-    }
-
-    input[type="text"]:focus,
-    input[type="tel"]:focus,
-    input[type="date"]:focus,
-    input[type="number"]:focus,
-    textarea:focus {
-      outline: none;
-      border-color: var(--input-focus-border);
-      box-shadow: 0 0 0 2px rgba(0, 123, 255, 0.25);
-    }
-
-    input[readonly] {
-      background-color: #555555;
-      color: var(--readonly-text);
-      cursor: not-allowed;
-    }
-
-    .radio-group label {
-      display: inline-block;
-      margin-right: 20px;
-      font-weight: normal;
-      cursor: pointer;
-    }
-
-    .radio-group input[type="radio"] {
-      margin-right: 5px;
-      transform: scale(1.2); /* Aumenta o tamanho do radio button */
-    }
-
-    .condicional-campo {
-      display: none; /* Oculto por padrão */
-      margin-top: 15px;
-      padding: 10px;
-      background-color: #3a3a3a;
-      border-radius: 5px;
-      border: 1px dashed var(--separator-color);
-    }
-
-    #mainActionButton {
-      background-color: var(--accent-color);
-      color: white;
-      padding: 12px 25px;
-      border: none;
-      border-radius: 5px;
-      cursor: pointer;
       font-size: 1.1em;
-      font-weight: bold;
-      margin-top: 20px;
-      width: 100%;
-      max-width: 800px;
-      transition: background-color 0.3s ease;
+      color: var(--text-light);
     }
 
-    #mainActionButton:hover {
-      background-color: var(--accent-hover);
-    }
-
-    /* Estilos para a área de impressão */
-    .print-area {
-        display: none; /* Oculto por padrão, visível apenas na impressão */
-        background-color: #fff;
-        color: #000;
-        padding: 20mm; /* Margens para impressão A4 */
-        box-sizing: border-box;
-        font-family: 'Times New Roman', serif;
-        font-size: 12pt;
-        line-height: 1.4;
-        width: 210mm; /* Largura de uma folha A4 */
-        min-height: 297mm; /* Altura de uma folha A4 */
-        margin: 0 auto; /* Centraliza na tela quando visível fora do print */
-        box-shadow: 0 0 10px rgba(0,0,0,0.1); /* Sombra para visualização */
-        page-break-after: always; /* Garante que cada via fique em uma nova página */
-    }
-
-    .print-area:last-child {
-        page-break-after: avoid; /* A última via não deve quebrar a página após si */
-    }
-
-    .titulo {
-        text-align: center;
-        margin-bottom: 20px;
-        border-bottom: 2px solid #ccc;
+    .readonly-field {
+        color: var(--readonly-text);
+        font-size: 1.1em;
+        padding: 8px 0;
+        display: block;
+        margin-bottom: 15px;
+        border-bottom: 1px dashed var(--separator-color);
         padding-bottom: 10px;
     }
 
-    .titulo img {
-        max-width: 180px;
-        height: auto;
-        margin-bottom: 10px;
-    }
-
-    .titulo h2 {
-        font-size: 2em;
-        margin: 0;
-        color: #000;
-        text-transform: uppercase;
-    }
-    .titulo .contato {
-        font-size: 1.1em;
-        color: #555;
-        margin-top: 5px;
-    }
-
     .linha {
-        display: flex;
-        flex-wrap: wrap;
-        margin-bottom: 10px;
-        gap: 20px; /* Espaçamento entre colunas */
+      display: flex;
+      flex-wrap: wrap;
+      gap: 20px;
+      margin-bottom: 25px;
+      padding: 0;
+    }
+
+    /* Ajuste para que em telas menores as colunas quebrem corretamente */
+    @media (max-width: 480px) {
+        .col {
+            min-width: 100%;
+        }
+        .linha {
+            flex-direction: column;
+            gap: 15px;
+        }
     }
 
     .col {
-        flex: 1;
-        min-width: 200px; /* Garante que colunas não fiquem muito estreitas */
-        display: flex;
-        flex-direction: column;
+      flex: 1;
+      min-width: 200px;
     }
 
-    .col label {
-        font-weight: bold;
-        margin-bottom: 5px;
-        color: #333;
-        font-size: 0.9em;
+    /* Oculta os form-steps por padrão. Eles serão exibidos via JS */
+    .form-step {
+      margin-bottom: 0; /* Começa sem margem */
+      transition: opacity 0.5s ease-in-out, max-height 0.5s ease-in-out, margin-bottom 0.5s ease-in-out;
+      display: none; /* Agora oculta por padrão */
     }
 
-    .print-only-field {
-        border: 1px solid #000;
-        padding: 5px;
-        min-height: 25px; /* Altura mínima para campos vazios */
-        display: block;
-        box-sizing: border-box;
-        word-wrap: break-word; /* Quebra palavras longas */
+    /* Exibe os form-steps que são marcados como 'visible-step' */
+    .form-step.visible-step {
+      opacity: 1; /* Garante que estejam visíveis */
+      max-height: 1000px; /* Garante que o conteúdo seja visível */
+      margin-bottom: 25px; /* Adiciona a margem quando visível */
+      display: block; /* Torna o bloco visível */
+    }
+
+    .checkbox-group {
+      display: flex;
+      gap: 20px;
+      align-items: center;
+      margin-top: 5px;
+      flex-wrap: wrap;
+    }
+
+    .checkbox-group label {
+      margin-bottom: 0;
+      font-weight: normal;
+      font-size: 1em;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+
+    .checkbox-group input[type="radio"],
+    .checkbox-group input[type="checkbox"] {
+        width: auto;
+        margin: 0;
+        padding: 0;
+        transform: scale(1.2);
+        accent-color: var(--accent-color);
+    }
+
+    .fixed-action-button {
+      position: fixed;
+      bottom: 20px;
+      right: 20px;
+      background-color: var(--accent-color);
+      color: var(--text-light);
+      padding: 15px 30px;
+      border: none;
+      border-radius: 30px;
+      cursor: pointer;
+      font-size: 1.2em;
+      box-shadow: 0 4px 10px rgba(0, 0, 0, 0.3);
+      transition: background-color 0.3s ease, transform 0.3s ease, box-shadow 0.3s ease;
+      z-index: 1000;
+      font-weight: bold;
+      letter-spacing: 0.5px;
+    }
+
+    .fixed-action-button:hover {
+      background-color: var(--accent-hover);
+      transform: translateY(-2px);
+      box-shadow: 0 6px 15px rgba(0, 0, 0, 0.4);
+    }
+
+    .fixed-action-button:disabled {
+      background-color: var(--input-border);
+      color: var(--readonly-text);
+      cursor: not-allowed;
+      opacity: 0.7;
+      transform: none;
+      box-shadow: none;
+    }
+
+    /* Estilo para o botão INICIO */
+    .inicio-action-button {
+      position: fixed;
+      top: 20px; /* Distância do topo */
+      left: 20px; /* Distância da esquerda */
+      background-color: var(--accent-color);
+      color: var(--text-light);
+      padding: 10px 20px; /* Um pouco menor para ficar mais discreto no topo */
+      border: none;
+      border-radius: 20px; /* Borda arredondada */
+      cursor: pointer;
+      font-size: 1em; /* Tamanho da fonte ajustado */
+      box-shadow: 0 4px 10px rgba(0, 0, 0, 0.3);
+      transition: background-color 0.3s ease, transform 0.3s ease, box-shadow 0.3s ease;
+      z-index: 1000;
+      font-weight: bold;
+      letter-spacing: 0.5px;
+    }
+
+    .inicio-action-button:hover {
+      background-color: var(--accent-hover);
+      transform: translateY(-2px);
+      box-shadow: 0 6px 15px rgba(0, 0, 0, 0.4);
+    }
+
+    .inicio-action-button:disabled {
+      background-color: var(--input-border);
+      color: var(--readonly-text);
+      cursor: not-allowed;
+      opacity: 0.7;
+      transform: none;
+      box-shadow: none;
+    }
+
+    .titulo {
+      text-align: center;
+      margin-bottom: 20px;
+      margin-top: 10px;
+      /* Removendo position: relative e width: fit-content; */
+      /* O .titulo não precisa ser posicionado relativo se os botões forem fixed */
+    }
+
+    .titulo img {
+        max-width: 200px;
+        height: auto;
+        margin-bottom: 10px;
+        filter: drop-shadow(0 0 8px rgba(0, 123, 255, 0.5));
+    }
+
+    /* Estilo para o botão HISTORICO - AGORA FIXED NA EXTREMIDADE DIREITA */
+    .historico-button {
+        position: fixed; /* Posiciona fixo na tela */
+        top: 20px; /* Distância do topo */
+        right: 20px; /* Distância da direita */
+        background-color: var(--accent-color);
+        color: var(--text-light);
+        padding: 10px 20px; /* Um pouco menor para ficar mais discreto */
+        border: none;
+        border-radius: 20px;
+        cursor: pointer;
         font-size: 1em;
+        box-shadow: 0 4px 10px rgba(0, 0, 0, 0.3);
+        transition: background-color 0.3s ease, transform 0.3s ease, box-shadow 0.3s ease;
+        z-index: 1000;
+        font-weight: bold;
+        letter-spacing: 0.5px;
+        white-space: nowrap; /* Evita quebra de linha */
     }
 
-    textarea.print-only-field {
-        min-height: 80px; /* Altura maior para defeito relatado */
+    .historico-button:hover {
+      background-color: var(--accent-hover);
+      transform: translateY(-2px);
+      box-shadow: 0 6px 15px rgba(0, 0, 0, 0.4);
+    }
+
+    .historico-button:disabled {
+      background-color: var(--input-border);
+      color: var(--readonly-text);
+      cursor: not-allowed;
+      opacity: 0.7;
+      transform: none;
+      box-shadow: none;
+    }
+
+    .conteudo h2 {
+        text-align: center;
+        margin-bottom: 20px;
+        color: var(--text-light);
+        font-size: 1.6em;
+        border-bottom: 2px solid var(--separator-color);
+        padding-bottom: 10px;
+    }
+
+    .contato {
+      text-align: center;
+      font-size: 1em;
+      margin-top: 5px;
+      color: var(--readonly-text);
+    }
+
+    /* Classe 'hidden' agora é exclusiva para campos condicionais que podem ou não aparecer na tela */
+    .hidden {
+      display: none;
     }
 
     .termos-condicoes {
-        border: 1px solid #ccc;
-        padding: 15px;
-        margin-top: 25px;
-        background-color: #f9f9f9;
-        font-size: 0.9em;
-        page-break-before: auto; /* Evita que os termos sejam cortados no meio da página */
-        page-break-inside: avoid; /* Não quebra os termos dentro da área */
+        background-color: var(--input-bg);
+        border: 1px solid var(--input-border);
+        border-radius: 8px;
+        padding: 20px;
+        margin-top: 30px;
+        box-shadow: 0 4px 10px rgba(0, 0, 0, 0.2);
     }
 
     .termos-condicoes h3 {
-        text-align: center;
+        color: var(--accent-color);
+        font-size: 1.4em;
         margin-top: 0;
         margin-bottom: 15px;
-        font-size: 1.2em;
-        color: #000;
-        border-bottom: 1px dashed #999;
-        padding-bottom: 8px;
+        text-align: center;
+        border-bottom: 1px dashed var(--separator-color);
+        padding-bottom: 10px;
     }
 
     .termos-condicoes ol {
-        padding-left: 25px;
+        list-style-type: decimal;
+        padding-left: 20px;
         margin-bottom: 15px;
     }
 
     .termos-condicoes li {
-        margin-bottom: 8px;
+        margin-bottom: 10px;
     }
+
     .termos-condicoes p {
-      margin: 0;
-      font-size: 0.95em;
+        margin: 5px 0;
+        color: var(--text-light);
+        font-size: 0.95em;
     }
+
     .termos-condicoes strong {
-      color: #000;
+        color: var(--orange-progress);
     }
 
-    .garantia-dias-span {
-        display: inline-block;
-        width: 60px;
-        border-bottom: 1px solid #000;
-        text-align: center;
-        line-height: 1.2;
-        vertical-align: middle;
-    }
-
-    .assinaturas-row {
-        display: flex;
-        justify-content: space-around;
-        margin-top: 40px;
-        text-align: center;
-        gap: 30px;
-        flex-wrap: wrap;
-    }
-
+    /* Container para a linha e a label da assinatura */
     .assinatura-container {
         display: flex;
-        flex-direction: column;
-        align-items: center;
-        flex: 1;
-        min-width: 250px;
+        flex-direction: column; /* Coloca a linha acima da label por padrão na tela */
+        width: 100%;
+        margin-top: 15px; /* Espaçamento entre os blocos */
     }
 
     .linha-assinatura {
-        border-bottom: 1px solid #000;
+        display: block;
+        border-bottom: 1px solid var(--separator-color);
         width: 100%;
-        margin-bottom: 5px;
-        min-height: 1.5em; /* Garante que a linha apareça mesmo sem conteúdo */
+        min-height: 1em; /* Garante que a linha tenha uma altura mínima */
+        box-sizing: border-box;
     }
 
     .linha-assinatura-label {
+        text-align: center;
+        font-weight: normal;
+        font-size: 0.9em;
+        margin-top: 5px; /* Espaço entre a linha e a label */
+        padding-bottom: 5px; /* Espaço abaixo da label */
+    }
+
+    /* Estilo para o span da garantia, para evitar quebras de linha indesejadas */
+    .garantia-dias-span {
+        display: inline-block;
+        width: 60px; /* Largura ajustada para ser um pouco mais flexível */
+        border-bottom: 1px solid var(--separator-color);
+        text-align: center;
+        line-height: 1;
+        vertical-align: middle;
+    }
+
+    /* Estilo para o input de garantia */
+    #garantiaDiasInput {
+        width: 80px; /* Ajuste a largura conforme necessário */
+        text-align: center;
+        margin-left: 5px;
+        margin-right: 5px;
+        padding: 5px 10px;
         font-size: 1em;
-        color: #333;
-        font-weight: bold;
+        border: 1px solid var(--input-border);
+        background-color: var(--input-bg);
+        color: var(--text-light);
+        border-radius: 4px;
+        -moz-appearance: textfield; /* Remove setas em Firefox */
+    }
+    /* Remove setas de number input em Chrome, Safari, Edge */
+    #garantiaDiasInput::-webkit-outer-spin-button,
+    #garantiaDiasInput::-webkit-inner-spin-button {
+        -webkit-appearance: none;
+        margin: 0;
     }
 
-    /* Ocultar elementos não essenciais na impressão */
+    /* --- ESTILOS DE IMPRESSÃO --- */
     @media print {
-        body {
-            overflow: visible !important;
-            height: auto !important;
-            margin: 0 !important;
-            padding: 0 !important;
-        }
-        .barra-progresso, .menu-lateral, .main-content, #mainActionButton, #messagePopup {
-            display: none !important; /* Oculta toda a interface do formulário */
-        }
-        .print-area {
-            display: block !important;
-            width: 100% !important;
-            padding: 10mm !important; /* Margens de impressão */
-            border: none !important;
-            box-shadow: none !important;
-            margin: 0 !important;
-        }
-        .print-only-field {
-            border: 1px solid #000 !important;
-            padding: 2px 4px !important;
-            min-height: 1.2em !important;
-        }
-        .titulo img {
-            filter: grayscale(100%) !important; /* Print em preto e branco */
-        }
-        .termos-condicoes {
-            border: 1px solid #000 !important;
-            background-color: #fff !important;
-            box-shadow: none !important;
-        }
-        * {
-            -webkit-print-color-adjust: exact !important; /* Garante cores no print */
-            print-color-adjust: exact !important;
-        }
-    }
+      body {
+        background: #fff !important;
+        color: #000 !important;
+        font-size: 11px !important;
+        line-height: 1.2 !important;
+        padding: 10px !important;
+        overflow: visible !important;
+        height: auto !important;
+        margin: 0 !important;
+        display: block !important; /* Reseta o display flex do body */
+      }
 
-    /* Popup de mensagem */
-    .message-popup {
-      position: fixed;
-      top: 50%;
-      left: 50%;
-      transform: translate(-50%, -50%);
-      background-color: #333333;
-      color: var(--text-light);
-      padding: 25px;
-      border-radius: 10px;
-      box-shadow: 0 5px 20px rgba(0, 0, 0, 0.7);
-      z-index: 1000;
-      display: none;
-      text-align: center;
-      font-size: 1.1em;
-      border: 1px solid var(--accent-color);
-    }
+      * {
+        color: #000 !important;
+        -webkit-print-color-adjust: exact;
+        print-color-adjust: exact;
+      }
+      .titulo img {
+          /* Remove o filtro de sombra aplicado na tela */
+          filter: none !important;
+          /* Transforma a imagem para preto e branco invertendo as cores */
+          filter: invert(1) grayscale(100%) !important;
+          /* Se a logo original for clara, essa é uma boa opção para ela ficar escura na impressão */
+          /* Se a logo for mais escura, você pode tentar:
+             filter: grayscale(100%) brightness(0.5) contrast(2) !important;
+          */
+      }
 
-    .message-popup button {
-      background-color: var(--accent-color);
-      color: white;
-      padding: 10px 20px;
-      border: none;
-      border-radius: 5px;
-      cursor: pointer;
-      margin-top: 20px;
-      font-size: 1em;
-      transition: background-color 0.3s ease;
-      width: auto;
-    }
+      .barra-progresso, .fixed-action-button, button, .inicio-action-button, .historico-button { /* Incluído o novo botão */
+        display: none !important;
+      }
 
-    .message-popup button:hover {
-      background-color: var(--accent-hover);
+      /* OCULTA os form-steps no formulário principal durante a impressão */
+      .form-step { display: none !important; }
+      .conteudo .linha:not(.initial-active) { display: none !important; } /* Oculta as linhas do formulário visível */
+      .conteudo h2 { display: none !important; } /* Oculta o título do formulário visível */
+
+
+      /* Oculta o input de garantia na impressão, pois o valor estará no span */
+      #garantiaDiasInput {
+          display: none !important;
+      }
+
+      /* Torna os campos de impressão (print-only-field) visíveis */
+      .print-only-field {
+          display: block !important;
+          color: #000 !important;
+          font-size: 0.9em !important;
+          border: 1px solid #000 !important;
+          padding: 2px 4px !important;
+          border-radius: 2px !important;
+          box-sizing: border-box !important;
+          min-height: 1.2em !important;
+          white-space: pre-wrap !important;
+      }
+
+      .col .print-only-field {
+          width: 100% !important;
+      }
+
+      /* Estilos para as linhas e colunas na impressão (aplicados a ambas as vias) */
+      .linha {
+        display: flex !important;
+        flex-wrap: wrap !important;
+        gap: 8px !important;
+        margin-bottom: 5px !important;
+        padding: 0 !important;
+      }
+
+      .col {
+        flex: 1;
+        min-width: 120px;
+        padding: 0 !important;
+      }
+      .col label {
+          display: block !important;
+          margin-bottom: 2px !important;
+          font-size: 0.9em !important;
+          font-weight: bold !important;
+      }
+
+      /* Assinaturas: Ajusta para que a linha venha ANTES da label na impressão */
+      .assinatura-container {
+        margin-top: 0 !important; /* Remove margem extra */
+        align-items: center; /* Centraliza a linha e a label */
+        display: flex !important; /* Mantém como flexbox na impressão */
+        flex-direction: column !important; /* Garante que a linha fique acima */
+      }
+      .linha-assinatura {
+          border-bottom: 1px solid #000 !important;
+          width: 100% !important;
+          min-height: 1.5em !important; /* Garante altura para a linha */
+          box-sizing: border-box !important;
+      }
+      .linha-assinatura-label {
+          text-align: center;
+          font-weight: normal;
+          font-size: 0.9em !important;
+          margin-top: 5px !important; /* Espaço entre a linha e a label */
+          padding-bottom: 5px !important; /* Espaço abaixo da label */
+      }
+
+      /* Container para as 2 ou 3 assinaturas (cliente/entrega/retirada) */
+      .assinaturas-row {
+          display: flex !important;
+          gap: 20px !important;
+          margin-top: 15px !important;
+          flex-wrap: wrap !important;
+      }
+      .assinaturas-row .col {
+          flex: 1;
+          min-width: 200px;
+      }
+
+      /* Termos e Condições */
+      .termos-condicoes {
+        background-color: #fff !important;
+        border: 1px solid #000 !important;
+        border-radius: 5px !important;
+        padding: 10px !important;
+        margin-top: 15px !important;
+        box-shadow: none !important;
+        page-break-inside: avoid !important;
+      }
+      .termos-condicoes h3 {
+          font-size: 1em !important;
+          margin-bottom: 8px !important;
+          padding-bottom: 5px !important;
+          border-bottom: 1px dashed #666 !important;
+      }
+      .termos-condicoes ol {
+          padding-left: 15px !important;
+          margin-bottom: 10px !important;
+      }
+      .termos-condicoes li {
+          margin-bottom: 3px !important;
+          font-size: 0.8em !important;
+          line-height: 1.2 !important;
+      }
+      .termos-condicoes p {
+          margin: 3px 0 !important;
+          font-size: 0.8em !important;
+      }
+      .termos-condicoes strong {
+          color: #000 !important;
+      }
+
+      /* Estilo para o span da garantia, para evitar quebras de linha indesejadas */
+      .garantia-dias-span {
+          display: inline-block;
+          width: 60px; /* Largura ajustada para ser um pouco mais flexível */
+          border-bottom: 1px solid #000 !important; /* Linha preta na impressão */
+          text-align: center;
+          line-height: 1;
+          vertical-align: middle;
+          color: #000 !important; /* Garante que o underline seja visível */
+      }
+
+      /* Área de impressão principal (para ambas as vias) */
+      .print-area {
+        display: block !important;
+        padding: 0 !important;
+        margin-bottom: 20px !important;
+        page-break-after: always; /* Garante que cada via comece em uma nova página */
+        border: 1px solid #ccc; /* Adiciona uma borda leve para separar as vias visualmente */
+        padding: 10px;
+      }
+
+      .print-area:last-child {
+        page-break-after: avoid; /* A última via não força quebra de página */
+      }
     }
   </style>
-  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
 </head>
-<body>
+<body onload="inicializarOS()">
   <div class="barra-progresso">
-    <div id="barra"></div>
+    <div id="barra" class="progresso" style="height: 0%;"></div>
   </div>
 
-  <div class="menu-lateral">
-    <button class="menu-item" onclick="goHome()">
-      <i class="fas fa-home"></i>
-    </button>
-    <button class="menu-item" onclick="goHistorico()">
-      <i class="fas fa-history"></i>
-    </button>
-  </div>
+  <button id="homeButton" class="inicio-action-button" onclick="goHome()">INICIO</button>
 
-  <div class="main-content">
-    <div class="container">
-      <h1>Ordem de Serviço</h1>
-      <form id="osForm" onsubmit="event.preventDefault(); printOS();">
-        <div class="form-section">
-          <h2>Dados da Ordem de Serviço</h2>
-          <div class="form-group">
-            <label for="osNumber">Número da OS:</label>
-            <input type="text" id="osNumber" required readonly>
-          </div>
-          <div class="form-group">
-            <label for="dataEntrada">Data de Entrada:</label>
-            <input type="date" id="dataEntrada" required readonly>
-          </div>
-          <div class="form-group">
-            <label for="dataSaida">Data de Saída (Opcional):</label>
-            <input type="date" id="dataSaida">
-          </div>
-          <div class="form-group">
-            <label for="tecnico">Técnico Responsável:</label>
-            <input type="text" id="tecnico" value="Seu Nome" required>
-          </div>
-        </div>
+  <button id="historicoButton" class="historico-button" onclick="goHistorico()">HISTÓRICO</button>
 
-        <div class="form-section">
-          <h2>Dados do Cliente</h2>
-          <div class="form-group">
-            <label for="nomeCliente">Nome do Cliente:</label>
-            <input type="text" id="nomeCliente" required>
-          </div>
-          <div class="form-group">
-            <label for="telefone">Telefone:</label>
-            <input type="tel" id="telefone" placeholder="(DD) XXXXX-XXXX" maxlength="15" oninput="formatarTelefone(this)" required>
-          </div>
-        </div>
-
-        <div class="form-section">
-          <h2>Dados do Equipamento</h2>
-          <div class="form-group">
-            <label for="equipamento">Equipamento:</label>
-            <input type="text" id="equipamento" required>
-          </div>
-          <div class="form-group">
-            <label>Acessório:</label>
-            <div class="radio-group">
-              <label><input type="radio" name="acessorio" id="acessorioSim" value="sim" onchange="configurarRadios('acessorio', 'campoAcessorio', 'qualAcessorio')"> Sim</label>
-              <label><input type="radio" name="acessorio" id="acessorioNao" value="nao" onchange="configurarRadios('acessorio', 'campoAcessorio', 'qualAcessorio')" checked> Não</label>
-            </div>
-            <div id="campoAcessorio" class="condicional-campo">
-              <label for="qualAcessorio">Qual acessório?</label>
-              <input type="text" id="qualAcessorio">
-            </div>
-          </div>
-
-          <div class="form-group">
-            <label>Liga o equipamento?</label>
-            <div class="radio-group">
-              <label><input type="radio" name="liga" id="ligaSim" value="sim"> Sim</label>
-              <label><input type="radio" name="liga" id="ligaNao" value="nao" checked> Não</label>
-            </div>
-          </div>
-
-          <div class="form-group">
-            <label>Defeito Físico?</label>
-            <div class="radio-group">
-              <label><input type="radio" name="defeito" id="defeitoSim" value="sim" onchange="configurarRadios('defeito', 'campoDefeito', 'qualDefeito')"> Sim</label>
-              <label><input type="radio" name="defeito" id="defeitoNao" value="nao" onchange="configurarRadios('defeito', 'campoDefeito', 'qualDefeito')" checked> Não</label>
-            </div>
-            <div id="campoDefeito" class="condicional-campo">
-              <label for="qualDefeito">Qual defeito físico?</label>
-              <input type="text" id="qualDefeito">
-            </div>
-          </div>
-
-          <div class="form-group">
-            <label for="defeitoRelatado">Defeito Relatado pelo Cliente:</label>
-            <textarea id="defeitoRelatado" rows="4" required></textarea>
-          </div>
-          <div class="form-group">
-            <label for="garantiaDias">Dias de Garantia:</label>
-            <input type="number" id="garantiaDias" value="90" min="0" required>
-          </div>
-        </div>
-        <button type="submit" id="mainActionButton">Imprimir OS</button>
-      </form>
+  <div class="conteudo">
+    <div class="titulo">
+      <img src="img/logo.png" alt="Logo CNT Assistência Técnica">
+      <div class="contato">Contato: 84 99809-6865</div>
     </div>
-  </div>
+    <h2 style="text-align: center;">ORDEM DE SERVIÇO</h2>
 
-  <div id="printContainer"></div>
+    <div class="linha initial-active">
+      <div class="col">
+        <label>OS Nº</label>
+        <span id="osNumber" class="readonly-field"></span>
+      </div>
+      <div class="col">
+        <label>DATA DE ENTRADA</label>
+        <span id="dataEntrada" class="readonly-field"></span>
+      </div>
+      <div class="col">
+        <label>DATA SAÍDA</label>
+        <span id="dataSaida" class="readonly-field"></span>
+      </div>
+    </div>
 
-  <div id="messagePopup" class="message-popup">
-    <p id="popupMessage"></p>
-    <button onclick="hideMessagePopup()">Ok</button>
-  </div>
+    <div class="form-step" data-step="1">
+      <div class="linha">
+        <div class="col">
+          <label for="nomeCliente">NOME DO CLIENTE</label>
+          <input type="text" id="nomeCliente">
+        </div>
+      </div>
+    </div>
 
-  <script>
-    document.addEventListener('DOMContentLoaded', (event) => {
-      loadLastOSNumber();
-      setTodayDate();
-      configurarRadios('acessorio', 'campoAcessorio', 'qualAcessorio');
-      configurarRadios('defeito', 'campoDefeito', 'qualDefeito');
-      atualizarProgresso();
-    });
+    <div class="form-step" data-step="2">
+      <div class="linha">
+        <div class="col">
+          <label for="telefone">TELEFONE</label>
+          <input type="tel" id="telefone" placeholder="(00)00000-0000" maxlength="15">
+        </div>
+        <div class="col">
+          <label for="tecnico">TÉCNICO</label>
+          <select id="tecnico">
+            <option value="">Selecione</option>
+            <option>Bruno Santos</option>
+            <option>João Paulo</option>
+          </select>
+        </div>
+      </div>
+    </div>
 
-    function showMessagePopup(message) {
-      document.getElementById('popupMessage').innerText = message;
-      document.getElementById('messagePopup').style.display = 'block';
-    }
+    <div class="form-step" data-step="3">
+      <div class="linha">
+        <div class="col">
+          <label for="equipamento">EQUIPAMENTO</label>
+          <input type="text" id="equipamento">
+        </div>
+      </div>
+    </div>
 
-    function hideMessagePopup() {
-      document.getElementById('messagePopup').style.display = 'none';
-    }
+    <div class="form-step" data-step="4">
+      <div class="linha">
+        <div class="col">
+          <label>ACESSÓRIO</label>
+          <div class="checkbox-group" id="acessorioGroup">
+            <label><input type="radio" name="acessorio" value="sim"> SIM</label>
+            <label><input type="radio" name="acessorio" value="nao"> NÃO</label>
+          </div>
+        </div>
+        <div class="col">
+          <label>LIGA</label>
+          <div class="checkbox-group" id="ligaGroup">
+            <label><input type="radio" name="liga" value="sim"> SIM</label>
+            <label><input type="radio" name="liga" value="nao"> NÃO</label>
+          </div>
+        </div>
+        <div class="col">
+          <label>DEFEITO FÍSICO</label>
+          <div class="checkbox-group" id="defeitoGroup">
+            <label><input type="radio" name="defeito" value="sim"> SIM</label>
+            <label><input type="radio" name="defeito" value="nao"> NÃO</label>
+          </div>
+        </div>
+      </div>
+      <div class="linha hidden" id="campoAcessorio">
+        <div class="col">
+          <label for="qualAcessorio">QUAL ACESSÓRIO</label>
+          <input type="text" id="qualAcessorio">
+        </div>
+      </div>
+      <div class="linha hidden" id="campoDefeito">
+        <div class="col">
+          <label for="qualDefeito">QUAL DEFEITO</label>
+          <input type="text" id="qualDefeito">
+        </div>
+      </div>
+    </div>
 
-    function loadLastOSNumber() {
-      let lastOSNumber = localStorage.getItem('last_os_number');
-      if (lastOSNumber) {
-        lastOSNumber = parseInt(lastOSNumber) + 1;
-      } else {
-        lastOSNumber = 1;
-      }
-      document.getElementById('osNumber').value = lastOSNumber.toString().padStart(4, '0');
-    }
+    <div class="form-step" data-step="5">
+      <div class="linha">
+        <div class="col">
+          <label for="defeitoRelatado">DEFEITO RELATADO</label>
+          <textarea id="defeitoRelatado" rows="3"></textarea>
+        </div>
+      </div>
+    </div>
 
-    function setTodayDate() {
-      const today = new Date();
-      const year = today.getFullYear();
-      const month = String(today.getMonth() + 1).padStart(2, '0');
-      const day = String(today.getDate()).padStart(2, '0');
-      document.getElementById('dataEntrada').value = `${year}-${month}-${day}`;
-    }
-
-    function formatarTelefone(input) {
-      let value = input.value.replace(/\D/g, "");
-      let formattedValue = '';
-
-      if (value.length > 0) {
-        formattedValue = '(' + value.substring(0, 2);
-      }
-      if (value.length > 2) {
-        formattedValue += ') ' + value.substring(2, 7);
-      }
-      if (value.length > 7) {
-        formattedValue += '-' + value.substring(7, 11);
-      }
-      input.value = formattedValue;
-    }
-
-    function configurarRadios(radioName, campoId, inputId) {
-      const radioSim = document.getElementById(`${radioName}Sim`);
-      const campoCondicional = document.getElementById(campoId);
-      const inputCondicional = document.getElementById(inputId);
-
-      if (radioSim && campoCondicional && inputCondicional) {
-        if (radioSim.checked) {
-          campoCondicional.style.display = 'block';
-          inputCondicional.setAttribute('required', 'true');
-        } else {
-          campoCondicional.style.display = 'none';
-          inputCondicional.removeAttribute('required');
-          inputCondicional.value = '';
-        }
-      }
-      atualizarProgresso();
-    }
-
-    function generateUniqueId() {
-      return '_' + Math.random().toString(36).substr(2, 9);
-    }
-
-    function saveOSData() {
-        const osNumber = document.getElementById('osNumber').value;
-        const dataEntrada = document.getElementById('dataEntrada').value;
-        const nomeCliente = document.getElementById('nomeCliente').value;
-        const equipamento = document.getElementById('equipamento').value;
-        const defeitoRelatado = document.getElementById('defeitoRelatado').value;
-
-        // Validação dos campos obrigatórios
-        if (!osNumber || !dataEntrada || !nomeCliente || !equipamento || !defeitoRelatado) {
-            showMessagePopup("Por favor, preencha todos os campos obrigatórios antes de salvar.");
-            return false;
-        }
-
-        const osData = {
-            id: generateUniqueId(),
-            timestamp: Date.now(),
-            osNumber: osNumber,
-            dataEntrada: formatDateToDisplay(document.getElementById('dataEntrada').value),
-            dataSaida: formatDateToDisplay(document.getElementById('dataSaida').value) || '___/___/___',
-            nomeCliente: nomeCliente,
-            telefone: document.getElementById('telefone').value,
-            tecnico: document.getElementById('tecnico').value,
-            equipamento: equipamento,
-            acessorioSim: document.getElementById('acessorioSim').checked,
-            qualAcessorio: document.getElementById('qualAcessorio').value,
-            ligaSim: document.getElementById('ligaSim').checked,
-            defeitoFisicoSim: document.getElementById('defeitoSim').checked,
-            qualDefeito: document.getElementById('qualDefeito').value,
-            defeitoRelatado: defeitoRelatado,
-            garantiaDias: document.getElementById('garantiaDias').value || '90'
-        };
-
-        const osHistory = JSON.parse(localStorage.getItem('os_history') || '[]');
-        osHistory.push(osData);
-        localStorage.setItem('os_history', JSON.stringify(osHistory));
-        localStorage.setItem('last_os_number', parseInt(osNumber));
-
-        console.log('OS salva no histórico:', osData);
-        return true;
-    }
-
-    function formatDateToDisplay(dateString) {
-      if (!dateString) return '';
-      const [year, month, day] = dateString.split('-');
-      return `${day}/${month}/${year}`;
-    }
-
-    function createPrintableContent(isClientCopy) {
-      const osNumber = document.getElementById('osNumber').value;
-      const dataEntrada = formatDateToDisplay(document.getElementById('dataEntrada').value);
-      const dataSaida = formatDateToDisplay(document.getElementById('dataSaida').value) || '___/___/___';
-      const nomeCliente = document.getElementById('nomeCliente').value;
-      const telefone = document.getElementById('telefone').value;
-      const tecnico = document.getElementById('tecnico').value;
-      const equipamento = document.getElementById('equipamento').value;
-      const acessorioSim = document.getElementById('acessorioSim').checked;
-      const qualAcessorio = document.getElementById('qualAcessorio').value;
-      const ligaSim = document.getElementById('ligaSim').checked;
-      const defeitoFisicoSim = document.getElementById('defeitoSim').checked;
-      const qualDefeito = document.getElementById('qualDefeito').value;
-      const defeitoRelatado = document.getElementById('defeitoRelatado').value;
-      const garantiaDias = document.getElementById('garantiaDias').value || '90';
-
-      const termosCondicoesHTML = `
-        <div class="termos-condicoes">
+    <div class="form-step" data-step="6">
+        <div class="linha">
+            <div class="col">
+                <label for="garantiaDiasInput">DIAS DE GARANTIA (Serviço)</label>
+                <input type="number" id="garantiaDiasInput" value="90" min="0">
+            </div>
+        </div>
+        <div class="termos-condicoes" id="termosFormulario">
           <h3>Termos e Condições</h3>
           <ol>
             <li>
               <strong>Recebimento do Equipamento</strong>
-              <p>O equipamento entregue será avaliado, registrando estado físico, avarias e acessórios recebidos. Não nos responsabilizamos por itens não declarados.</p>
+              <p>o O equipamento entregue será avaliado, registrando estado físico, avarias e acessórios recebidos. Não nos responsabilizamos por itens não declarados.</p>
             </li>
             <li>
               <strong>Diagnóstico e Orçamento</strong>
-              <p>O diagnóstico será realizado em até 3 dias úteis. O serviço só será iniciado após aprovação do orçamento pelo cliente.</p>
+              <p>o O diagnóstico será realizado em até 3 dias úteis. O serviço só será iniciado após aprovação do orçamento pelo cliente.</p>
             </li>
             <li>
-              <strong>Garantia</strong>
-              <p>Garantia de <span class="garantia-dias-span">${garantiaDias}</span> dias para o serviço realizado, limitada ao reparo efetuado. Não cobre mau uso, quedas, líquidos ou intervenções de terceiros.</p>
+              <strong>Garantia
+              <p>o Garantia de <span class="garantia-dias-span" id="garantiaServico"></span> dias para o serviço realizado, limitada ao reparo efetuado. Não cobre mau uso, quedas, líquidos ou intervenções de terceiros.</p>
             </li>
             <li>
               <strong>Equipamentos Não Retirados</strong>
-              <p>Após 30 dias da conclusão, será cobrada taxa de armazenamento de R$ 1,00/dia. Após 90 dias, o equipamento será considerado abandonado, conforme o Código Civil Artigo 1.275, inciso III.</p>
+              <p>o Após 30 dias da conclusão, será cobrada taxa de armazenamento de R$ 1,00/dia. Após 90 dias, o equipamento será considerado abandonado, conforme o Código Civil Artigo 1.275, inciso III.</p>
             </li>
             <li>
               <strong>Perda de Dados</strong>
-              <p>Não nos responsabilizamos por perda de dados. Recomenda-se backup antes da entrega. Backup solicitado será cobrado à parte.</p>
+              <p>o Não nos responsabilizamos por perda de dados. Recomenda-se backup antes da entrega. Backup solicitado será cobrado à parte.</p>
             </li>
             <li>
               <strong>Peças Substituídas</strong>
-              <p>Garantia de <span class="garantia-dias-span">${garantiaDias}</span> dias para peças substituídas contra defeitos de fabricação. Peças originais mediante solicitação e disponibilidade.</p>
+              <p>o Garantia de <span class="garantia-dias-span" id="garantiaPecas"></span> dias para peças substituídas contra defeitos de fabricação. Peças originais mediante solicitação e disponibilidade.</p>
             </li>
           </ol>
-        </div>
-      `;
+          </div>
+    </div>
+  </div>
 
-      return `
-        <div class="print-area">
-          <div class="titulo">
-            <img src="logo.png" alt="Logo CNT Assistência Técnica">
-            <div class="contato">Contato: 84 99809-6865</div>
-          </div>
-          <h2>${isClientCopy ? 'VIA DO CLIENTE' : 'ORDEM DE SERVIÇO'}</h2>
-          <div class="linha">
-            <div class="col"><label>OS Nº</label><span class="print-only-field">${osNumber}</span></div>
-            <div class="col"><label>DATA ENTRADA</label><span class="print-only-field">${dataEntrada}</span></div>
-            <div class="col"><label>DATA SAÍDA</label><span class="print-only-field">${dataSaida}</span></div>
-          </div>
-          <div class="linha">
-            <div class="col"><label>CLIENTE</label><span class="print-only-field">${nomeCliente}</span></div>
-            <div class="col"><label>TELEFONE</label><span class="print-only-field">${telefone}</span></div>
-            <div class="col"><label>TÉCNICO</label><span class="print-only-field">${tecnico}</span></div>
-          </div>
-          <div class="linha">
-            <div class="col"><label>EQUIPAMENTO</label><span class="print-only-field">${equipamento}</span></div>
-          </div>
-          <div class="linha">
-            <div class="col"><label>ACESSÓRIO</label><span class="print-only-field">${acessorioSim ? 'SIM' : 'NÃO'}</span></div>
-            ${acessorioSim && qualAcessorio ? `<div class="col"><label>QUAL</label><span class="print-only-field">${qualAcessorio}</span></div>` : ''}
-          </div>
-          <div class="linha">
-            <div class="col"><label>LIGA</label><span class="print-only-field">${ligaSim ? 'SIM' : 'NÃO'}</span></div>
-          </div>
-          <div class="linha">
-            <div class="col"><label>DEFEITO FÍSICO</label><span class="print-only-field">${defeitoFisicoSim ? 'SIM' : 'NÃO'}</span></div>
-            ${defeitoFisicoSim && qualDefeito ? `<div class="col"><label>QUAL</label><span class="print-only-field">${qualDefeito}</span></div>` : ''}
-          </div>
-          <div class="linha">
-            <div class="col"><label>DEFEITO RELATADO</label><span class="print-only-field" style="min-height: 3.5em;">${defeitoRelatado}</span></div>
-          </div>
-          ${termosCondicoesHTML}
-          <div class="linha assinaturas-row">
-            <div class="col">
-              <div class="assinatura-container">
-                <span class="linha-assinatura"></span>
-                <span class="linha-assinatura-label">ASS. CLIENTE / ENTREGA</span>
-              </div>
-            </div>
-            <div class="col">
-              <div class="assinatura-container">
-                <span class="linha-assinatura"></span>
-                <span class="linha-assinatura-label">ASS. CNT ASSISTÊNCIA / RETIRADA</span>
-              </div>
-            </div>
-          </div>
-        </div>
-      `;
+  <div id="printContainer" style="display: none;"></div>
+
+  <button id="mainActionButton" class="fixed-action-button" onclick="handleActionButtonClick()">Próximo &#9658;</button>
+
+  <script>
+    let currentStep = 1;
+    const totalSteps = 6;
+
+    function collectOSData() {
+        const osData = {
+            id: document.getElementById('osNumber').textContent + '_' + new Date().getTime(), // Unique ID for each OS
+            osNumber: document.getElementById('osNumber').textContent,
+            dataEntrada: document.getElementById('dataEntrada').textContent,
+            dataSaida: document.getElementById('dataSaida').textContent,
+            nomeCliente: document.getElementById('nomeCliente').value,
+            telefone: document.getElementById('telefone').value,
+            tecnico: document.getElementById('tecnico').value,
+            equipamento: document.getElementById('equipamento').value,
+            acessorioSim: document.querySelector('input[name="acessorio"][value="sim"]:checked') ? true : false,
+            qualAcessorio: document.getElementById('qualAcessorio').value,
+            ligaSim: document.querySelector('input[name="liga"][value="sim"]:checked') ? true : false,
+            defeitoFisicoSim: document.querySelector('input[name="defeito"][value="sim"]:checked') ? true : false,
+            qualDefeito: document.getElementById('qualDefeito').value,
+            defeitoRelatado: document.getElementById('defeitoRelatado').value,
+            garantiaDias: document.getElementById('garantiaDiasInput').value,
+            timestamp: new Date().getTime() // Timestamp for 90-day expiry
+        };
+        return osData;
     }
 
-    function printOS() {
-      // Valida o formulário antes de prosseguir
-      if (!document.getElementById('osForm').checkValidity()) {
-        showMessagePopup("Por favor, preencha todos os campos obrigatórios antes de imprimir.");
-        return;
-      }
+    // Function to save OS data to localStorage
+    function saveOSData(osData) {
+        let history = JSON.parse(localStorage.getItem('os_history') || '[]');
+        // Remove existing OS if editing (based on osNumber and a potential original ID for uniqueness)
+        // For now, we'll just add. If editing is implemented, we'll need a unique ID to replace.
+        // For initial save, we just add it to the history.
+        history.push(osData);
+        localStorage.setItem('os_history', JSON.stringify(history));
+    }
 
-      // Tenta salvar os dados da OS no localStorage
-      const savedSuccessfully = saveOSData();
-      if (!savedSuccessfully) {
-          return; // Se houver problema no salvamento (ex: campos obrigatórios vazios), interrompe
-      }
+    // --- FUNÇÃO PARA GERAR E GERENCIAR O NÚMERO DA OS ---
+    function generateOSNumber() {
+        const today = new Date();
+        const year = today.getFullYear();
+        const month = (today.getMonth() + 1).toString().padStart(2, '0');
+        const day = today.getDate().toString().padStart(2, '0');
 
-      const printContainer = document.getElementById('printContainer');
-      printContainer.innerHTML = ''; // Limpa o conteúdo existente
+        const datePart = `${year}${month}${day}`;
+        const localStorageKey = `osCount_${datePart}`;
 
-      // Gera a via da loja
-      const lojaCopy = createPrintableContent(false);
-      printContainer.innerHTML += lojaCopy; // Use += para adicionar, não substituir
+        let counter = parseInt(localStorage.getItem(localStorageKey) || '0');
 
-      // Gera a via do cliente
-      const clientCopy = createPrintableContent(true);
-      printContainer.innerHTML += clientCopy; // Use += para adicionar, não substituir
+        // Se o contador exceder 99, reinicia para 1 (ou para 0 e depois 1)
+        if (counter >= 99) {
+            counter = 0; // Reinicia o contador para o dia atual se atingir 99
+        }
+        counter++;
 
-      // Esconde o formulário da tela e mostra a área de impressão
-      document.querySelector('.main-content').style.display = 'none';
-      document.querySelector('.barra-progresso').style.display = 'none';
-      document.querySelector('.menu-lateral').style.display = 'none';
-      document.getElementById('mainActionButton').style.display = 'none';
-      printContainer.style.display = 'block';
+        localStorage.setItem(localStorageKey, counter.toString());
 
+        const formattedCounter = counter.toString().padStart(2, '0');
 
-      setTimeout(() => {
-        window.print();
-        // Após a impressão, reverte para o estado original
-        document.querySelector('.main-content').style.display = 'flex';
-        document.querySelector('.barra-progresso').style.display = 'flex';
-        document.querySelector('.menu-lateral').style.display = 'flex';
-        document.getElementById('mainActionButton').style.display = 'block';
+        return `${year} ${month}${day} ${formattedCounter}`;
+    }
 
-        printContainer.style.display = 'none';
-        printContainer.innerHTML = ''; // Limpa a área de impressão novamente
+    function inicializarOS() {
+        const osNumberElement = document.getElementById('osNumber');
+        const dataEntradaElement = document.getElementById('dataEntrada');
+        const dataSaidaElement = document.getElementById('dataSaida');
 
-        // Garante que os campos condicionais da tela voltem ao estado correto
+        if (osNumberElement && dataEntradaElement) {
+            osNumberElement.textContent = generateOSNumber();
+            const hoje = new Date();
+            dataEntradaElement.textContent = hoje.toLocaleDateString('pt-BR');
+            dataSaidaElement.textContent = '___/___/___'; // Formato padrão para preenchimento manual
+        }
+
         configurarRadios('acessorio', 'campoAcessorio', 'qualAcessorio');
         configurarRadios('defeito', 'campoDefeito', 'qualDefeito');
 
-        // Recarrega a página para uma nova OS limpa e incrementa o número da OS
-        setTimeout(() => {
-            location.reload();
-        }, 100);
-      }, 300);
+        // Adiciona listeners para validar a cada mudança
+        document.querySelectorAll(".form-step input, .form-step textarea, .form-step select, .checkbox-group input[type='radio']").forEach(element => {
+          element.addEventListener('input', validarPassoAtual);
+          element.addEventListener('change', validarPassoAtual); // Para radios e selects
+        });
+
+        const telefoneInput = document.getElementById('telefone');
+        if (telefoneInput) {
+            telefoneInput.addEventListener('input', formatarTelefone);
+        }
+
+        // Linka o input de garantia com os spans nos termos e condições
+        const garantiaInput = document.getElementById('garantiaDiasInput');
+        const garantiaServicoSpan = document.getElementById('garantiaServico');
+        const garantiaPecasSpan = document.getElementById('garantiaPecas');
+
+        if (garantiaInput && garantiaServicoSpan && garantiaPecasSpan) {
+            // Inicializa os spans com o valor padrão do input (90)
+            garantiaServicoSpan.textContent = garantiaInput.value;
+            garantiaPecasSpan.textContent = garantiaInput.value;
+
+            // Atualiza os spans sempre que o input mudar
+            garantiaInput.addEventListener('input', () => {
+                garantiaServicoSpan.textContent = garantiaInput.value;
+                garantiaPecasSpan.textContent = garantiaInput.value;
+            });
+        }
+
+        showStep(currentStep);
+        atualizarProgresso();
     }
 
-    function atualizarProgresso() {
-      const form = document.getElementById('osForm');
-      const inputs = form.querySelectorAll('input[required], textarea[required], input[type="radio"]');
-      let filledCount = 0;
-      let totalFieldsConsidered = 0;
+    function configurarRadios(nomeGrupo, idCampoContainer, idInputAssociado) {
+      const campoContainer = document.getElementById(idCampoContainer);
+      const inputAssociado = document.getElementById(idInputAssociado);
 
-      const radioGroups = {}; // Para controlar grupos de rádio já contados
+      if (!campoContainer) {
+          console.warn(`Elemento com ID '${idCampoContainer}' não encontrado. Verifique o HTML.`);
+          return;
+      }
 
-      inputs.forEach(input => {
-        if (input.type === 'radio') {
-            const radioGroupName = input.name;
-            if (!radioGroups[radioGroupName]) { // Se o grupo de rádio ainda não foi processado
-                totalFieldsConsidered++;
-                const radiosInGroup = document.querySelectorAll(`input[type="radio"][name="${radioGroupName}"]`);
-                if (Array.from(radiosInGroup).some(radio => radio.checked)) {
-                    filledCount++;
-                }
-                radioGroups[radioGroupName] = true; // Marca o grupo como processado
+      document.querySelectorAll(`input[name="${nomeGrupo}"]`).forEach(radio => {
+        radio.addEventListener('change', () => {
+          if (radio.value === 'sim') {
+            campoContainer.classList.remove('hidden');
+          } else {
+            campoContainer.classList.add('hidden');
+            if (inputAssociado) {
+                inputAssociado.value = ''; // Limpa o valor quando oculta
             }
-        } else if (input.hasAttribute('required')) {
-            // Campos obrigatórios de texto, número, data, textarea
-            // E campos condicionais que se tornaram obrigatórios e estão visíveis
-            const isConditionalAndHidden = input.closest('.condicional-campo') && input.closest('.condicional-campo').style.display === 'none';
+          }
+          validarPassoAtual();
+        });
+      });
 
-            if (!isConditionalAndHidden) {
-                totalFieldsConsidered++;
-                if (input.value.trim() !== '') {
-                    filledCount++;
-                }
+      // Estado inicial ao carregar a página
+      const checkedRadio = document.querySelector(`input[name="${nomeGrupo}"]:checked`);
+      if (!checkedRadio || checkedRadio.value === 'nao') {
+          campoContainer.classList.add('hidden');
+          if (inputAssociado) {
+              inputAssociado.value = ''; // Garante que esteja limpo na inicialização
+          }
+      } else {
+          campoContainer.classList.remove('hidden');
+      }
+    }
+
+    function formatarTelefone(event) {
+        let input = event.target;
+        let value = input.value.replace(/\D/g, '');
+
+        if (value.length > 11) {
+            value = value.substring(0, 11);
+        }
+
+        if (value.length > 0) {
+            value = value.replace(/^(\d{2})(\d)/g, '($1)$2');
+            if (value.length > 9) {
+                value = value.replace(/(\d{5})(\d)/, '$1-$2');
+            } else if (value.length > 6) {
+                value = value.replace(/(\d{4})(\d)/, '$1-$2');
             }
+        }
+        input.value = value;
+        validarPassoAtual();
+    }
+
+    function showStep(step) {
+      document.querySelectorAll('.form-step').forEach(s => {
+        const stepNum = parseInt(s.dataset.step);
+        if (stepNum <= step) { // Mostra o passo atual e todos os anteriores
+          s.classList.add('visible-step');
+        } else { // Oculta os passos futuros
+          s.classList.remove('visible-step');
         }
       });
 
-      const progress = totalFieldsConsidered > 0 ? Math.round((filledCount / totalFieldsConsidered) * 100) : 0;
+      const mainActionButton = document.getElementById('mainActionButton');
+      if (mainActionButton) {
+          if (step === totalSteps) {
+              mainActionButton.innerHTML = 'Salvar e Imprimir'; // Use innerHTML
+              mainActionButton.onclick = handleActionButtonClick; // Mantém o handler único
+          } else {
+              mainActionButton.innerHTML = 'Próximo &#9658;'; // Use innerHTML
+              mainActionButton.onclick = handleActionButtonClick; // Mantém o handler único
+          }
+      }
+      validarPassoAtual();
+      atualizarProgresso();
+
+      // Linha removida/comentada para manter o botão INICIO sempre habilitado
+      // const homeButton = document.getElementById('homeButton');
+      // if (homeButton) {
+      //   homeButton.disabled = (currentStep === 1);
+      // }
+    }
+
+    function validarPassoAtual() {
+      const currentFormStepElement = document.querySelector(`.form-step[data-step="${currentStep}"]`);
+      let isValid = true;
+
+      if (!currentFormStepElement) {
+        console.error(`Passo do formulário com data-step="${currentStep}" não encontrado para validação.`);
+        return true;
+      }
+
+      // Validação de inputs de texto, tel, textarea e select
+      currentFormStepElement.querySelectorAll("input[type='text'], input[type='tel'], textarea, select, input[type='number']").forEach(input => {
+          // Verifica se o input é visível e não está dentro de um container com a classe 'hidden'
+          if (input.offsetParent !== null && !input.closest('.hidden')) {
+              if (input.id === 'telefone') {
+                  const cleanedValue = input.value.replace(/\D/g, '');
+                  if (cleanedValue.length < 10 || cleanedValue.length > 11) { // Telefone com 10 ou 11 dígitos
+                      isValid = false;
+                  }
+              } else if (input.value.trim() === '' && !input.readOnly) {
+                  isValid = false;
+              }
+          }
+      });
+
+      // Validação de grupos de rádio (se ao menos um está selecionado)
+      currentFormStepElement.querySelectorAll('.checkbox-group').forEach(group => {
+          const radioName = group.querySelector('input[type="radio"]')?.name;
+          if (radioName) {
+              const checkedRadio = group.querySelector(`input[name="${radioName}"]:checked`);
+              if (!checkedRadio) {
+                  isValid = false;
+              }
+          }
+      });
+
+      // Validação condicional para "QUAL ACESSÓRIO" e "QUAL DEFEITO"
+      if (currentStep === 4) {
+          const acessorioSimChecked = document.querySelector('input[name="acessorio"][value="sim"]:checked');
+          const qualAcessorioInput = document.getElementById('qualAcessorio');
+          if (acessorioSimChecked && qualAcessorioInput && !qualAcessorioInput.closest('.hidden') && qualAcessorioInput.value.trim() === '') {
+              isValid = false;
+          }
+
+          const defeitoSimChecked = document.querySelector('input[name="defeito"][value="sim"]:checked');
+          const qualDefeitoInput = document.getElementById('qualDefeito');
+          if (defeitoSimChecked && qualDefeitoInput && !qualDefeitoInput.closest('.hidden') && qualDefeitoInput.value.trim() === '') {
+              isValid = false;
+          }
+      }
+
+      const mainActionButton = document.getElementById('mainActionButton');
+      if (mainActionButton) {
+          mainActionButton.disabled = !isValid;
+      }
+      return isValid;
+    }
+
+    function handleActionButtonClick() {
+        if (currentStep === totalSteps) {
+            salvarImprimir();
+        } else {
+            nextStep();
+        }
+    }
+
+    function nextStep() {
+      if (validarPassoAtual()) {
+        currentStep++;
+        if (currentStep > totalSteps) {
+          currentStep = totalSteps;
+        }
+        showStep(currentStep);
+      } else {
+          alert("Por favor, preencha todos os campos obrigatórios do passo atual.");
+      }
+    }
+
+    // Função para redirecionar para o histórico
+    function goHistorico() {
+        window.location.href = 'historico.html';
+    }
+
+    // Função para retornar à página inicial (index.html)
+    function goHome() {
+        window.location.href = 'index.html'; // Redireciona para a página index.html
+    }
+
+    // Função única para criar o conteúdo de impressão para uma via
+    function createPrintableContent(isClientCopy) {
+        const printArea = document.createElement('div');
+        printArea.className = 'print-area';
+
+        // Título e Contato (igual para ambas as vias)
+        const header = document.createElement('div');
+        header.className = 'titulo';
+        const img = document.createElement('img');
+        img.src = 'img/logo.png'; // Substitua pelo caminho correto da sua logo
+        img.alt = 'Logo CNT Assistência Técnica';
+        const contato = document.createElement('div');
+        contato.className = 'contato';
+        contato.textContent = 'Contato: 84 99809-6865';
+        header.appendChild(img);
+        header.appendChild(contato);
+        printArea.appendChild(header);
+
+        // Título da OS (diferente para cada via)
+        const osTitle = document.createElement('h2');
+        osTitle.style.textAlign = 'center';
+        osTitle.style.margin = '15px 0';
+        osTitle.textContent = isClientCopy ? 'VIA DO CLIENTE' : 'ORDEM DE SERVIÇO';
+        printArea.appendChild(osTitle);
+
+        // Seção de Dados da OS (OS Nº, Data Entrada, Data Saída)
+        const linhaOsDatas = document.createElement('div');
+        linhaOsDatas.className = 'linha';
+        linhaOsDatas.innerHTML = `
+            <div class="col">
+                <label>OS Nº</label>
+                <span class="print-only-field">${document.getElementById('osNumber').textContent}</span>
+            </div>
+            <div class="col">
+                <label>DATA ENTRADA</label>
+                <span class="print-only-field">${document.getElementById('dataEntrada').textContent}</span>
+            </div>
+            <div class="col">
+                <label>DATA SAÍDA</label>
+                <span class="print-only-field">${document.getElementById('dataSaida').textContent}</span>
+            </div>
+        `;
+        printArea.appendChild(linhaOsDatas);
+
+        // Seção de Dados do Cliente (Cliente, Telefone, Técnico)
+        const linhaClienteTelTec = document.createElement('div');
+        linhaClienteTelTec.className = 'linha';
+        linhaClienteTelTec.innerHTML = `
+            <div class="col">
+                <label>CLIENTE</label>
+                <span class="print-only-field">${document.getElementById('nomeCliente').value}</span>
+            </div>
+            <div class="col">
+                <label>TELEFONE</label>
+                <span class="print-only-field">${document.getElementById('telefone').value}</span>
+            </div>
+            <div class="col">
+                <label>TÉCNICO</label>
+                <span class="print-only-field">${document.getElementById('tecnico').value}</span>
+            </div>
+        `;
+        printArea.appendChild(linhaClienteTelTec);
+
+        // Seção de Equipamento
+        const linhaEquipamento = document.createElement('div');
+        linhaEquipamento.className = 'linha';
+        linhaEquipamento.innerHTML = `
+            <div class="col">
+                <label>EQUIPAMENTO</label>
+                <span class="print-only-field">${document.getElementById('equipamento').value}</span>
+            </div>
+        `;
+        printArea.appendChild(linhaEquipamento);
+
+        // Seção Acessório (Condicional)
+        const acessorioSimChecked = document.querySelector('input[name="acessorio"][value="sim"]:checked');
+        const qualAcessorioVal = document.getElementById('qualAcessorio').value.trim();
+
+        const linhaAcessorio = document.createElement('div');
+        linhaAcessorio.className = 'linha';
+        let acessorioHtml = `
+            <div class="col">
+                <label>ACESSÓRIO</label>
+                <span class="print-only-field">${acessorioSimChecked ? 'SIM' : 'NÃO'}</span>
+            </div>
+        `;
+        // Adiciona o campo "QUAL" apenas se "SIM" for selecionado E houver valor
+        if (acessorioSimChecked && qualAcessorioVal !== '') {
+            acessorioHtml += `
+                <div class="col">
+                    <label>QUAL</label>
+                    <span class="print-only-field">${qualAcessorioVal}</span>
+                </div>
+            `;
+        }
+        linhaAcessorio.innerHTML = acessorioHtml;
+        printArea.appendChild(linhaAcessorio);
+
+        // Seção Liga
+        const linhaLiga = document.createElement('div');
+        linhaLiga.className = 'linha';
+        linhaLiga.innerHTML = `
+            <div class="col">
+                <label>LIGA</label>
+                <span class="print-only-field">${document.querySelector('input[name="liga"]:checked')?.value.toUpperCase() || ''}</span>
+            </div>
+        `;
+        printArea.appendChild(linhaLiga);
+
+        // Seção Defeito Físico (Condicional)
+        const defeitoSimChecked = document.querySelector('input[name="defeito"][value="sim"]:checked');
+        const qualDefeitoVal = document.getElementById('qualDefeito').value.trim();
+
+        const linhaDefeito = document.createElement('div');
+        linhaDefeito.className = 'linha';
+        let defeitoHtml = `
+            <div class="col">
+                <label>DEFEITO FÍSICO</label>
+                <span class="print-only-field">${defeitoSimChecked ? 'SIM' : 'NÃO'}</span>
+            </div>
+        `;
+        // Adiciona o campo "QUAL" apenas se "SIM" for selecionado E houver valor
+        if (defeitoSimChecked && qualDefeitoVal !== '') {
+            defeitoHtml += `
+                <div class="col">
+                    <label>QUAL</label>
+                    <span class="print-only-field">${qualDefeitoVal}</span>
+                </div>
+            `;
+        }
+        linhaDefeito.innerHTML = defeitoHtml;
+        printArea.appendChild(linhaDefeito);
+
+        // Seção Defeito Relatado
+        const linhaDefeitoRelatado = document.createElement('div');
+        linhaDefeitoRelatado.className = 'linha';
+        linhaDefeitoRelatado.innerHTML = `
+            <div class="col">
+                <label>DEFEITO RELATADO</label>
+                <span class="print-only-field" style="min-height: 3.5em;">${document.getElementById('defeitoRelatado').value}</span>
+            </div>
+        `;
+        printArea.appendChild(linhaDefeitoRelatado);
+
+        // Termos e Condições
+        const termosOriginal = document.getElementById('termosFormulario');
+        const termosClonados = termosOriginal.cloneNode(true);
+        termosClonados.removeAttribute('id'); // Remove ID para evitar duplicidade na impressão
+        
+        // Atualiza os spans da garantia com o valor do input (para a impressão)
+        const garantiaServicoSpan = termosClonados.querySelector('#garantiaServico');
+        const garantiaPecasSpan = termosClonados.querySelector('#garantiaPecas');
+        const garantiaDiasInput = document.getElementById('garantiaDiasInput');
+
+        if (garantiaServicoSpan) {
+             garantiaServicoSpan.textContent = garantiaDiasInput ? garantiaDiasInput.value : '';
+        }
+        if (garantiaPecasSpan) {
+             garantiaPecasSpan.textContent = garantiaDiasInput ? garantiaDiasInput.value : '';
+        }
+
+        printArea.appendChild(termosClonados);
+
+
+        // Seção de Assinaturas (Entrega e Retirada)
+        const assinaturasRow = document.createElement('div');
+        assinaturasRow.className = 'linha assinaturas-row';
+
+        // Assinatura de Entrega
+        assinaturasRow.innerHTML += `
+            <div class="col">
+                <div class="assinatura-container">
+                    <span class="linha-assinatura"></span>
+                    <span class="linha-assinatura-label">ASS. CLIENTE / ENTREGA</span>
+                </div>
+            </div>
+        `;
+
+        // Assinatura de Retirada
+        assinaturasRow.innerHTML += `
+            <div class="col">
+                <div class="assinatura-container">
+                    <span class="linha-assinatura"></span>
+                    <span class="linha-assinatura-label">ASS. CNT ASSISTÊNCIA / RETIRADA</span>
+                </div>
+            </div>
+        `;
+        printArea.appendChild(assinaturasRow);
+
+
+        return printArea;
+    }
+
+    function salvarImprimir() {
+        const osDataToSave = collectOSData();
+        saveOSData(osDataToSave); // Save the collected data
+
+        const printContainer = document.getElementById('printContainer');
+        printContainer.innerHTML = ''; // Limpa a área de impressão
+
+        // Gera a via da loja
+        const lojaCopy = createPrintableContent(false);
+        printContainer.appendChild(lojaCopy);
+
+        // Gera a via do cliente
+        const clientCopy = createPrintableContent(true);
+        printContainer.appendChild(clientCopy);
+
+        // Esconde o formulário da tela e mostra a área de impressão
+        document.querySelector('.conteudo').style.display = 'none';
+        document.getElementById('mainActionButton').style.display = 'none';
+        // Esconde o botão INICIO ao imprimir
+        document.getElementById('homeButton').style.display = 'none';
+        // Esconde o botão HISTORICO ao imprimir
+        document.getElementById('historicoButton').style.display = 'none';
+
+        printContainer.style.display = 'block';
+
+        setTimeout(() => {
+            window.print();
+            // Após a impressão, reverte para o estado original
+            document.querySelector('.conteudo').style.display = 'block';
+            document.getElementById('mainActionButton').style.display = 'block';
+            // Mostra o botão INICIO novamente
+            document.getElementById('homeButton').style.display = 'block';
+            // Mostra o botão HISTORICO novamente
+            document.getElementById('historicoButton').style.display = 'block';
+
+            printContainer.style.display = 'none';
+            printContainer.innerHTML = ''; // Limpa a área de impressão novamente
+
+            // Garante que os campos condicionais da tela voltem ao estado correto
+            configurarRadios('acessorio', 'campoAcessorio', 'qualAcessorio');
+            configurarRadios('defeito', 'campoDefeito', 'qualDefeito');
+
+            // Opcional: Reiniciar a OS para um novo preenchimento após salvar e imprimir
+            // Isso pode ser útil para o fluxo de trabalho
+            // setTimeout(() => {
+            //     location.reload(); // Recarrega a página para uma nova OS limpa
+            // }, 100);
+        }, 300);
+    }
+
+    function atualizarProgresso() {
+      const progress = Math.round((currentStep / totalSteps) * 100);
       const barraElement = document.getElementById("barra");
       if (barraElement) {
         barraElement.style.height = progress + "%";
       }
     }
 
-    // Adicionar listeners para atualizar progresso em tempo real
-    document.querySelectorAll('#osForm input, #osForm textarea').forEach(input => {
-        input.addEventListener('input', atualizarProgresso);
-    });
-    // Adicionar listeners especificamente para os radios, pois 'input' pode não pegar todas as mudanças
-    document.querySelectorAll('#osForm input[type="radio"]').forEach(radio => {
-        radio.addEventListener('change', atualizarProgresso);
-    });
-
-    // Funções para navegação
-    function goHome() {
-        // Redireciona para a página inicial (se houver)
-        // Certifique-se de que 'index.html' é o nome correto do seu arquivo inicial
-        window.location.href = 'index.html';
-    }
-
-    function goHistorico() {
-        // Redireciona para a página de histórico (se houver)
-        // Certifique-se de que 'historico.html' é o nome correto do seu arquivo de histórico
-        window.location.href = 'historico.html';
-    }
   </script>
 </body>
 </html>
