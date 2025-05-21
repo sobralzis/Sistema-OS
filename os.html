@@ -299,24 +299,24 @@
         color: var(--orange-progress);
     }
 
-    /* Correção para a linha de assinatura */
+    /* Estilo para o span da assinatura */
     .linha-assinatura {
         display: block;
-        border-bottom: 1px solid var(--separator-color); /* Usando a cor do separador */
+        border-bottom: 1px solid var(--separator-color);
         width: 100%;
-        min-height: 1em;
+        min-height: 1em; /* Garante que a linha tenha uma altura mínima */
         margin-top: 15px;
-        box-sizing: border-box; /* Garante que padding e border sejam incluídos no width */
+        box-sizing: border-box;
     }
 
     /* Estilo para o span da garantia, para evitar quebras de linha indesejadas */
     .garantia-dias-span {
-        display: inline-block; /* Continua na linha, mas aceita width */
+        display: inline-block;
         width: 60px; /* Largura ajustada para ser um pouco mais flexível */
-        border-bottom: 1px solid var(--separator-color); /* Linha para preenchimento */
-        text-align: center; /* Centraliza qualquer texto que possa ser digitado */
-        line-height: 1; /* Garante que a linha não crie altura extra desnecessária */
-        vertical-align: middle; /* Ajuda no alinhamento com o texto */
+        border-bottom: 1px solid var(--separator-color);
+        text-align: center;
+        line-height: 1;
+        vertical-align: middle;
     }
 
 
@@ -330,43 +330,82 @@
       }
 
       .barra-progresso, .fixed-action-button, button {
-        display: none !important;
+        display: none !important; /* Oculta elementos de UI na impressão */
       }
 
+      /* Estiliza inputs, textareas e selects para parecerem texto simples na impressão */
       input, textarea, select {
-        border: 1px solid #000 !important;
-        background: transparent !important;
-        color: #000 !important;
-        padding: 2px !important;
+        border: none !important; /* Remove bordas */
+        background: transparent !important; /* Remove fundo */
+        color: #000 !important; /* Texto preto */
+        padding: 0 !important; /* Remove padding */
+        width: auto !important; /* Ajusta largura ao conteúdo se possível */
+        -webkit-print-color-adjust: exact; /* Para imprimir cores de fundo e texto (se houver) */
+        print-color-adjust: exact;
+        /* Adiciona um padding e borda inferior para simular um campo preenchido */
+        padding-bottom: 2px !important;
+        border-bottom: 1px dashed #999 !important; /* Borda leve para indicar um campo */
       }
+      /* Para selects, para garantir que o texto da opção selecionada seja exibido */
+      select {
+        -webkit-appearance: none;
+        -moz-appearance: none;
+        appearance: none;
+        background-image: none !important; /* Remove seta do select */
+      }
+
 
       /* Garante que todos os passos (form-step) sejam visíveis na impressão,
          mesmo os que não fazem parte do fluxo interativo */
-      .form-step, .termos-condicoes-print, .via-cliente {
+      .form-step {
         opacity: 1 !important;
         max-height: none !important;
         overflow: visible !important;
-        margin-bottom: 25px !important;
+        margin-bottom: 15px !important; /* Um pouco menos de margem para economizar espaço */
         display: block !important; /* Certifica que estão visíveis */
       }
 
-      .linha {
-        display: flex !important;
-        opacity: 1 !important;
-        max-height: none !important;
-        padding-bottom: 10px !important;
+      /* A linha inicial (OS, Data) e a Via do Cliente também devem ser visíveis */
+      .linha.initial-active, .via-cliente {
+          display: flex !important;
+          opacity: 1 !important;
+          max-height: none !important;
+          overflow: visible !important;
       }
 
 
-      .linha-impressao {
+      .linha {
         display: flex !important;
-        gap: 20px !important;
-        margin: 10px 0 !important;
+        flex-wrap: wrap !important; /* Permite que as colunas quebrem se necessário */
+        gap: 15px !important; /* Ajusta o gap para impressão */
+        margin-bottom: 10px !important; /* Reduz margem inferior */
+        padding: 0 !important;
+      }
+
+      .col {
+        flex: 1;
+        min-width: 150px; /* Reduz min-width para mais compactação */
+      }
+
+      /* Garante que os campos "QUAL ACESSÓRIO" e "QUAL DEFEITO" sempre apareçam,
+         mesmo se estivessem hidden na tela. */
+      #campoAcessorio.hidden, #campoDefeito.hidden {
+          display: flex !important; /* Força a exibição na impressão */
+          opacity: 1 !important;
+          max-height: none !important;
+      }
+
+      .linha-impressao { /* Específico para a via do cliente */
+        display: flex !important;
+        gap: 15px !important;
+        margin: 5px 0 !important;
       }
 
       .via-cliente {
-        page-break-before: always;
+        page-break-before: always; /* Inicia uma nova página para a via do cliente */
         margin-top: 30px;
+        padding-top: 20px; /* Adiciona um padding superior para melhor visualização */
+        border-top: 1px dashed #ccc; /* Linha divisória sutil */
       }
 
       /* No modo de impressão, a classe hidden deve ser ignorada se aplicada a um form-step ou linha */
@@ -374,18 +413,66 @@
           display: block !important; /* Força a exibição na impressão */
       }
 
-
       .termos-condicoes {
-        page-break-inside: avoid;
-        border: 1px solid #ddd; /* Adiciona uma borda para impressão */
+        page-break-inside: avoid; /* Evita quebra de página dentro dos termos */
+        border: 1px solid #ddd;
         background-color: #f9f9f9;
         color: #333;
+        padding: 15px; /* Reduz padding para impressão */
+      }
+      .termos-condicoes p, .termos-condicoes li {
+          font-size: 0.9em; /* Texto ligeiramente menor para os termos */
+          margin-bottom: 5px;
+      }
+      .termos-condicoes h3 {
+          font-size: 1.2em; /* Título menor */
       }
 
       /* Estilo da imagem do logo para impressão */
       .titulo img {
-        max-width: 200px;
+        max-width: 150px; /* Logo menor na impressão */
         filter: none;
+      }
+      .titulo .contato {
+          font-size: 0.9em;
+      }
+
+      /* Esconde os labels dos campos de input na via do cliente para economizar espaço
+         e deixa apenas o valor */
+      .via-cliente label {
+          display: inline !important; /* Volta a ser inline */
+          font-weight: bold; /* Mantém negrito */
+          margin-right: 5px; /* Pequeno espaçamento */
+          font-size: 1em; /* Tamanho normal */
+      }
+      .via-cliente span {
+          display: inline !important; /* Os spans de preenchimento ficam inline */
+          border-bottom: none !important; /* Remove a linha */
+          padding-bottom: 0 !important;
+          color: #000 !important;
+      }
+
+      /* Esconde os elementos de rádio na impressão, mostrando apenas o valor selecionado */
+      .checkbox-group label input[type="radio"] {
+          display: none !important;
+      }
+      .checkbox-group label {
+          gap: 0 !important;
+      }
+      .checkbox-group label::before { /* Para mostrar o valor do radio na impressão */
+          content: attr(value) !important; /* Não funciona com value de input, precisa de um span ou JS */
+      }
+
+      /* Para os radios, vamos usar o JS para popular o span de impressão */
+      .checkbox-group {
+          display: block !important; /* Para que os labels se quebrem */
+      }
+
+      /* Esconde o label "TÉCNICO" e exibe o valor diretamente para "TÉCNICO" na via do cliente */
+      #tecnicoPrint + label { /* Seleciona o label que vem depois do #tecnicoPrint */
+        display: inline !important;
+        font-weight: bold;
+        margin-right: 5px;
       }
     }
   </style>
@@ -618,7 +705,7 @@
           <span id="assRetPrint"></span>
         </div>
       </div>
-      <div class="termos-condicoes"></div>
+      <div class="termos-condicoes print-termos-via-cliente"></div>
     </div>
   </div>
 
@@ -798,16 +885,6 @@
         }
     }
 
-    function nextStep() {
-      if (validarPassoAtual()) {
-        currentStep++;
-        if (currentStep > totalSteps) {
-          currentStep = totalSteps;
-        }
-        showStep(currentStep);
-      }
-    }
-
     function salvarImprimir() {
       const dados = {
         os: document.getElementById('osNumber')?.textContent || '',
@@ -833,10 +910,20 @@
           viaCliente.querySelector('#clientePrint').textContent = dados.nome;
           viaCliente.querySelector('#telefonePrint').textContent = dados.telefone;
           viaCliente.querySelector('#tecnicoPrint').textContent = dados.tecnico;
-          viaCliente.querySelector('#equipamentoPrint').textContent = dados.equipamento;
-          viaCliente.querySelector('#acessorioPrint').textContent = `${dados.acessorio}${dados.qualAcessorio ? ': ' + dados.qualAcessorio : ''}`;
+          
+          // Acessório: Inclui o "QUAL" se houver e o rádio for "sim"
+          const acessorioRadio = document.querySelector('input[name="acessorio"]:checked')?.value;
+          let acessorioTexto = acessorioRadio === 'sim' ? `SIM${dados.qualAcessorio ? ': ' + dados.qualAcessorio : ''}` : 'NÃO';
+          viaCliente.querySelector('#acessorioPrint').textContent = acessorioTexto;
+
           viaCliente.querySelector('#ligaPrint').textContent = dados.liga;
-          viaCliente.querySelector('#defeitoPrint').textContent = `${dados.defeito}${dados.qualDefeito ? ': ' + dados.qualDefeito : ''}`;
+
+          // Defeito: Inclui o "QUAL" se houver e o rádio for "sim"
+          const defeitoRadio = document.querySelector('input[name="defeito"]:checked')?.value;
+          let defeitoTexto = defeitoRadio === 'sim' ? `SIM${dados.qualDefeito ? ': ' + dados.qualDefeito : ''}` : 'NÃO';
+          viaCliente.querySelector('#defeitoPrint').textContent = defeitoTexto;
+
+          viaCliente.querySelector('#equipamentoPrint').textContent = dados.equipamento;
           viaCliente.querySelector('#defeitoRelatadoPrint').textContent = dados.defeitoRelatado;
           viaCliente.querySelector('#dataEntradaPrint').textContent = dados.dataEntrada;
           viaCliente.querySelector('#dataSaidaPrint').textContent = dados.dataSaida;
@@ -844,9 +931,21 @@
           viaCliente.querySelector('#assRetPrint').textContent = dados.assRet;
 
           const termosOriginal = document.querySelector('.termos-condicoes');
-          if (termosOriginal) {
-              viaCliente.querySelector('.termos-condicoes').innerHTML = termosOriginal.innerHTML;
+          // Para evitar problemas com IDs duplicados, clonamos e limpamos os IDs para impressão
+          const termosClonados = termosOriginal.cloneNode(true);
+          // Opcional: Remover IDs dos elementos clonados para evitar duplicidade no DOM
+          termosClonados.querySelectorAll('[id]').forEach(el => el.removeAttribute('id'));
+
+          // O span da garantia também precisa ser populado na via do cliente se tiver valor
+          const garantiaSpanOriginal = termosOriginal.querySelector('.garantia-dias-span');
+          const garantiaSpanClonado = termosClonados.querySelector('.garantia-dias-span');
+          if (garantiaSpanOriginal && garantiaSpanClonado) {
+              garantiaSpanClonado.textContent = garantiaSpanOriginal.textContent; // Se você preencher isso via JS
           }
+          // Ou se for um valor fixo para impressão, você pode definir aqui:
+          garantiaSpanClonado.textContent = '90'; // Exemplo: Se for sempre 90 dias na impressão
+
+          viaCliente.querySelector('.print-termos-via-cliente').innerHTML = termosClonados.innerHTML;
       }
 
       setTimeout(() => {
