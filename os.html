@@ -92,7 +92,7 @@
     input[type="text"]:focus,
     input[type="tel"]:focus,
     textarea:focus,
-    select:focus,
+    select[type="number"]:focus,
     input[type="number"]:focus {
       border-color: var(--input-focus-border);
       box-shadow: 0 0 0 3px rgba(0, 123, 255, 0.3);
@@ -151,15 +151,15 @@
     .form-step {
       margin-bottom: 0;
       transition: opacity 0.5s ease-in-out, max-height 0.5s ease-in-out, margin-bottom 0.5s ease-in-out;
-      display: none; /* Inicia oculto */
-      opacity: 0; /* Para transição de opacidade */
-      max-height: 0; /* Para transição de altura */
-      overflow: hidden; /* Para esconder o conteúdo ao ocultar */
+      display: none;
+      opacity: 0;
+      max-height: 0;
+      overflow: hidden;
     }
 
     .form-step.visible-step {
       opacity: 1;
-      max-height: 1000px; /* Um valor grande o suficiente para exibir o conteúdo */
+      max-height: 1000px;
       margin-bottom: 25px;
       display: block;
     }
@@ -323,6 +323,14 @@
       display: none !important;
     }
 
+    /* Estilo para campo inválido */
+    input.invalid-field,
+    select.invalid-field,
+    textarea.invalid-field {
+        border-color: #ff4d4d !important; /* Vermelho */
+        box-shadow: 0 0 0 3px rgba(255, 77, 77, 0.3) !important;
+    }
+
     .termos-condicoes {
         background-color: var(--input-bg);
         border: 1px solid var(--input-border);
@@ -420,17 +428,24 @@
         margin: 0;
     }
 
+    /* ------------------------------------- */
+    /* ESTILOS PARA IMPRESSÃO */
+    /* ------------------------------------- */
     @media print {
       body {
         background: #fff !important;
         color: #000 !important;
-        font-size: 11px !important;
+        font-size: 18px !important; /* AJUSTADO: reduzido para caber mais conteúdo */
         line-height: 1.2 !important;
-        padding: 10px !important;
+        padding: 0 !important;
         overflow: visible !important;
         height: auto !important;
         margin: 0 !important;
         display: block !important;
+      }
+
+      @page {
+        margin: 0.8cm;
       }
 
       * {
@@ -438,9 +453,18 @@
         -webkit-print-color-adjust: exact;
         print-color-adjust: exact;
       }
+      .titulo {
+        margin-top: 5px !important;
+        margin-bottom: 5px !important;
+      }
       .titulo img {
           filter: none !important;
           filter: invert(1) grayscale(100%) !important;
+          margin-bottom: 5px !important;
+      }
+      .contato {
+        margin-top: 2px !important;
+        font-size: 0.9em !important;
       }
 
       .barra-progresso, .fixed-action-button, button, .inicio-action-button, .historico-button {
@@ -458,7 +482,7 @@
       .print-only-field {
           display: block !important;
           color: #000 !important;
-          font-size: 0.9em !important;
+          font-size: 1em !important;
           border: 1px solid #000 !important;
           padding: 2px 4px !important;
           border-radius: 2px !important;
@@ -487,7 +511,7 @@
       .col label {
           display: block !important;
           margin-bottom: 2px !important;
-          font-size: 0.9em !important;
+          font-size: 1em !important;
           font-weight: bold !important;
       }
 
@@ -506,7 +530,7 @@
       .linha-assinatura-label {
           text-align: center;
           font-weight: normal;
-          font-size: 0.9em !important;
+          font-size: 1em !important;
           margin-top: 5px !important;
           padding-bottom: 5px !important;
       }
@@ -527,12 +551,12 @@
         border: 1px solid #000 !important;
         border-radius: 5px !important;
         padding: 10px !important;
-        margin-top: 15px !important;
+        margin-top: 8px !important; /* AJUSTADO: Margem superior reduzida */
         box-shadow: none !important;
         page-break-inside: avoid !important;
       }
       .termos-condicoes h3 {
-          font-size: 1em !important;
+          font-size: 1.2em !important;
           margin-bottom: 8px !important;
           padding-bottom: 5px !important;
           border-bottom: 1px dashed #666 !important;
@@ -543,12 +567,12 @@
       }
       .termos-condicoes li {
           margin-bottom: 3px !important;
-          font-size: 0.8em !important;
+          font-size: 0.9em !important;
           line-height: 1.2 !important;
       }
       .termos-condicoes p {
           margin: 3px 0 !important;
-          font-size: 0.8em !important;
+          font-size: 0.9em !important;
       }
       .termos-condicoes strong {
           color: #000 !important;
@@ -570,7 +594,6 @@
         margin-bottom: 20px !important;
         page-break-after: always;
         border: 1px solid #ccc;
-        padding: 10px;
       }
 
       .print-area:last-child {
@@ -604,7 +627,7 @@
         <span id="dataEntrada" class="readonly-field"></span>
       </div>
       <div class="col">
-        <label>DATA SAÍDA</label>
+        <label>DATA DE SAÍDA</label>
         <span id="dataSaida" class="readonly-field"></span>
       </div>
     </div>
@@ -622,7 +645,7 @@
       <div class="linha">
         <div class="col">
           <label for="telefone">TELEFONE</label>
-          <input type="tel" id="telefone" placeholder="(00)00000-0000" maxlength="15" required>
+          <input type="tel" id="telefone" placeholder="(00) 0 0000-0000" maxlength="15" required>
         </div>
         <div class="col">
           <label for="tecnico">TÉCNICO</label>
@@ -657,7 +680,8 @@
           <label>LIGA</label>
           <div class="checkbox-group" id="ligaGroup">
             <label><input type="radio" name="liga" value="sim" required> SIM</label>
-            <label><input type="radio" name="liga" value="nao" required> NÃO</label> </div>
+            <label><input type="radio" name="liga" value="nao" required> NÃO</label>
+          </div>
         </div>
         <div class="col">
           <label>DEFEITO FÍSICO</label>
@@ -684,8 +708,8 @@
     <div class="form-step" data-step="5">
       <div class="linha">
         <div class="col">
-          <label for="defeitoRelatado">DEFEITO RELATADO</label>
-          <textarea id="defeitoRelatado" rows="3" required></textarea>
+          <label for="observacoes">OBSERVAÇÕES</label>
+          <textarea id="observacoes" rows="3" required></textarea>
         </div>
       </div>
     </div>
@@ -735,7 +759,7 @@
   <script>
     let currentStep = 1;
     const totalSteps = 6;
-    let formInputs = []; // Array para armazenar todos os campos de entrada do formulário
+    let formInputs = [];
 
     function collectOSData() {
         return {
@@ -751,8 +775,8 @@
             ligaSim: document.querySelector('input[name="liga"][value="sim"]:checked') ? true : false,
             defeitoFisicoSim: document.querySelector('input[name="defeito"][value="sim"]:checked') ? true : false,
             qualDefeito: document.getElementById('qualDefeito').value,
-            defeitoRelatado: document.getElementById('defeitoRelatado').value,
-            garantiaDias: document.getElementById('garantiaDiasInput').value || null, // Salva como null se vazio
+            observacoes: document.getElementById('observacoes').value,
+            garantiaDias: document.getElementById('garantiaDiasInput').value || null,
             timestamp: new Date().getTime()
         };
     }
@@ -772,7 +796,7 @@
         const today = new Date();
         const datePart = `${today.getFullYear()}${(today.getMonth() + 1).toString().padStart(2, '0')}${today.getDate().toString().padStart(2, '0')}`;
         let counter = parseInt(localStorage.getItem(`osCount_${datePart}`) || 0);
-        if (counter >= 99) counter = 0;
+        if (counter >= 99) counter = 0; // Reset counter if it reaches 99, or if you prefer, let it grow
         counter++;
         localStorage.setItem(`osCount_${datePart}`, counter.toString());
         return `${today.getFullYear()} ${datePart.slice(4, 6)}${datePart.slice(6, 8)} ${counter.toString().padStart(2, '0')}`;
@@ -784,100 +808,120 @@
 
       document.querySelectorAll(`input[name="${nomeGrupo}"]`).forEach(radio => {
         radio.addEventListener('change', () => {
-          if (campoContainer && inputAssociado) { // Verifica se campoContainer e inputAssociado existem
+          if (campoContainer && inputAssociado) {
             if (radio.value === 'sim') {
               campoContainer.classList.remove('hidden');
-              inputAssociado.required = true;
             } else {
               campoContainer.classList.add('hidden');
               inputAssociado.value = '';
-              inputAssociado.required = false;
             }
           }
-          validarPassoAtual(); // Chama a validação ao mudar qualquer rádio
+          validarPassoAtual();
         });
       });
     }
 
     function formatarTelefone(event) {
         let input = event.target;
-        let value = input.value.replace(/\D/g, '');
-        if (value.length > 11) value = value.substring(0, 11);
+        let value = input.value.replace(/\D/g, ''); // Remove all non-digits
+
+        // Limita a 11 dígitos numéricos
+        if (value.length > 11) {
+            value = value.substring(0, 11);
+        }
+        
         if (value.length > 0) {
-            value = value.replace(/^(\d{2})(\d)/g, '($1)$2');
-            if (value.length > 9) value = value.replace(/(\d{5})(\d)/, '$1-$2');
-            else if (value.length > 6) value = value.replace(/(\d{4})(\d)/, '$1-$2');
+            // Formata o DDD: (DD)
+            if (value.length > 2) {
+                value = value.replace(/^(\d{2})(\d)/g, '($1) $2'); // Ex: (00) X
+            }
+            // Formata o restante do número (para 11 dígitos): XXXXX-XXXX
+            if (value.length > 9) {
+                value = value.replace(/(\d{5})(\d)/, '$1-$2'); // Ex: (00) 9XXXX-XXXX
+            }
+            // Não há necessidade de formatar para 10 dígitos, pois a validação só aceita 11.
         }
         input.value = value;
         validarPassoAtual();
     }
 
+
     function inicializarOS() {
         document.getElementById('osNumber').textContent = generateOSNumber();
         document.getElementById('dataEntrada').textContent = new Date().toLocaleDateString('pt-BR');
-        document.getElementById('dataSaida').textContent = '___/___/___';
+        document.getElementById('dataSaida').textContent = '';
 
         configurarRadios('acessorio', 'campoAcessorio', 'qualAcessorio');
         configurarRadios('defeito', 'campoDefeito', 'qualDefeito');
-
-        // Adiciona event listeners para campos que devem disparar validação ao mudar
+        
         document.getElementById('nomeCliente').addEventListener('input', validarPassoAtual);
         document.getElementById('telefone').addEventListener('input', formatarTelefone);
         document.getElementById('tecnico').addEventListener('change', validarPassoAtual);
         document.getElementById('equipamento').addEventListener('input', validarPassoAtual);
-        document.getElementById('defeitoRelatado').addEventListener('input', validarPassoAtual); // Adicionado para o campo "DEFEITO RELATADO"
+        document.getElementById('observacoes').addEventListener('input', validarPassoAtual);
 
-        // Adiciona listener para o grupo "LIGA"
         document.querySelectorAll('input[name="liga"]').forEach(radio => {
             radio.addEventListener('change', validarPassoAtual);
         });
 
+        document.getElementById('qualAcessorio').addEventListener('input', validarPassoAtual);
+        document.getElementById('qualDefeito').addEventListener('input', validarPassoAtual);
+
+
         const garantiaInput = document.getElementById('garantiaDiasInput');
         const garantiaServicoSpan = document.getElementById('garantiaServico');
         const garantiaPecasSpan = document.getElementById('garantiaPecas');
-
         garantiaInput.addEventListener('input', () => {
             garantiaServicoSpan.textContent = garantiaInput.value || "______";
             garantiaPecasSpan.textContent = garantiaInput.value || "______";
         });
-
-        // Coleta todos os campos de entrada, textarea e select para navegação com Enter
+        
         document.querySelectorAll("input:not([type='radio']):not([type='checkbox']), select, textarea, input[type='number']").forEach(input => {
             input.setAttribute('data-form-field', 'true');
             input.addEventListener('keydown', handleEnterKey);
+            input.addEventListener('input', () => {
+                input.classList.remove('invalid-field');
+            });
+            input.addEventListener('change', () => {
+                input.classList.remove('invalid-field');
+            });
         });
-
-        // Adiciona event listeners aos grupos de rádio e checkbox para validação e avanço
+        
         document.querySelectorAll('.checkbox-group').forEach(group => {
             group.querySelectorAll('input[type="radio"], input[type="checkbox"]').forEach(radioOrCheckbox => {
-                radioOrCheckbox.setAttribute('data-form-field', 'true'); // Marca também radio/checkbox
+                radioOrCheckbox.setAttribute('data-form-field', 'true');
                 radioOrCheckbox.addEventListener('keydown', (event) => {
                     if (event.key === 'Enter') {
                         event.preventDefault();
-                        // Só avança se o passo atual for válido
                         if (validarPassoAtual()) {
                             focusNextInputInStep(event.target);
                         }
                     }
                 });
+                radioOrCheckbox.addEventListener('change', () => {
+                    const radioName = radioOrCheckbox.name;
+                    const radiosInGroup = document.querySelectorAll(`input[name="${radioName}"]`);
+                    if (Array.from(radiosInGroup).some(radio => radio.checked)) {
+                        radiosInGroup.forEach(radio => radio.classList.remove('invalid-field'));
+                    }
+                });
             });
         });
-
         showStep(currentStep);
         atualizarProgresso();
     }
 
     function handleEnterKey(event) {
-        // Se o elemento atual for um textarea, permita o comportamento padrão (nova linha)
         if (event.target.tagName === 'TEXTAREA') {
             return;
         }
 
         if (event.key === 'Enter') {
             event.preventDefault();
-            // Só avança o foco ou o passo se a validação do passo atual for bem-sucedida
             if (validarPassoAtual()) {
                 focusNextInputInStep(event.target);
+            } else {
+                alert("Verifique os Campos em Vermelho");
             }
         }
     }
@@ -887,13 +931,11 @@
                                     .filter(input => {
                                         return input.offsetParent !== null && !input.closest('.hidden') && !input.readOnly;
                                     });
-
         const currentInputIndex = allVisibleInputs.indexOf(currentInput);
 
         if (currentInputIndex > -1 && currentInputIndex < allVisibleInputs.length - 1) {
             allVisibleInputs[currentInputIndex + 1].focus();
         } else {
-            // Se for o último campo visível geral e o passo atual for válido, tenta avançar o passo
             if (validarPassoAtual()) {
                 nextStep();
             }
@@ -903,62 +945,84 @@
     function validarPassoAtual() {
       const currentFormStepElement = document.querySelector(`.form-step[data-step="${currentStep}"]`);
       let isValid = true;
+      let hasInvalidFields = false;
 
       if (!currentFormStepElement) return true;
 
+      currentFormStepElement.querySelectorAll("input, select, textarea").forEach(input => {
+          input.classList.remove('invalid-field');
+      });
+
       const inputsToValidate = Array.from(currentFormStepElement.querySelectorAll("input:not([type='radio']):not([type='checkbox']), select, textarea, input[type='number']"))
                                     .filter(input => input.offsetParent !== null && !input.closest('.hidden'));
-
+      
       inputsToValidate.forEach(input => {
-          if (input.id === 'telefone') {
+          let fieldIsValid = true;
+
+          if (input.id === 'nomeCliente') {
+              if (input.value.trim().length < 3) {
+                  fieldIsValid = false;
+              }
+          } else if (input.id === 'telefone') {
               const cleanedValue = input.value.replace(/\D/g, '');
-              if (cleanedValue.length < 10 || cleanedValue.length > 11) {
-                  isValid = false;
+              // VALIDAÇÃO AJUSTADA PARA APENAS 11 DÍGITOS
+              if (cleanedValue.length !== 11) { 
+                  fieldIsValid = false;
+              }
+          } else if (input.id === 'tecnico') {
+              if (input.value === '') {
+                  fieldIsValid = false;
+              }
+          } else if (input.id === 'qualAcessorio') {
+              const acessorioSimChecked = document.querySelector('input[name="acessorio"][value="sim"]:checked');
+              if (acessorioSimChecked && input.value.trim().length < 5) {
+                  fieldIsValid = false;
+              }
+          } else if (input.id === 'qualDefeito') {
+              const defeitoSimChecked = document.querySelector('input[name="defeito"][value="sim"]:checked');
+              if (defeitoSimChecked && input.value.trim().length < 5) {
+                  fieldIsValid = false;
               }
           } else if (input.required && input.value.trim() === '') {
+              fieldIsValid = false;
+          }
+
+          if (!fieldIsValid) {
+              input.classList.add('invalid-field');
               isValid = false;
+              hasInvalidFields = true;
           }
       });
 
-      // Valida grupos de rádio no passo atual
       currentFormStepElement.querySelectorAll('.checkbox-group').forEach(group => {
           if (group.offsetParent !== null && !group.closest('.hidden')) {
               const radioName = group.querySelector('input[type="radio"]')?.name;
               if (radioName) {
                   const radiosInGroup = document.querySelectorAll(`input[name="${radioName}"]`);
-                  // Verifica se há pelo menos um rádio marcado no grupo
                   const isAnyRadioChecked = Array.from(radiosInGroup).some(radio => radio.checked);
-                  // Verifica se algum rádio no grupo é 'required'
                   const isRequiredGroup = Array.from(radiosInGroup).some(radio => radio.required);
 
-                  // Se o grupo é obrigatório E NENHUM rádio está marcado, então é inválido
                   if (isRequiredGroup && !isAnyRadioChecked) {
+                      radiosInGroup.forEach(radio => radio.classList.add('invalid-field'));
                       isValid = false;
+                      hasInvalidFields = true;
+                  } else {
+                      radiosInGroup.forEach(radio => radio.classList.remove('invalid-field'));
                   }
               }
           }
       });
 
-
-      // Validações específicas para o passo 4
-      if (currentStep === 4) {
-          const acessorioSimChecked = document.querySelector('input[name="acessorio"][value="sim"]:checked');
-          const qualAcessorioInput = document.getElementById('qualAcessorio');
-          if (acessorioSimChecked && qualAcessorioInput && !qualAcessorioInput.closest('.hidden') && qualAcessorioInput.value.trim() === '') {
-              isValid = false;
-          }
-
-          const defeitoSimChecked = document.querySelector('input[name="defeito"][value="sim"]:checked');
-          const qualDefeitoInput = document.getElementById('qualDefeito');
-          if (defeitoSimChecked && qualDefeitoInput && !qualDefeitoInput.closest('.hidden') && qualDefeitoInput.value.trim() === '') {
-              isValid = false;
-          }
-      }
-
       const mainActionButton = document.getElementById('mainActionButton');
       if (mainActionButton) {
-          mainActionButton.disabled = !isValid;
+          let ligaSelected = true;
+          if (currentStep === 4) {
+             const ligaRadios = document.querySelectorAll('input[name="liga"]');
+             ligaSelected = Array.from(ligaRadios).some(radio => radio.checked);
+          }
+          mainActionButton.disabled = hasInvalidFields || !ligaSelected;
       }
+
       return isValid;
     }
 
@@ -968,14 +1032,12 @@
         const stepNum = parseInt(s.dataset.step);
         s.classList.toggle('visible-step', stepNum <= step);
       });
-
       const mainActionButton = document.getElementById('mainActionButton');
       if (mainActionButton) {
           mainActionButton.textContent = (step === totalSteps) ? 'Salvar e Imprimir' : 'Próximo →';
       }
-      validarPassoAtual(); // Sempre valida ao mostrar o passo para refletir o estado inicial
+      validarPassoAtual();
       atualizarProgresso();
-
       const currentFormStepElement = document.querySelector(`.form-step[data-step="${currentStep}"]`);
       if (currentFormStepElement) {
           const firstInput = currentFormStepElement.querySelector("input:not([type='radio']):not([type='checkbox']):not(.hidden):not([readonly]), select:not(.hidden):not([readonly]), textarea:not(.hidden):not([readonly]), input[type='number']:not(.hidden):not([readonly])");
@@ -998,14 +1060,16 @@
                 nextStep();
             }
         } else {
-            alert("Por favor, preencha todos os campos obrigatórios do passo atual.");
+            alert("Verifique os Campos em Vermelho");
         }
     }
 
     function nextStep() {
-      if (validarPassoAtual()) { // Garante que só avança se o passo atual for válido
+      if (validarPassoAtual()) {
         currentStep = Math.min(currentStep + 1, totalSteps);
         showStep(currentStep);
+      } else {
+        alert("Verifique os Campos em Vermelho");
       }
     }
 
@@ -1014,7 +1078,7 @@
         saveOSData(osDataToSave);
 
         if (!validarPassoAtual()) {
-            alert("Atenção: Alguns campos obrigatórios não foram preenchidos corretamente. A OS foi salva, mas revise os dados antes de imprimir.");
+            alert("Verifique os Campos em Vermelho. A OS foi salva, mas revise os dados antes de imprimir.");
         }
 
         const printContainer = document.getElementById('printContainer');
@@ -1029,6 +1093,7 @@
         document.getElementById('mainActionButton').style.display = 'none';
         document.getElementById('homeButton').style.display = 'none';
         document.getElementById('historicoButton').style.display = 'none';
+        document.querySelector('.barra-progresso').style.display = 'none';
         printContainer.style.display = 'block';
 
         setTimeout(() => {
@@ -1037,6 +1102,7 @@
             document.getElementById('mainActionButton').style.display = 'block';
             document.getElementById('homeButton').style.display = 'block';
             document.getElementById('historicoButton').style.display = 'block';
+            document.querySelector('.barra-progresso').style.display = 'flex';
             printContainer.style.display = 'none';
             printContainer.innerHTML = '';
         }, 300);
@@ -1058,12 +1124,13 @@
         // Título (VIA DO CLIENTE ou ORDEM DE SERVIÇO)
         const osTitle = document.createElement('h2');
         osTitle.style.textAlign = 'center';
-        osTitle.style.margin = '15px 0';
+        osTitle.style.margin = '8px 0'; /* Ajustado para economizar espaço */
         osTitle.textContent = isClientCopy ? 'VIA DO CLIENTE' : 'ORDEM DE SERVIÇO';
         printArea.appendChild(osTitle);
 
         // Dados da OS
-        printArea.innerHTML += `
+        const osDataSection = document.createElement('div');
+        osDataSection.innerHTML = `
           <div class="linha">
             <div class="col">
               <label>OS Nº</label>
@@ -1074,7 +1141,7 @@
               <span class="print-only-field">${document.getElementById('dataEntrada').textContent}</span>
             </div>
             <div class="col">
-              <label>DATA SAÍDA</label>
+              <label>DATA DE SAÍDA</label>
               <span class="print-only-field">${document.getElementById('dataSaida').textContent}</span>
             </div>
           </div>
@@ -1099,30 +1166,33 @@
             </div>
           </div>
         `;
+        printArea.appendChild(osDataSection);
 
         // Acessório (condicional)
         const acessorioSimChecked = document.querySelector('input[name="acessorio"][value="sim"]:checked');
         const qualAcessorioVal = document.getElementById('qualAcessorio').value.trim();
-        let acessorioHtml = `
-          <div class="linha">
-            <div class="col">
-              <label>ACESSÓRIO</label>
-              <span class="print-only-field">${acessorioSimChecked ? 'SIM' : 'NÃO'}</span>
-            </div>
-        `;
-        if (acessorioSimChecked && qualAcessorioVal !== '') {
-            acessorioHtml += `
-              <div class="col">
-                <label>QUAL</label>
-                <span class="print-only-field">${qualAcessorioVal}</span>
+        if (acessorioSimChecked) { // Imprimir apenas se 'SIM' for marcado
+            const acessorioSection = document.createElement('div');
+            acessorioSection.innerHTML = `
+              <div class="linha">
+                <div class="col">
+                  <label>ACESSÓRIO</label>
+                  <span class="print-only-field">SIM</span>
+                </div>
+                ${(qualAcessorioVal !== '') ? `
+                  <div class="col">
+                    <label>QUAL</label>
+                    <span class="print-only-field">${qualAcessorioVal}</span>
+                  </div>
+                ` : ''}
               </div>
             `;
+            printArea.appendChild(acessorioSection);
         }
-        acessorioHtml += `</div>`;
-        printArea.innerHTML += acessorioHtml;
 
-        // Liga
-        printArea.innerHTML += `
+        // Liga (sempre imprime)
+        const ligaSection = document.createElement('div');
+        ligaSection.innerHTML = `
           <div class="linha">
             <div class="col">
               <label>LIGA</label>
@@ -1130,51 +1200,67 @@
             </div>
           </div>
         `;
+        printArea.appendChild(ligaSection);
 
         // Defeito Físico (condicional)
         const defeitoSimChecked = document.querySelector('input[name="defeito"][value="sim"]:checked');
         const qualDefeitoVal = document.getElementById('qualDefeito').value.trim();
-        let defeitoHtml = `
-          <div class="linha">
-            <div class="col">
-              <label>DEFEITO FÍSICO</label>
-              <span class="print-only-field">${defeitoSimChecked ? 'SIM' : 'NÃO'}</span>
-            </div>
-        `;
-        if (defeitoSimChecked && qualDefeitoVal !== '') {
-            defeitoHtml += `
-              <div class="col">
-                <label>QUAL</label>
-                <span class="print-only-field">${qualDefeitoVal}</span>
+        if (defeitoSimChecked) { // Imprimir apenas se 'SIM' for marcado
+            const defeitoSection = document.createElement('div');
+            defeitoSection.innerHTML = `
+              <div class="linha">
+                <div class="col">
+                  <label>DEFEITO FÍSICO</label>
+                  <span class="print-only-field">SIM</span>
+                </div>
+                ${(qualDefeitoVal !== '') ? `
+                  <div class="col">
+                    <label>QUAL</label>
+                    <span class="print-only-field">${qualDefeitoVal}</span>
+                  </div>
+                ` : ''}
               </div>
             `;
+            printArea.appendChild(defeitoSection);
         }
-        defeitoHtml += `</div>`;
-        printArea.innerHTML += defeitoHtml;
 
-        // Defeito Relatado
-        printArea.innerHTML += `
+        // Observações
+        const obsSection = document.createElement('div');
+        obsSection.innerHTML = `
           <div class="linha">
             <div class="col">
-              <label>DEFEITO RELATADO</label>
-              <span class="print-only-field" style="min-height: 3.5em;">${document.getElementById('defeitoRelatado').value}</span>
+              <label>OBSERVAÇÕES</label>
+              <span class="print-only-field" style="min-height: 3.5em;">${document.getElementById('observacoes').value}</span>
             </div>
           </div>
         `;
+        printArea.appendChild(obsSection);
+
+        // NOVO CAMPO: SERVIÇO REALIZADO (apenas na impressão) - ALTURA AJUSTADA AQUI
+        const servicoSection = document.createElement('div');
+        servicoSection.innerHTML = `
+          <div class="linha">
+            <div class="col">
+              <label>SERVIÇO REALIZADO</label>
+              <span class="print-only-field" style="min-height: 3em;">&nbsp;<br>&nbsp;<br>&nbsp;</span>
+            </div>
+          </div>
+        `;
+        printArea.appendChild(servicoSection);
 
         // Termos e Condições (clonados do original)
         const termosOriginal = document.getElementById('termosFormulario');
         const termosClonados = termosOriginal.cloneNode(true);
         termosClonados.removeAttribute('id');
 
-        // Atualiza os spans da garantia
         const garantiaInput = document.getElementById('garantiaDiasInput');
         termosClonados.querySelector('#garantiaServico').textContent = garantiaInput.value || "______";
         termosClonados.querySelector('#garantiaPecas').textContent = garantiaInput.value || "______";
         printArea.appendChild(termosClonados);
 
         // Assinaturas
-        printArea.innerHTML += `
+        const assinaturasSection = document.createElement('div');
+        assinaturasSection.innerHTML = `
           <div class="linha assinaturas-row">
             <div class="col">
               <div class="assinatura-container">
@@ -1190,14 +1276,23 @@
             </div>
           </div>
         `;
-
+        printArea.appendChild(assinaturasSection); 
+        
         return printArea;
     }
 
     function atualizarProgresso() {
       const progress = Math.round((currentStep / totalSteps) * 100);
       const barraElement = document.getElementById("barra");
-      if (barraElement) barraElement.style.height = progress + "%";
+      // Adicionado um log para depuração
+      console.log("Elemento com ID 'barra' na função atualizarProgresso:", barraElement);
+      if (barraElement) {
+          barraElement.style.height = progress + "%";
+      } else {
+          // Este erro só deveria acontecer se o elemento 'barra' não for encontrado,
+          // o que é muito estranho dado o HTML.
+          console.error("Erro: Elemento com ID 'barra' não encontrado para atualizar o progresso. Verifique o HTML.");
+      }
     }
 
     function goHistorico() {
