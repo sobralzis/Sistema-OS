@@ -4,68 +4,86 @@
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>SISTEMA CNT</title>
+  <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;500&display=swap" rel="stylesheet">
   
   <style>
     * {
       box-sizing: border-box;
+      margin: 0;
+      padding: 0;
     }
 
     body {
-      background-color: #000;
-      color: #fff;
-      font-family: Arial, sans-serif;
+      background-color: #1D1D1D;
+      color: #ffffff;
+      font-family: 'Roboto', -apple-system, BlinkMacSystemFont, sans-serif;
+      min-height: 100vh;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
       padding: 20px;
-      margin: 0;
-      text-align: center;
+      line-height: 1.5;
     }
 
     .logo {
-      max-width: 80%;
+      width: min(80%, 400px);
       height: auto;
-      margin: 0 auto 30px;
+      margin-bottom: 40px;
+      transition: transform 0.3s ease;
+    }
+
+    .logo:hover {
+      transform: scale(1.05);
     }
 
     .container {
       display: flex;
       flex-direction: column;
-      gap: 15px;
+      gap: 20px;
+      width: 100%;
+      max-width: 500px;
       align-items: center;
     }
 
-    a {
-      text-decoration: none;
-    }
-
-    a button {
-      all: unset;
-      width: 90%;
-      max-width: 300px;
-      padding: 12px 20px;
-      font-size: 4vw;
-      max-font-size: 18px;
+    .btn {
+      width: 100%;
+      max-width: 320px;
+      padding: 16px 24px;
+      font-size: clamp(16px, 4vw, 18px);
       font-weight: 500;
+      text-align: center;
       cursor: pointer;
-      border-radius: 999px;
-      background-color: transparent;
-      color: white;
-      border: 1px solid #ffffff;
-      transition: background-color 0.3s, border-color 0.3s;
-      white-space: nowrap;
+      border-radius: 8px;
+      background-color: #2A2A2A;
+      color: #ffffff;
+      border: 1px solid #444;
+      transition: all 0.3s ease;
+      text-decoration: none; /* Removendo sublinhado */
     }
 
-    a button:hover {
-      background-color: #1a1a1a;
-      border-color: #888;
+    .btn:hover {
+      background-color: #3A3A3A;
+      border-color: #666;
+      transform: translateY(-2px);
+      box-shadow: 0 4px 8px rgba(0,0,0,0.2);
     }
 
     @media (min-width: 768px) {
-      a button {
-        font-size: 16px;
+      .btn {
+        padding: 18px 28px;
+        font-size: 18px;
       }
+      
+      .container {
+        gap: 25px;
+      }
+    }
 
-      .logo {
-        max-width: 300px;
-      }
+    /* Efeito de foco acessível */
+    .btn:focus-visible {
+      outline: 2px solid #4CAF50;
+      outline-offset: 2px;
     }
   </style>
 </head>
@@ -74,10 +92,9 @@
   <img class="logo" src="img/logo.png" alt="Logo CNT" />
 
   <div class="container">
-    <a href="calc.html"><button>Calculadora</button></a>
-    <a href="orcamento.html"><button>Orçamento</button></a>
-    <a href="os.html"><button>Ordem de Serviço</button></a>
+    <a href="calc.html" class="btn">Calculadora</a>
+    <a href="orcamento.html" class="btn">Orçamento</a>
+    <a href="os.html" class="btn">Ordem de Serviço</a>
   </div>
 </body>
 </html>
-
