@@ -448,6 +448,12 @@
               ${s.identificador ? `<span class="identificador">${s.identificador.toUpperCase()}</span>` : ''}
             </div>
             <div class="linha-resumo">
+              <strong>Custo:</strong> <span class="valor">${formatarReal(s.custo)}</span>
+            </div>
+            <div class="linha-resumo">
+              <strong>Lucro:</strong> <span class="valor">${formatarReal(s.lucro)}</span>
+            </div>
+            <div class="linha-resumo">
               <strong>Técnico (${proporcaoTecnico}%):</strong> <span class="valor">${formatarReal(s.tecnico)}</span>
             </div>
             <div class="linha-resumo">
