@@ -12,6 +12,9 @@
       --border-color: #444;
       --hover-color: #3A3A3A;
       --text-color: #FFFFFF;
+      --section-color: #333;
+      --selected-color: #444;
+      --button-color: #555;
     }
 
     * {
@@ -28,41 +31,65 @@
       min-height: 100vh;
     }
 
-    .btn-inicio {
-      all: unset;
-      padding: 12px 20px;
-      font-size: 16px;
-      font-weight: 500;
-      cursor: pointer;
-      border-radius: 8px;
-      background-color: var(--card-color);
-      color: var(--text-color);
-      border: 1px solid var(--border-color);
-      transition: all 0.3s;
-      margin-bottom: 20px;
-    }
-
-    .btn-inicio:hover {
-      background-color: var(--hover-color);
-      border-color: #666;
-    }
-
-    h1, h3 {
-      text-align: center;
-      margin-bottom: 30px;
-      color: var(--text-color);
-    }
-
-    .main-container {
-      display: flex;
-      gap: 20px;
+    .container {
       max-width: 1200px;
       margin: 0 auto;
     }
 
-    .input-container, .result-container {
+    .btn-inicio {
+      background-color: var(--button-color);
+      color: white;
+      border: none;
+      padding: 10px 15px;
+      border-radius: 5px;
+      cursor: pointer;
+      margin-bottom: 20px;
+      font-family: 'Roboto', sans-serif;
+      font-size: 14px;
+    }
+
+    h1, h3 {
+      text-align: center;
+      margin-bottom: 20px;
+      color: var(--text-color);
+    }
+
+    .two-columns {
+      display: flex;
+      gap: 20px;
+    }
+
+    .column {
       flex: 1;
-      min-width: 0;
+    }
+
+    .tabs {
+      display: flex;
+      justify-content: center;
+      margin-bottom: 20px;
+      border-bottom: 1px solid var(--border-color);
+    }
+
+    .tab {
+      padding: 12px 20px;
+      cursor: pointer;
+      border-bottom: 3px solid transparent;
+      transition: all 0.3s;
+      font-weight: 500;
+      text-align: center;
+    }
+
+    .tab.active {
+      border-bottom: 3px solid var(--text-color);
+      color: var(--text-color);
+    }
+
+    .tab-content {
+      display: none;
+    }
+
+    .tab-content.active {
+      display: block;
     }
 
     .card {
@@ -71,17 +98,28 @@
       border-radius: 8px;
       padding: 20px;
       margin-bottom: 20px;
-      height: 100%;
+    }
+
+    .section {
+      background-color: var(--section-color);
+      border-radius: 8px;
+      padding: 15px;
+      margin-bottom: 20px;
+    }
+
+    .section-title {
+      font-weight: 500;
+      margin-bottom: 15px;
+      color: var(--text-color);
     }
 
     label {
       display: block;
       margin-bottom: 8px;
       font-weight: 500;
-      color: var(--text-color);
     }
 
-    input {
+    input, select {
       width: 100%;
       padding: 12px;
       margin-bottom: 15px;
@@ -92,9 +130,9 @@
       font-family: 'Roboto', sans-serif;
     }
 
-    input:focus {
+    input:focus, select:focus {
       outline: none;
-      border-color: #666;
+      border-color: var(--text-color);
     }
 
     .btn {
@@ -103,203 +141,480 @@
       font-weight: 500;
       cursor: pointer;
       border-radius: 8px;
-      background-color: var(--card-color);
-      color: var(--text-color);
-      border: 1px solid var(--border-color);
+      background-color: var(--button-color);
+      color: white;
+      border: none;
       transition: all 0.3s;
+      width: 100%;
+      margin-top: 10px;
     }
 
     .btn:hover {
+      opacity: 0.9;
+    }
+
+    .btn-secondary {
+      background-color: var(--section-color);
+      color: var(--text-color);
+      border: 1px solid var(--border-color);
+    }
+
+    .btn-secondary:hover {
       background-color: var(--hover-color);
-      border-color: #666;
     }
 
     .btn-group {
       display: flex;
-      flex-wrap: wrap;
       gap: 10px;
-      margin-top: 15px;
+      margin-top: 20px;
     }
 
-    .peca-row {
-      display: flex;
-      align-items: center;
-      gap: 15px;
+    .pecas-container {
       margin-bottom: 15px;
     }
 
-    .peca-input {
-      flex: 1;
-    }
-
-    .checkbox-container {
-      display: flex;
-      align-items: center;
-      gap: 10px;
-      margin-top: 22px;
-    }
-
-    #resultado {
-      white-space: pre-line;
-      padding: 15px;
-      background-color: var(--bg-color);
-      border-radius: 8px;
-      border: 1px solid var(--border-color);
-      font-family: monospace;
-      line-height: 1.6;
-      min-height: 200px;
-    }
-
-    .extra-servico {
+    .peca-item {
       display: flex;
       gap: 10px;
       margin-bottom: 10px;
+      align-items: center;
     }
 
-    .extra-servico input {
+    .peca-item input {
+      flex: 1;
       margin-bottom: 0;
     }
 
+    .remove-peca {
+      color: #FF6B6B;
+      background: none;
+      border: none;
+      cursor: pointer;
+      font-size: 20px;
+      padding: 5px;
+    }
+
+    #resultado, #mensagem {
+      white-space: pre-line;
+      padding: 15px;
+      background-color: var(--card-color);
+      border-radius: 8px;
+      border: 1px solid var(--border-color);
+      font-family: 'Roboto', sans-serif;
+      line-height: 1.6;
+      min-height: 100px;
+      margin-bottom: 15px;
+    }
+
+    .pagamento-container {
+      margin-top: 20px;
+    }
+
+    .pagamento-options {
+      display: flex;
+      gap: 10px;
+      margin-bottom: 15px;
+      flex-wrap: wrap;
+    }
+
+    .pagamento-option {
+      padding: 10px 15px;
+      border-radius: 8px;
+      background-color: var(--bg-color);
+      border: 1px solid var(--border-color);
+      cursor: pointer;
+      transition: all 0.3s;
+      flex: 1;
+      min-width: 120px;
+      text-align: center;
+    }
+
+    .pagamento-option.selected {
+      background-color: var(--selected-color);
+      border-color: var(--text-color);
+    }
+
+    .parcelas-container {
+      display: none;
+      margin-top: 10px;
+    }
+
     @media (max-width: 768px) {
-      .main-container {
+      .two-columns {
         flex-direction: column;
       }
       
-      .peca-row {
+      .btn-group {
         flex-direction: column;
-        align-items: flex-start;
-        gap: 10px;
       }
       
-      .checkbox-container {
-        margin-top: 0;
+      .pagamento-options {
+        flex-direction: column;
       }
       
-      .extra-servico {
-        flex-direction: column;
-        gap: 0;
+      .pagamento-option {
+        width: 100%;
       }
     }
   </style>
 </head>
 <body>
   <div class="container">
-    <button class="btn-inicio" onclick="window.location.href='index.html'">INÍCIO</button>
-
+    <button class="btn-inicio" onclick="window.location.href='index.html'">Início</button>
     <h1>ORÇAMENTO</h1>
 
-    <div class="main-container">
-      <div class="input-container">
-        <div class="card">
-          <div class="peca-row">
-            <div class="peca-input">
-              <label for="peca">Valor da peça:</label>
-              <input type="number" step="0.01" id="peca" placeholder="R$ 0,00" />
+    <div class="tabs">
+      <div class="tab active" onclick="changeTab('celular')">Celular</div>
+      <div class="tab" onclick="changeTab('notebook')">Notebook/PC</div>
+    </div>
+
+    <div class="two-columns">
+      <div class="column">
+        <div id="celular-tab" class="tab-content active">
+          <div class="card">
+            <div class="section">
+              <div class="section-title">Informações do Cliente</div>
+              <label for="nome-cliente">Nome do Cliente (opcional):</label>
+              <input type="text" id="nome-cliente" placeholder="Nome do cliente">
+              
+              <label for="modelo-celular">Modelo do Celular:</label>
+              <input type="text" id="modelo-celular" placeholder="Ex: iPhone 13, Galaxy S22">
             </div>
-            <div class="checkbox-container">
-              <input type="checkbox" id="semPeca" onchange="togglePeca()" />
-              <label for="semPeca">Sem peça</label>
+
+            <div class="section">
+              <div class="section-title">Serviço</div>
+              <label for="servico-celular">Descrição do Serviço:</label>
+              <input type="text" id="servico-celular" placeholder="Ex: Troca de tela, reparo de conector">
+              
+              <label for="mao-obra-celular">Mão de Obra:</label>
+              <input type="number" step="0.01" id="mao-obra-celular" placeholder="R$ 0,00">
+              
+              <div id="pecas-celular-container" class="pecas-container"></div>
+              
+              <button class="btn btn-secondary" onclick="adicionarPeca('celular')">Adicionar Peça</button>
             </div>
+
+            <div class="section">
+              <div class="section-title">Forma de Pagamento</div>
+              <div class="pagamento-options">
+                <div id="pix-celular" class="pagamento-option selected" onclick="selectPagamento('celular', 'pix')">À vista/PIX/Débito</div>
+                <div id="cartao-celular" class="pagamento-option" onclick="selectPagamento('celular', 'cartao')">Cartão de Crédito</div>
+              </div>
+
+              <div id="parcelas-celular" class="parcelas-container">
+                <label for="parcelas-select-celular">Parcelamento:</label>
+                <select id="parcelas-select-celular">
+                  <option value="1">1x (5%)</option>
+                  <option value="2">2x (11%)</option>
+                  <option value="3">3x (12.5%)</option>
+                  <option value="4">4x (13.5%)</option>
+                  <option value="5">5x (15%)</option>
+                  <option value="6">6x (16%)</option>
+                  <option value="7">7x (17.5%)</option>
+                  <option value="8">8x (19%)</option>
+                  <option value="9">9x (20%)</option>
+                  <option value="10-12">10x a 12x (21.5%)</option>
+                </select>
+              </div>
+            </div>
+
+            <button class="btn" onclick="gerarOrcamento('celular')">Gerar Orçamento</button>
           </div>
+        </div>
 
-          <label for="maoObra">Mão de Obra:</label>
-          <input type="number" step="0.01" id="maoObra" placeholder="R$ 0,00" />
+        <div id="notebook-tab" class="tab-content">
+          <div class="card">
+            <div class="section">
+              <div class="section-title">Informações do Cliente</div>
+              <label for="nome-cliente-nb">Nome do Cliente (opcional):</label>
+              <input type="text" id="nome-cliente-nb" placeholder="Nome do cliente">
+              
+              <label for="modelo-notebook">Modelo do Notebook/PC:</label>
+              <input type="text" id="modelo-notebook" placeholder="Ex: Dell Inspiron, MacBook Pro">
+            </div>
 
-          <div id="extras"></div>
+            <div class="section">
+              <div class="section-title">Serviço</div>
+              <label for="servico-notebook">Descrição do Serviço:</label>
+              <input type="text" id="servico-notebook" placeholder="Ex: Troca de teclado, upgrade de RAM">
+              
+              <label for="mao-obra-notebook">Mão de Obra:</label>
+              <input type="number" step="0.01" id="mao-obra-notebook" placeholder="R$ 0,00">
+              
+              <div id="pecas-notebook-container" class="pecas-container"></div>
+              
+              <button class="btn btn-secondary" onclick="adicionarPeca('notebook')">Adicionar Peça</button>
+            </div>
 
-          <div class="btn-group">
-            <button class="btn" onclick="adicionarCampo()">Adicionar Serviço</button>
-            <button class="btn" onclick="gerarOrcamento()">Calcular Orçamento</button>
-            <button class="btn" onclick="copiarResultado()">Copiar</button>
+            <div class="section">
+              <div class="section-title">Forma de Pagamento</div>
+              <div class="pagamento-options">
+                <div id="pix-notebook" class="pagamento-option selected" onclick="selectPagamento('notebook', 'pix')">À vista/PIX/Débito</div>
+                <div id="cartao-notebook" class="pagamento-option" onclick="selectPagamento('notebook', 'cartao')">Cartão de Crédito</div>
+              </div>
+
+              <div id="parcelas-notebook" class="parcelas-container">
+                <label for="parcelas-select-notebook">Parcelamento:</label>
+                <select id="parcelas-select-notebook">
+                  <option value="1">1x (5%)</option>
+                  <option value="2">2x (11%)</option>
+                  <option value="3">3x (12.5%)</option>
+                  <option value="4">4x (13.5%)</option>
+                  <option value="5">5x (15%)</option>
+                  <option value="6">6x (16%)</option>
+                  <option value="7">7x (17.5%)</option>
+                  <option value="8">8x (19%)</option>
+                  <option value="9">9x (20%)</option>
+                  <option value="10-12">10x a 12x (21.5%)</option>
+                </select>
+              </div>
+            </div>
+
+            <button class="btn" onclick="gerarOrcamento('notebook')">Gerar Orçamento</button>
           </div>
         </div>
       </div>
 
-      <div class="result-container">
+      <div class="column">
         <div class="card">
           <h3>RESULTADO</h3>
           <div id="resultado"></div>
+        </div>
+        
+        <div class="card">
+          <h3>MENSAGEM</h3>
+          <div id="mensagem"></div>
+          <div class="btn-group">
+            <button class="btn" onclick="copiarMensagem()">Copiar Mensagem</button>
+            <button class="btn" onclick="limparFormulario()">Limpar Tudo</button>
+          </div>
         </div>
       </div>
     </div>
   </div>
 
   <script>
-    function togglePeca() {
-      const check = document.getElementById('semPeca').checked;
-      document.getElementById('peca').style.display = check ? 'none' : 'block';
-      if (check) {
-        document.getElementById('peca').value = '';
-      }
+    // Funções para alternar entre abas
+    function changeTab(tabId) {
+      document.querySelectorAll('.tab-content').forEach(content => {
+        content.classList.remove('active');
+      });
+      document.getElementById(`${tabId}-tab`).classList.add('active');
+      
+      document.querySelectorAll('.tab').forEach(tab => {
+        tab.classList.remove('active');
+      });
+      document.querySelector(`.tab[onclick="changeTab('${tabId}')"]`).classList.add('active');
     }
 
-    function adicionarCampo() {
-      const div = document.createElement('div');
-      div.className = 'extra-servico';
-      div.innerHTML = `
-        <input type="text" placeholder="Nome do serviço" class="nome-servico">
-        <input type="number" step="0.01" placeholder="Valor (R$)" class="valor-servico">
+    // Adicionar nova peça
+    function adicionarPeca(tipo) {
+      const container = document.getElementById(`pecas-${tipo}-container`);
+      const pecaId = Date.now(); // ID único para cada peça
+      
+      const pecaDiv = document.createElement('div');
+      pecaDiv.className = 'peca-item';
+      pecaDiv.innerHTML = `
+        <input type="text" id="peca-desc-${tipo}-${pecaId}" placeholder="Descrição da peça" class="peca-desc">
+        <input type="number" step="0.01" id="peca-valor-${tipo}-${pecaId}" placeholder="R$ 0,00" class="peca-valor">
+        <button class="remove-peca" onclick="removerPeca(this)">×</button>
       `;
-      document.getElementById('extras').appendChild(div);
+      
+      container.appendChild(pecaDiv);
     }
 
-    function gerarOrcamento() {
-      const temPeca = !document.getElementById('semPeca').checked;
-      const peca = temPeca ? parseFloat(document.getElementById('peca').value) || 0 : 0;
-      const maoObra = parseFloat(document.getElementById('maoObra').value) || 0;
+    // Remover peça
+    function removerPeca(button) {
+      button.parentElement.remove();
+    }
 
-      if (peca < 0 || maoObra < 0) {
-        alert("Os valores não podem ser negativos.");
-        return;
+    // Selecionar forma de pagamento
+    function selectPagamento(tipo, forma) {
+      const pix = document.getElementById(`pix-${tipo}`);
+      const cartao = document.getElementById(`cartao-${tipo}`);
+      const parcelas = document.getElementById(`parcelas-${tipo}`);
+      
+      if (forma === 'pix') {
+        pix.classList.add('selected');
+        cartao.classList.remove('selected');
+        parcelas.style.display = 'none';
+      } else {
+        pix.classList.remove('selected');
+        cartao.classList.add('selected');
+        parcelas.style.display = 'block';
       }
+    }
 
-      const nomes = document.querySelectorAll('.nome-servico');
-      const valores = document.querySelectorAll('.valor-servico');
-
-      let extrasText = '';
-      let totalExtras = 0;
-
-      for (let i = 0; i < nomes.length; i++) {
-        const nome = nomes[i].value.trim() || `Serviço ${i + 1}`;
-        const valor = parseFloat(valores[i].value) || 0;
-
-        if (valor < 0) {
-          alert(`O valor do "${nome}" não pode ser negativo.`);
-          return;
+    // Gerar orçamento
+    function gerarOrcamento(tipo) {
+      const nomeCliente = document.getElementById(`nome-cliente${tipo === 'notebook' ? '-nb' : ''}`).value.trim();
+      const modelo = document.getElementById(`modelo-${tipo}`).value.trim();
+      const servico = document.getElementById(`servico-${tipo}`).value.trim();
+      const maoObra = parseFloat(document.getElementById(`mao-obra-${tipo}`).value) || 0;
+      const cartao = document.getElementById(`cartao-${tipo}`).classList.contains('selected');
+      const parcelas = document.getElementById(`parcelas-select-${tipo}`).value;
+      
+      // Obter todas as peças
+      const pecas = [];
+      const pecasDesc = document.querySelectorAll(`#pecas-${tipo}-container .peca-desc`);
+      const pecasValor = document.querySelectorAll(`#pecas-${tipo}-container .peca-valor`);
+      
+      for (let i = 0; i < pecasDesc.length; i++) {
+        const descricao = pecasDesc[i].value.trim() || `Peça ${i+1}`;
+        const valor = parseFloat(pecasValor[i].value) || 0;
+        if (valor > 0) {
+          pecas.push({ descricao, valor });
         }
-
-        extrasText += `${nome}: ${valor.toLocaleString('pt-BR', { style: 'currency', currency: 'BRL' })}\n`;
-        totalExtras += valor;
       }
-
-      const total = peca + maoObra + totalExtras;
-      const totalCartao = total * 1.11;
-
-      let resultado = `RESUMO DO ORÇAMENTO\n\n`;
-
-      if (temPeca) {
-        resultado += `Peça: ${peca.toLocaleString('pt-BR', { style: 'currency', currency: 'BRL' })}\n`;
+      
+      // Calcular valor total das peças
+      const totalPecas = pecas.reduce((sum, peca) => sum + peca.valor, 0);
+      
+      // Lógica de cálculo
+      let valorTotal = maoObra + totalPecas;
+      let taxa = 0;
+      let valorTaxa = 0;
+      
+      if (cartao) {
+        const taxas = {
+          '1': 5, '2': 11, '3': 12.5, '4': 13.5, '5': 15,
+          '6': 16, '7': 17.5, '8': 19, '9': 20, '10-12': 21.5
+        };
+        taxa = taxas[parcelas];
+        valorTaxa = valorTotal * (taxa / 100);
+        valorTotal += valorTaxa;
       }
-
-      resultado +=
-        `Mão de Obra: ${maoObra.toLocaleString('pt-BR', { style: 'currency', currency: 'BRL' })}\n` +
-        `${extrasText}` +
-        `\nTOTAL À VISTA: ${total.toLocaleString('pt-BR', { style: 'currency', currency: 'BRL' })}\n` +
-        `TOTAL CARTÃO (até 5x): ${totalCartao.toLocaleString('pt-BR', { style: 'currency', currency: 'BRL' })}`;
-
+      
+      // Formatar valores
+      const formatarValor = (valor) => {
+        return valor.toFixed(2).replace('.', ',');
+      };
+      
+      // Gerar texto do resultado
+      let resultado = `ORÇAMENTO PARA ${tipo === 'celular' ? 'CELULAR' : 'NOTEBOOK/PC'}\n\n`;
+      if (nomeCliente) resultado += `Cliente: ${nomeCliente}\n`;
+      if (modelo) resultado += `Modelo: ${modelo}\n`;
+      
+      resultado += `\nSERVIÇO: ${servico}\n`;
+      
+      if (pecas.length > 0) {
+        resultado += `\nPEÇAS:\n`;
+        pecas.forEach(peca => {
+          resultado += `- ${peca.descricao}: R$ ${formatarValor(peca.valor)}\n`;
+        });
+      }
+      
+      if (maoObra > 0) resultado += `\nMão de obra: R$ ${formatarValor(maoObra)}\n`;
+      
+      resultado += `\nFORMA DE PAGAMENTO: ${cartao ? 'Cartão de Crédito' : 'À vista/PIX/Débito'}\n`;
+      if (cartao) {
+        const textoParcelas = parcelas.includes('-') ? parcelas.replace('-', ' a ') : parcelas;
+        resultado += `Parcelamento: ${textoParcelas}x\n`;
+        resultado += `Taxa: R$ ${formatarValor(valorTaxa)} (${taxa}%)\n`;
+      }
+      
+      resultado += `\nVALOR TOTAL: R$ ${formatarValor(maoObra + totalPecas)}\n`;
+      if (cartao) resultado += `Acréscimo: R$ ${formatarValor(valorTaxa)}\n`;
+      resultado += `TOTAL A PAGAR: R$ ${formatarValor(valorTotal)}\n`;
+      
       document.getElementById('resultado').textContent = resultado;
+      
+      // Gerar mensagem personalizada (versão melhorada)
+      let mensagem = '';
+      if (nomeCliente) {
+        mensagem += `Olá ${nomeCliente}, tudo bem?\n`;
+        mensagem += `Aqui é da CNT Assistência Técnica, segue o orçamento solicitado para ${servico.toLowerCase()} no ${tipo === 'celular' ? 'celular' : 'notebook/PC'}${modelo ? ' ' + modelo : ''}:\n\n`;
+      } else {
+        mensagem += `Olá, tudo bem?\n`;
+        mensagem += `Aqui é da CNT Assistência Técnica, segue o orçamento solicitado para ${servico.toLowerCase()} no ${tipo === 'celular' ? 'celular' : 'notebook/PC'}${modelo ? ' ' + modelo : ''}:\n\n`;
+      }
+
+      mensagem += `${resultado}\n`;
+
+      // Adiciona observações importantes
+      mensagem += `\nINFORMAÇÕES IMPORTANTES:\n`;
+      mensagem += `• Orçamento válido por 72 horas\n`;
+      mensagem += `• Prazo de execução: a confirmar após análise técnica\n`;
+      mensagem += `• Garantia de 90 dias para peças e serviços\n`;
+      mensagem += `• Aceitamos todas as formas de pagamento\n\n`;
+
+      mensagem += `Ficou com alguma dúvida ou gostaria de agendar o serviço? Estamos à disposição para ajudar!\n\n`;
+      mensagem += `Atenciosamente,\n`;
+      mensagem += `Equipe CNT Assistência Técnica\n`;
+      mensagem += `📱 (84) 9 9809-6865`;
+
+      document.getElementById('mensagem').textContent = mensagem;
     }
 
-    function copiarResultado() {
-      const texto = document.getElementById('resultado').textContent;
-      if (!texto) {
-        alert('Nenhum orçamento gerado para copiar.');
+    // Função para copiar a mensagem
+    function copiarMensagem() {
+      const textoMensagem = document.getElementById('mensagem').textContent;
+      
+      if (!textoMensagem.trim()) {
+        alert('Gere um orçamento antes de copiar a mensagem!');
         return;
       }
-      navigator.clipboard.writeText(texto)
-        .then(() => alert('Orçamento copiado!'))
-        .catch(() => alert('Erro ao copiar o orçamento.'));
+      
+      // Criar um elemento textarea temporário
+      const textarea = document.createElement('textarea');
+      textarea.value = textoMensagem;
+      textarea.style.position = 'fixed';
+      document.body.appendChild(textarea);
+      textarea.select();
+      
+      try {
+        // Tentar copiar usando o comando execCommand
+        const copiado = document.execCommand('copy');
+        if (!copiado) {
+          throw new Error('Não foi possível copiar');
+        }
+        
+        alert('Mensagem copiada com sucesso!\n\nPronto para colar no WhatsApp ou outro aplicativo.');
+      } catch (err) {
+        // Se falhar, usar a API moderna de clipboard
+        navigator.clipboard.writeText(textoMensagem)
+          .then(() => {
+            alert('Mensagem copiada com sucesso!\n\nPronto para colar no WhatsApp ou outro aplicativo.');
+          })
+          .catch(() => {
+            alert('Erro ao copiar. Por favor, selecione o texto e copie manualmente (Ctrl+C).');
+          });
+      } finally {
+        // Remover o textarea temporário
+        document.body.removeChild(textarea);
+      }
     }
+
+    function limparFormulario() {
+      if (confirm('Limpar todos os dados?')) {
+        document.querySelectorAll('input').forEach(input => input.value = '');
+        document.getElementById('resultado').textContent = '';
+        document.getElementById('mensagem').textContent = '';
+        
+        // Limpar peças
+        document.querySelectorAll('.pecas-container').forEach(container => {
+          container.innerHTML = '';
+        });
+        
+        // Resetar pagamento
+        document.querySelectorAll('.pagamento-option').forEach(opt => {
+          if (opt.id.includes('pix')) {
+            opt.classList.add('selected');
+          } else {
+            opt.classList.remove('selected');
+          }
+        });
+        
+        document.querySelectorAll('.parcelas-container').forEach(container => {
+          container.style.display = 'none';
+        });
+      }
+    }
+
+    // Inicialização
+    document.addEventListener('DOMContentLoaded', () => {
+      // Nada a inicializar além do que já está
+    });
   </script>
 </body>
 </html>
